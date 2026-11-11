@@ -1,0 +1,1 @@
+export default function Page() { return ( <main className="min-h-screen bg-neutral-950 px-8 py-24 text-neutral-100 md:px-16"><h1 className="text-5xl font-bold tracking-tight md:text-7xl">About</h1></main> ); }
