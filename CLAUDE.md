@@ -17,7 +17,8 @@ Next.js 16 (App Router, dossier app, sans src), React, TypeScript, Tailwind CSS 
 
 ## État actuel
 Fait : page d'accueil sombre, les 5 autres pages (titres seulement), barre de navigation commune (app/components/Navbar.tsx branchée dans app/layout.tsx), polices Geist et Cormorant, thème sombre fixe dans app/globals.css. Le site est en ligne sur Vercel.
-Pas encore fait : shadcn et composants 21st.dev, grille d'artworks, animations Motion, menu mobile, contenu des pages About et Contact, domaine pericless.fr.
+shadcn/ui installé (style nova, base Radix, couleur neutre, icônes Lucide) : components.json, lib/utils.ts, composants dans components/ui (button.tsx, pas encore utilisé). Le thème sombre fixe est assuré par la classe `dark` sur la balise html (app/layout.tsx) ; dans app/globals.css, --font-sans pointe vers --font-geist-sans (shadcn l'avait cassé, à revérifier après chaque commande shadcn).
+Pas encore fait : composants 21st.dev, grille d'artworks, animations Motion, menu mobile, contenu des pages About et Contact, domaine pericless.fr.
 
 ## Règles de travail
 - Avant toute modification importante, explique ce que tu vas faire et demande confirmation.
