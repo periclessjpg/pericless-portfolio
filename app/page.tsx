@@ -18,8 +18,7 @@ export default function Home() {
         <p className="mb-6 text-xs uppercase tracking-[0.4em] text-neutral-500 md:text-sm">
           Concept Artist · Illustrator · Graphic Designer
         </p>
-        <h1 className="text-6xl font-bold leading-none tracking-tight sm:text-8xl md:text-9xl">
-          Pericless
+<h1 className="font-display text-6xl font-semibold leading-none tracking-tight sm:text-8xl md:text-9xl">          Pericless
         </h1>
         <p className="mt-8 max-w-xl text-lg text-neutral-400">
           Concept art pour le jeu vidéo et l&apos;animation.
