@@ -6,7 +6,7 @@ import { pageMetadata } from "../lib/metadata";
 
 export const metadata = pageMetadata({
   title: "Illustration",
-  description: "Illustrations by Pericless.",
+  description: "Illustrations by Rayan Houstti.",
   path: "/illustration",
 });
 

@@ -7,7 +7,7 @@ import { pageMetadata } from "../lib/metadata";
 
 export const metadata = pageMetadata({
   title: "About",
-  description: "About Pericless: background, skills, software and experience.",
+  description: "About Rayan Houstti: background, skills, software and experience.",
   path: "/about",
 });
 
@@ -17,7 +17,7 @@ export const metadata = pageMetadata({
 // puis remplace src, alt, width et height ci-dessous.
 const portrait = {
   src: "/placeholders/portrait-4x5.svg",
-  alt: "[À REMPLACER] Portrait of Pericless",
+  alt: "[À REMPLACER] Portrait of Rayan Houstti",
   width: 1200,
   height: 1500,
 };
@@ -51,7 +51,7 @@ const experience = [
 export default function AboutPage() {
   return (
     <div className={`${container} pt-32 md:pt-44`}>
-      <PageHeader label="About" title="[À REMPLACER] Hello, I'm Pericless." />
+      <PageHeader label="About" title="[À REMPLACER] Hello, I'm Rayan Houstti." />
 
       <div className="grid gap-16 md:grid-cols-12 md:gap-12">
         {/* Portrait */}

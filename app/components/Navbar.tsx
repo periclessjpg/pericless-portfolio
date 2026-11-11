@@ -4,11 +4,10 @@ import { AnimatePresence, motion, type Variants } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { site } from "../data/site";
 import { easeOut } from "./motion/easing";
 import { container, focusRing } from "./styles";
 
-/** Texte affiché en haut à gauche (ramène à l'accueil). */
-const brand = "Concept Artist & Illustrator";
 
 const links = [
   { href: "/concept-art", label: "Concept Art" },
@@ -110,9 +109,14 @@ export default function Navbar() {
           open ? "bg-transparent" : "bg-neutral-950/80 backdrop-blur-md"
         }`}
       >
-        <div className={`${container} flex items-center justify-between gap-6 py-5 md:py-6`}>
-          <Link href="/" className={`${labelStyle} text-neutral-100 ${focusRing}`}>
-            {brand}
+        <div className={`${container} flex items-start justify-between gap-6 py-5 md:py-6`}>
+          {/* En haut à gauche : métier puis nom, sur deux lignes (ramène à l'accueil) */}
+          <Link href="/" className={`${labelStyle} flex flex-col gap-1 text-neutral-100 ${focusRing}`}>
+            <span>{site.title}</span>
+            {/* Sur l'accueil, le nom est un peu plus gros */}
+            <span className={pathname === "/" ? "text-sm sm:text-lg" : undefined}>
+              {site.name}
+            </span>
           </Link>
 
           <div className="relative">

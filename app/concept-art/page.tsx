@@ -7,7 +7,7 @@ import { pageMetadata } from "../lib/metadata";
 export const metadata = pageMetadata({
   title: "Concept Art",
   description:
-    "Concept art by Pericless for video games and animation: character design and environment design.",
+    "Concept art by Rayan Houstti for video games and animation: character design and environment design.",
   path: "/concept-art",
 });
 

@@ -6,7 +6,7 @@ import { pageMetadata } from "../lib/metadata";
 
 export const metadata = pageMetadata({
   title: "Projects",
-  description: "All projects by Pericless: concept art (characters and environments) and illustration.",
+  description: "All projects by Rayan Houstti: concept art (characters and environments) and illustration.",
   path: "/projects",
 });
 

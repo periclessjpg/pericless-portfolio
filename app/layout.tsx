@@ -27,7 +27,7 @@ const defaultTitle = `${site.name} | Concept Artist & Illustrator`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  // "%s" est remplacé par le titre de chaque page : "About | Pericless".
+  // "%s" est remplacé par le titre de chaque page : "About | Rayan Houstti".
   title: { default: defaultTitle, template: `%s | ${site.name}` },
   description: site.description,
   openGraph: {

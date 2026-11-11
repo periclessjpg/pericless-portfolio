@@ -11,25 +11,18 @@ export default function Home() {
 
   return (
     <>
-      {/* HERO : nom en grand et accroche */}
+      {/* HERO : accroche (ton nom est affiché en haut à gauche) */}
       <section
         aria-labelledby="hero-title"
         className={`${container} flex min-h-svh flex-col justify-end pb-12 pt-32 md:pb-16`}
       >
         <div className="flex flex-1 flex-col justify-center">
-          <Reveal>
-            <p className="mb-6 text-xs uppercase tracking-[0.4em] text-neutral-500 md:text-sm">
-              {site.role}
-            </p>
-            <h1
-              id="hero-title"
-              className="font-display text-6xl font-semibold leading-none tracking-tight sm:text-8xl md:text-9xl"
-            >
-              {site.name}
-            </h1>
-          </Reveal>
+          {/* Titre invisible à l'écran, lu par Google et les lecteurs d'écran */}
+          <h1 id="hero-title" className="sr-only">
+            {site.name}, {site.title}
+          </h1>
           <Reveal delay={0.2}>
-            <p className="mt-8 max-w-xl text-lg text-neutral-400">{site.tagline}</p>
+            <p className="max-w-xl text-lg text-neutral-400">{site.tagline}</p>
           </Reveal>
         </div>
         <Reveal delay={0.5}>
