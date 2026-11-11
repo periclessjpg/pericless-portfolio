@@ -1,1 +1,7 @@
-export default function Page() { return ( <main className="min-h-screen bg-neutral-950 px-8 py-24 text-neutral-100 md:px-16"><h1 className="text-5xl font-bold tracking-tight md:text-7xl">Character Design</h1></main> ); }
+import { permanentRedirect } from "next/navigation";
+
+// Ancienne adresse : Character Design et Environment Design sont maintenant
+// regroupés dans la rubrique Concept Art. On redirige les visiteurs vers /concept-art.
+export default function Page() {
+  permanentRedirect("/concept-art");
+}
