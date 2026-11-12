@@ -92,9 +92,7 @@ images: [
    - **`title`**, **`year`**, **`summary`**, **`tools`**.
    - **`category`** : exactement `"Character Design"`, `"Environment Design"` ou `"Illustration"`. Les deux premières apparaissent dans la rubrique **Concept Art**, la troisième dans **Illustration**.
    - **`kind`** : le type de réalisation, affiché en petit sous le titre dans les listes Concept Art et Illustration (ex. `"Key art"`, `"Character sheet"`, `"Environment study"`).
-   - **`thumb`** : l'image du projet dans les listes. Même format que `cover` (`src`, `alt`, `width`, `height`), par exemple `public/artworks/<slug>/thumb.jpg`.
-     - **Projets Concept Art** (Character Design, Environment Design) : elle s'affiche en **bande pleine largeur** (format panoramique 21:9 sur ordinateur, 16:9 sur mobile), **recadrée au centre**, avec le titre par-dessus en bas à gauche. Utilise une image horizontale d'environ **2400 pixels de large**, avec le sujet bien centré.
-     - **Projets Illustration** : elle s'affiche en petite vignette, en entier, jamais recadrée (format large, carré ou vertical).
+   - **`thumb`** : l'image du projet dans les listes Concept Art et Illustration. Même format que `cover` (`src`, `alt`, `width`, `height`), par exemple `public/artworks/<slug>/thumb.jpg`. Elle s'affiche en **bande pleine largeur** (format panoramique 21:9 sur ordinateur, 16:9 sur mobile), **recadrée au centre**, avec le titre par-dessus en bas à gauche. Utilise une image horizontale d'environ **2400 pixels de large**, avec le sujet bien centré (pour une œuvre verticale, prépare un recadrage horizontal d'un détail).
    - **`cover`** et **`images`** (voir plus haut).
    - **`featured: true`** si tu veux qu'il apparaisse dans « Selected Works » sur l'accueil (6 projets maximum). Sinon, supprime cette ligne.
    - **`status: "wip"`** pour un travail en cours : il apparaît dans la liste avec la mention « Work in progress », sans lien ni page. Supprime cette ligne quand le projet est terminé.
