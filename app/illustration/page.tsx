@@ -1,5 +1,6 @@
+import LetsTalk from "../components/LetsTalk";
 import PageHeader from "../components/PageHeader";
-import ProjectGrid from "../components/ProjectGrid";
+import ProjectList from "../components/ProjectList";
 import { container } from "../components/styles";
 import { getProjectsByCategory } from "../data/projects";
 import { pageMetadata } from "../lib/metadata";
@@ -19,12 +20,8 @@ export default function IllustrationPage() {
           the clients or projects, and your influences.
         </p>
       </PageHeader>
-      <ProjectGrid
-        projects={getProjectsByCategory("Illustration")}
-        columns={3}
-        headingLevel="h2"
-        preloadFirst
-      />
+      <ProjectList projects={getProjectsByCategory("Illustration")} preloadFirst />
+      <LetsTalk />
     </div>
   );
 }

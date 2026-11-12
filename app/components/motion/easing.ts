@@ -8,3 +8,18 @@ export const duration = 0.8;
 
 /** Distance du léger glissement vers le haut (en pixels). */
 export const offsetY = 24;
+
+/**
+ * Effet "flou vers net" des titres (composant BlurText).
+ * Change ces valeurs ici : tous les titres du site suivent.
+ */
+export const blurText = {
+  /** Durée d'apparition de chaque mot (en secondes). */
+  duration: 0.8,
+  /** Flou de départ (en pixels). */
+  blur: 12,
+  /** Décalage vertical de départ (en pixels, vers le bas). */
+  offsetY: 14,
+  /** Écart par défaut entre deux mots (en secondes). */
+  stagger: 0.06,
+};

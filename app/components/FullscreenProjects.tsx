@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { isSvg, type Project } from "../data/projects";
+import BlurText from "./BlurText";
 import Reveal from "./motion/Reveal";
 import { container } from "./styles";
 
@@ -38,14 +39,17 @@ export default function FullscreenProjects({ projects }: Props) {
             />
 
             {/* Légende : titre, catégorie et année */}
-            <div className="absolute inset-x-0 bottom-0">
-              <Reveal
-                className={`${container} flex flex-col gap-3 pb-10 sm:flex-row sm:items-end sm:justify-between sm:gap-8 md:pb-16`}
+            <div
+              className={`${container} absolute inset-x-0 bottom-0 flex flex-col gap-3 pb-10 sm:flex-row sm:items-end sm:justify-between sm:gap-8 md:pb-16`}
+            >
+              <BlurText
+                as="h3"
+                className="font-display text-4xl font-medium leading-none tracking-tight text-neutral-100 sm:text-5xl md:text-7xl"
               >
-                <h3 className="font-display text-4xl font-medium leading-none tracking-tight text-neutral-100 sm:text-5xl md:text-7xl">
-                  {project.title}
-                </h3>
-                <p className="shrink-0 text-xs uppercase tracking-[0.3em] text-neutral-300 transition-colors duration-500 group-hover:text-neutral-100">
+                {project.title}
+              </BlurText>
+              <Reveal delay={0.3} className="shrink-0">
+                <p className="text-xs uppercase tracking-[0.3em] text-neutral-300 transition-colors duration-500 group-hover:text-neutral-100">
                   {project.category} · {project.year}
                 </p>
               </Reveal>

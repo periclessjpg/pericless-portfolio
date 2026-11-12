@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { isSvg, type Project } from "../data/projects";
+import BlurText from "./BlurText";
 import { focusRing } from "./styles";
 
 type Props = {
@@ -20,7 +21,7 @@ type Props = {
 export default function ProjectCard({
   project,
   sizes,
-  headingLevel: Heading = "h3",
+  headingLevel = "h3",
   preload = false,
 }: Props) {
   return (
@@ -41,9 +42,12 @@ export default function ProjectCard({
 
         <div className="mt-4 flex items-start justify-between gap-6 border-t border-neutral-800 pt-4 transition-colors duration-500 group-hover:border-neutral-400 group-focus-visible:border-neutral-400">
           <div>
-            <Heading className="font-display text-2xl leading-tight text-neutral-300 transition-colors duration-500 group-hover:text-neutral-100 group-focus-visible:text-neutral-100 md:text-3xl">
+            <BlurText
+              as={headingLevel}
+              className="font-display text-2xl leading-tight text-neutral-300 transition-colors duration-500 group-hover:text-neutral-100 group-focus-visible:text-neutral-100 md:text-3xl"
+            >
               {project.title}
-            </Heading>
+            </BlurText>
             <p className="mt-1 text-xs uppercase tracking-[0.2em] text-neutral-500 transition-colors duration-500 group-hover:text-neutral-300">
               {project.category}
             </p>

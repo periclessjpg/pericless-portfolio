@@ -1,13 +1,17 @@
 import Link from "next/link";
+import BlurText from "../../components/BlurText";
 import { container, eyebrow, focusRing } from "../../components/styles";
 
 export default function ProjectNotFound() {
   return (
     <div className={`${container} flex min-h-[70svh] flex-col justify-center pt-32`}>
       <p className={eyebrow}>Error 404</p>
-      <h1 className="mt-6 font-display text-5xl font-medium leading-none tracking-tight md:text-8xl">
+      <BlurText
+        as="h1"
+        className="mt-6 font-display text-5xl font-medium leading-none tracking-tight md:text-8xl"
+      >
         Project not found
-      </h1>
+      </BlurText>
       <p className="mt-8 max-w-xl text-lg text-neutral-400">
         This project does not exist or has been moved.
       </p>

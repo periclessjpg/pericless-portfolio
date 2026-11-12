@@ -1,7 +1,8 @@
-import CategoryFilter from "../components/CategoryFilter";
+import LetsTalk from "../components/LetsTalk";
 import PageHeader from "../components/PageHeader";
+import SectionCards from "../components/SectionCards";
 import { container } from "../components/styles";
-import { conceptArtCategories, getConceptArtProjects } from "../data/projects";
+import { conceptArtSections } from "../data/concept-art";
 import { pageMetadata } from "../lib/metadata";
 
 export const metadata = pageMetadata({
@@ -20,7 +21,9 @@ export default function ConceptArtPage() {
           you design for video games and animation, and your process.
         </p>
       </PageHeader>
-      <CategoryFilter projects={getConceptArtProjects()} filterBy={conceptArtCategories} />
+      {/* Les 3 cartes : Chara Design, Environment, All (définies dans app/data/concept-art.ts) */}
+      <SectionCards sections={conceptArtSections} />
+      <LetsTalk />
     </div>
   );
 }

@@ -91,8 +91,13 @@ images: [
    - **`slug`** : identifiant unique, en minuscules avec des tirets (ex. `forest-guardian`). Il devient l'adresse de la page : `/projects/forest-guardian`.
    - **`title`**, **`year`**, **`summary`**, **`tools`**.
    - **`category`** : exactement `"Character Design"`, `"Environment Design"` ou `"Illustration"`. Les deux premières apparaissent dans la rubrique **Concept Art**, la troisième dans **Illustration**.
+   - **`kind`** : le type de réalisation, affiché en petit sous le titre dans les listes Concept Art et Illustration (ex. `"Key art"`, `"Character sheet"`, `"Environment study"`).
+   - **`thumb`** : l'image du projet dans les listes. Même format que `cover` (`src`, `alt`, `width`, `height`), par exemple `public/artworks/<slug>/thumb.jpg`.
+     - **Projets Concept Art** (Character Design, Environment Design) : elle s'affiche en **bande pleine largeur** (format panoramique 21:9 sur ordinateur, 16:9 sur mobile), **recadrée au centre**, avec le titre par-dessus en bas à gauche. Utilise une image horizontale d'environ **2400 pixels de large**, avec le sujet bien centré.
+     - **Projets Illustration** : elle s'affiche en petite vignette, en entier, jamais recadrée (format large, carré ou vertical).
    - **`cover`** et **`images`** (voir plus haut).
    - **`featured: true`** si tu veux qu'il apparaisse dans « Selected Works » sur l'accueil (6 projets maximum). Sinon, supprime cette ligne.
+   - **`status: "wip"`** pour un travail en cours : il apparaît dans la liste avec la mention « Work in progress », sans lien ni page. Supprime cette ligne quand le projet est terminé.
 4. Crée le dossier `public/artworks/<slug>/` et mets-y les images.
 5. Enregistre : le site se met à jour tout seul dans le navigateur (localhost:3000).
 
@@ -106,6 +111,7 @@ Supprime son bloc complet (de `{` jusqu'à `},`) dans `app/data/projects.ts`.
 
 ## 7. Autres contenus
 
+- **Cartes de la page Concept Art (Chara Design, Environment, All)** : mets tes images dans `public/artworks/concept-art/` (ex. `chara-design.jpg`), puis change `src`, `alt`, `width` et `height` de chaque carte dans `app/data/concept-art.ts`. Les cartes sont au format vertical 4:5 : choisis une image dont le sujet est centré. Tu peux aussi y changer le titre et l'introduction de chaque sous-page.
 - **Portrait (page About)** : mets ta photo dans `public/artworks/about/portrait.jpg`, puis change le chemin dans `app/about/page.tsx`.
 - **CV** : dépose ton fichier sous le nom exact `cv.pdf` directement dans `public/`. Le bouton « Download CV » pointe déjà dessus.
 - **Réseaux sociaux** : dans `app/data/site.ts`, remplace chaque `"#"` par l'adresse complète de ton profil (ex. `"https://www.artstation.com/tonnom"`).

@@ -3,20 +3,21 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import BackButton from "../../components/BackButton";
+import BlurText from "../../components/BlurText";
 import Reveal from "../../components/motion/Reveal";
 import { container, eyebrow, focusRing } from "../../components/styles";
 import {
   getAdjacentProjects,
   getProject,
   isSvg,
-  projects,
+  publishedProjects,
   type ProjectImage,
 } from "../../data/projects";
 import { pageMetadata } from "../../lib/metadata";
 
-// Génère à l'avance une page par projet de app/data/projects.ts.
+// Génère à l'avance une page par projet terminé (les projets "wip" n'ont pas de page).
 export function generateStaticParams() {
-  return projects.map((project) => ({ slug: project.slug }));
+  return publishedProjects.map((project) => ({ slug: project.slug }));
 }
 
 export async function generateMetadata({
@@ -52,16 +53,22 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
 
       {/* En-tête du projet */}
       <header className={`${container} mb-16 grid gap-12 md:mb-24 md:grid-cols-12`}>
-        <Reveal className="md:col-span-7">
-          <p className={eyebrow}>
-            {project.category} · {project.year}
-          </p>
-          <h1 className="mt-6 font-display text-5xl font-medium leading-none tracking-tight sm:text-6xl md:text-8xl">
+        <div className="md:col-span-7">
+          <Reveal>
+            <p className={eyebrow}>
+              {project.category} · {project.year}
+            </p>
+          </Reveal>
+          <BlurText
+            as="h1"
+            delay={0.1}
+            className="mt-6 font-display text-5xl font-medium leading-none tracking-tight sm:text-6xl md:text-8xl"
+          >
             {project.title}
-          </h1>
-        </Reveal>
+          </BlurText>
+        </div>
 
-        <Reveal delay={0.15} className="flex flex-col gap-10 md:col-span-4 md:col-start-9 md:pt-10">
+        <Reveal delay={0.3} className="flex flex-col gap-10 md:col-span-4 md:col-start-9 md:pt-10">
           <p className="text-lg leading-relaxed text-neutral-300">{project.summary}</p>
           <dl className="grid grid-cols-2 gap-6 border-t border-neutral-800 pt-6 text-sm">
             <div>

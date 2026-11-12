@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import BlurText from "./BlurText";
 import Reveal from "./motion/Reveal";
 import { eyebrow } from "./styles";
 
@@ -13,14 +14,20 @@ type Props = {
 export default function PageHeader({ label, title, children }: Props) {
   return (
     <header className="mb-16 max-w-4xl md:mb-24">
-      <Reveal>
-        {label && <p className={`mb-6 ${eyebrow}`}>{label}</p>}
-        <h1 className="font-display text-5xl font-medium leading-none tracking-tight sm:text-6xl md:text-8xl">
-          {title}
-        </h1>
-      </Reveal>
+      {label && (
+        <Reveal>
+          <p className={`mb-6 ${eyebrow}`}>{label}</p>
+        </Reveal>
+      )}
+      <BlurText
+        as="h1"
+        delay={0.1}
+        className="font-display text-5xl font-medium leading-none tracking-tight sm:text-6xl md:text-8xl"
+      >
+        {title}
+      </BlurText>
       {children && (
-        <Reveal delay={0.15} className="mt-8 max-w-2xl text-lg leading-relaxed text-neutral-400">
+        <Reveal delay={0.3} className="mt-8 max-w-2xl text-lg leading-relaxed text-neutral-400">
           {children}
         </Reveal>
       )}

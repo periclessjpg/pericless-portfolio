@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { site } from "../data/site";
 import { easeOut } from "./motion/easing";
-import { container, focusRing } from "./styles";
+import { container, focusRing, label } from "./styles";
 
 
 const links = [
@@ -16,9 +16,8 @@ const links = [
   { href: "/contact", label: "Contact" },
 ];
 
-/** Même style pour le texte de gauche, le bouton Menu et les liens du menu. */
-const labelStyle =
-  "text-xs font-semibold uppercase tracking-[0.2em] sm:text-sm sm:tracking-[0.3em]";
+/** Même style pour le texte de gauche, le bouton Menu et les liens du menu (défini dans styles.ts). */
+const labelStyle = label;
 
 // Animation du menu : les liens sortent du mot "Menu" l'un après l'autre.
 const list: Variants = {

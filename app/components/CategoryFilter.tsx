@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { categories, type Category, type Project } from "../data/projects";
 import ProjectGrid from "./ProjectGrid";
+import ProjectList from "./ProjectList";
 import { focusRing } from "./styles";
 
 type Filter = "All" | Category;
@@ -11,10 +12,16 @@ type Props = {
   projects: Project[];
   /** Catégories proposées dans le filtre (par défaut : toutes). */
   filterBy?: Category[];
+  /** "grid" : grille de vignettes ; "list" : liste verticale (Concept Art). */
+  layout?: "grid" | "list";
 };
 
-/** Boutons All + une catégorie par bouton, puis la grille filtrée. */
-export default function CategoryFilter({ projects, filterBy = categories }: Props) {
+/** Boutons All + une catégorie par bouton, puis la grille ou la liste filtrée. */
+export default function CategoryFilter({
+  projects,
+  filterBy = categories,
+  layout = "grid",
+}: Props) {
   const filters: Filter[] = ["All", ...filterBy];
   const [active, setActive] = useState<Filter>("All");
   const visible =
@@ -53,7 +60,11 @@ export default function CategoryFilter({ projects, filterBy = categories }: Prop
       </p>
 
       {/* key={active} : la cascade d'apparition se rejoue à chaque changement de filtre */}
-      <ProjectGrid key={active} projects={visible} columns={3} headingLevel="h2" preloadFirst />
+      {layout === "list" ? (
+        <ProjectList key={active} projects={visible} preloadFirst />
+      ) : (
+        <ProjectGrid key={active} projects={visible} columns={3} headingLevel="h2" preloadFirst />
+      )}
     </div>
   );
 }

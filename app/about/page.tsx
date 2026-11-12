@@ -1,4 +1,5 @@
 import Image from "next/image";
+import BlurText from "../components/BlurText";
 import Reveal from "../components/motion/Reveal";
 import PageHeader from "../components/PageHeader";
 import { container, eyebrow, focusRing } from "../components/styles";
@@ -70,7 +71,8 @@ export default function AboutPage() {
         </Reveal>
 
         {/* Texte */}
-        <Reveal delay={0.15} className="flex flex-col gap-16 md:col-span-6 md:col-start-7">
+        <div className="flex flex-col gap-16 md:col-span-6 md:col-start-7">
+          <Reveal delay={0.15}>
           <section aria-labelledby="bio-title">
             <h2 id="bio-title" className="sr-only">
               Biography
@@ -89,6 +91,7 @@ export default function AboutPage() {
               <span className="sr-only"> (PDF)</span>
             </a>
           </section>
+          </Reveal>
 
           <div className="grid gap-12 sm:grid-cols-2">
             <ListSection id="skills" title="Skills" items={skills} />
@@ -96,9 +99,14 @@ export default function AboutPage() {
           </div>
 
           <section aria-labelledby="experience-title">
-            <h2 id="experience-title" className="font-display text-3xl font-medium md:text-4xl">
+            <BlurText
+              as="h2"
+              id="experience-title"
+              className="font-display text-3xl font-medium md:text-4xl"
+            >
               Experience
-            </h2>
+            </BlurText>
+            <Reveal delay={0.2}>
             <ul className="mt-6 border-t border-neutral-800">
               {experience.map((item) => (
                 <li
@@ -113,8 +121,9 @@ export default function AboutPage() {
                 </li>
               ))}
             </ul>
+            </Reveal>
           </section>
-        </Reveal>
+        </div>
       </div>
     </div>
   );
@@ -123,14 +132,16 @@ export default function AboutPage() {
 function ListSection({ id, title, items }: { id: string; title: string; items: string[] }) {
   return (
     <section aria-labelledby={`${id}-title`}>
-      <h2 id={`${id}-title`} className="font-display text-3xl font-medium md:text-4xl">
+      <BlurText as="h2" id={`${id}-title`} className="font-display text-3xl font-medium md:text-4xl">
         {title}
-      </h2>
-      <ul className="mt-6 flex flex-col gap-2 text-neutral-400">
-        {items.map((item) => (
-          <li key={item}>{item}</li>
-        ))}
-      </ul>
+      </BlurText>
+      <Reveal delay={0.2}>
+        <ul className="mt-6 flex flex-col gap-2 text-neutral-400">
+          {items.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      </Reveal>
     </section>
   );
 }

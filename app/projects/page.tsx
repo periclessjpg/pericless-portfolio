@@ -1,7 +1,7 @@
 import CategoryFilter from "../components/CategoryFilter";
 import PageHeader from "../components/PageHeader";
 import { container } from "../components/styles";
-import { projects } from "../data/projects";
+import { publishedProjects } from "../data/projects";
 import { pageMetadata } from "../lib/metadata";
 
 export const metadata = pageMetadata({
@@ -16,7 +16,7 @@ export default function ProjectsPage() {
       <PageHeader label="Portfolio" title="Projects">
         <p>[À REMPLACER] A short introduction to your work: the kind of projects you take on and what ties them together.</p>
       </PageHeader>
-      <CategoryFilter projects={projects} />
+      <CategoryFilter projects={publishedProjects} />
     </div>
   );
 }
