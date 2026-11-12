@@ -1,9 +1,28 @@
 {
   "01-mdh-avancee.webp": {
-    "title": "Mdh Test Silhouette Incandescent"
+    "title": "Mdh Test Silhouette Incandescent",
+    "position": "52% 24%"
   },
-  "02-mediterranea-2.webp": {
-    "title": "The stranger",
-    "position": "58% 32%"
+  "03-nevra-3.webp": {
+    "title": "Nevra",
+    "position": "57% 11%"
+  },
+  "04-nevra-5.webp": {
+    "position": "50% 11%"
+  },
+  "05-mdh-test-silhouette-normal.webp": {
+    "title": "SHAPE test"
+  },
+  "06-mdh-test-silhouette-incandescent.webp": {
+    "title": "shape test burning"
+  },
+  "07-turn-mdh-prequel-maj.webp": {
+    "title": "Robot search"
+  },
+  "08-turn-mdh.webp": {
+    "title": "cyber human turn"
+  },
+  "02-naja-turn.webp": {
+    "position": "14% 15%"
   }
 }
