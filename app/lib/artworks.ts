@@ -19,6 +19,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { imageSize } from "image-size";
 import { humanize, IMAGE_EXTENSIONS, isHidden, slugify } from "./artwork-names";
+import { sanitizeHeroSettings, type HeroSettings } from "./hero-settings";
 
 // ───────────── RÉGLAGE ─────────────
 
@@ -42,6 +43,8 @@ export type Artwork = {
   kind: string;
   /** Nom de la catégorie : "Concept Art", "Illustration"… */
   category: string;
+  /** Cadrage quand l'image est recadrée (CSS object-position, ex. "50% 20%"). */
+  position?: string;
 };
 
 export type GalleryFilter = {
@@ -79,7 +82,20 @@ const ROOT = ARTWORKS_ROOT;
 const EXTENSIONS = new Set(IMAGE_EXTENSIONS);
 const collator = new Intl.Collator("en", { numeric: true, sensitivity: "base" });
 
-type Infos = Record<string, { title?: string; year?: number; description?: string; alt?: string }>;
+type Infos = Record<
+  string,
+  { title?: string; year?: number; description?: string; alt?: string; position?: string }
+>;
+
+/** Accepte seulement un cadrage du type "50% 20%" (deux pourcentages entre 0 et 100). */
+function readPosition(value: unknown): string | undefined {
+  if (typeof value !== "string") return undefined;
+  const match = /^\s*(\d{1,3}(?:\.\d+)?)%\s+(\d{1,3}(?:\.\d+)?)%\s*$/.exec(value);
+  if (!match) return undefined;
+  const [x, y] = [Number(match[1]), Number(match[2])];
+  if (x > 100 || y > 100) return undefined;
+  return `${x}% ${y}%`;
+}
 
 /** Lit un dossier sans jamais planter (dossier absent = liste vide). */
 function readDir(dir: string): fs.Dirent[] {
@@ -156,6 +172,7 @@ function readImages(parts: string[], kind: string, category: string): Artwork[] 
       alt: info.alt?.trim() || `${title} – ${kind}`,
       year: typeof info.year === "number" ? info.year : undefined,
       description: info.description?.trim() || undefined,
+      position: readPosition(info.position),
       kind,
       category,
     });
@@ -201,6 +218,28 @@ export function getGallery(category: GalleryCategory): Gallery {
 }
 
 /** Images de la section "Selected Works" de l'accueil (dossier home). */
+/**
+ * Hero (haut de l'accueil) : réglages de public/artworks/hero/settings.json
+ * (valeurs invalides remplacées par les valeurs par défaut), image choisie
+ * (sinon la première du dossier) et liste de toutes les images du dossier.
+ */
+export function getHero(): { settings: HeroSettings; image: Artwork | null; images: Artwork[] } {
+  const images = readImages(["hero"], "Header", "Header");
+  const fileName = (artwork: Artwork) => artwork.id.split("/").pop() ?? "";
+
+  let raw: unknown = {};
+  try {
+    raw = JSON.parse(fs.readFileSync(path.join(ROOT, "hero", "settings.json"), "utf8"));
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== "ENOENT" && process.env.NODE_ENV === "development") {
+      console.warn("[artworks] hero/settings.json illisible, réglages par défaut utilisés :", error);
+    }
+  }
+  const settings = sanitizeHeroSettings(raw, images.map(fileName));
+  const image = images.find((artwork) => fileName(artwork) === settings.image) ?? images[0] ?? null;
+  return { settings, image, images };
+}
+
 export function getHomeArtworks(): Artwork[] {
   return readImages(["home"], "Selected Works", "Selected Works");
 }
@@ -224,4 +263,5 @@ export function getAboutArtworks(portraitAlt: string): { portrait: Artwork | nul
 export const folders = {
   home: toFolder(["home"]),
   about: toFolder(["about"]),
+  hero: toFolder(["hero"]),
 };

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import BlurText from "./BlurText";
+import { DevFramingSlot } from "./dev/DevSlots";
 import { StaggerItem, StaggerList } from "./motion/Stagger";
 import { titleMedium } from "./styles";
 
@@ -11,6 +12,10 @@ export type BannerItem = {
   /** Texte en petit sous le titre (ex. nom du filtre). */
   kind: string;
   image: { src: string; alt: string; width: number; height: number };
+  /** Cadrage de l'image recadrée (ex. "50% 20%"), centre par défaut. */
+  position?: string;
+  /** Chemin de l'image dans public/artworks, pour le réglage du cadrage en mode édition local. */
+  framingId?: string;
   /** Si présent, toute la bande est un lien vers cette adresse. */
   href?: string;
 };
@@ -48,6 +53,7 @@ export default function ProjectBannerList({ items, preloadFirst = false }: Props
               fill
               sizes="(min-width: 1536px) 1408px, 100vw"
               preload={preloadFirst && index === 0}
+              style={{ objectPosition: item.position }}
               className={`object-cover transition-transform duration-700 ${ease} group-hover/row:scale-[1.03] group-focus-visible/row:scale-[1.03] motion-reduce:scale-100!`}
             />
 
@@ -72,7 +78,7 @@ export default function ProjectBannerList({ items, preloadFirst = false }: Props
         );
 
         return (
-          <StaggerItem key={item.key}>
+          <StaggerItem key={item.key} className="relative">
             {item.href ? (
               <Link
                 href={item.href}
@@ -82,6 +88,10 @@ export default function ProjectBannerList({ items, preloadFirst = false }: Props
               </Link>
             ) : (
               <div className={rowClass}>{content}</div>
+            )}
+            {/* Mode édition local : réglage du cadrage (posé à côté du lien, jamais dedans) */}
+            {item.framingId && (
+              <DevFramingSlot id={item.framingId} src={item.image.src} position={item.position} />
             )}
           </StaggerItem>
         );

@@ -19,6 +19,7 @@ public/artworks/
 │   └── all/                  → images visibles seulement dans « All »
 ├── illustration/             → page Illustration
 │   └── all/                  → tes illustrations
+├── hero/                     → images de fond du haut de l'accueil + settings.json (réglages)
 ├── home/                     → « Selected Works » sur l'accueil (plein écran)
 └── about/                    → page About : portrait.jpg + autres photos
 ```
@@ -98,11 +99,96 @@ Ce que fait l'envoi automatiquement :
 
 ---
 
+## Remplacer ou supprimer une image (local uniquement)
+
+Avec `npm run dev`, sur localhost:3000, chaque image déjà en place a des boutons en haut à droite (interrupteur « Show tools » activé) :
+
+- **« Replace »** : choisis une nouvelle image. Elle prend **la même place** (même numéro) et garde **le même titre** ; son cadrage repart du centre. Elle est optimisée comme à l'envoi (WebP, 2400 px, informations cachées supprimées).
+- **« Delete »** : une confirmation s'affiche (« Delete this image? »), puis l'image disparaît du site.
+
+**Rien n'est jamais effacé** : l'image supprimée ou remplacée est déplacée dans le dossier **`.artworks-trash/`** à la racine du projet (avec ses réglages dans un fichier `.infos.json` à côté). Son nom indique la date et le dossier d'origine, par exemple :
+`2026-11-12_14-03-22__concept-art__character-design__01-dragon-knight.webp`
+
+- **Récupérer une image** : remets-la dans son dossier d'origine et redonne-lui son nom (`01-dragon-knight.webp`).
+- **Vider la corbeille** : supprime à la main le contenu de `.artworks-trash/` quand tu es sûr.
+- Ce dossier n'est **jamais envoyé sur GitHub** ni publié (il est dans `.gitignore`).
+
+Sur une carte de Concept Art ou d'Illustration, les boutons agissent sur l'image affichée (la première du filtre).
+
+Sans le mode édition, tu peux aussi supprimer ou remplacer un fichier directement dans `public/artworks/` avec l'explorateur de fichiers.
+
+---
+
+## Personnaliser le hero (haut de l'accueil)
+
+Le hero est **entièrement réglable** : image, taille, transparence, filtres, voile, texte, animation.
+
+**Avec le panneau (en local, le plus simple)** :
+1. Avec `npm run dev`, ouvre l'accueil sur localhost:3000 (outils affichés : « Show tools »).
+2. Clique sur **« Customize hero »** en bas à droite.
+3. Bouge les curseurs : le hero change **en direct**. (Le choix de l'image et l'animation s'appliquent après « Save ».)
+4. **« Save »** enregistre, **« Reset »** remet les réglages d'origine, **« Cancel »** (ou Échap) ferme sans enregistrer.
+
+**Les images du hero** : dépose-les sur la tuile du hero (ou dans `public/artworks/hero/`), puis choisis laquelle afficher dans le panneau (menu « Background image »). Sur l'image affichée, « Adjust framing », « Replace » et « Delete » fonctionnent comme ailleurs.
+
+**À la main** : tous les réglages sont dans `public/artworks/hero/settings.json` (créé au premier « Save »). Une valeur absente ou invalide est remplacée par la valeur par défaut : le site ne plante jamais.
+
+| Réglage | Rôle | Valeurs (défaut) |
+|---|---|---|
+| `image` | image affichée (nom du fichier dans hero/) | `""` = la première |
+| `height` | hauteur, en % de l'écran | 40 à 100 (100) |
+| `imageOpacity` | opacité de l'image | 0 à 100 (100) |
+| `zoom` | zoom de l'image | 100 à 200 (100) |
+| `blur` | flou, en pixels | 0 à 20 (0) |
+| `grayscale` | noir et blanc | 0 à 100 (0) |
+| `saturation` / `brightness` / `contrast` | couleurs, luminosité, contraste | 0 à 200 (100) |
+| `overlayColor` | couleur du voile | `#rrggbb` (`#0a0a0a`) |
+| `overlayOpacity` | intensité du voile | 0 à 100 (30) |
+| `gradient` | direction du dégradé | `bottom`, `left`, `bottom-left`, `none` (`bottom-left`) |
+| `gradientStrength` | force du dégradé | 0 à 100 (100) |
+| `textVertical` | position verticale de l'accroche | `top`, `center`, `bottom` (`center`) |
+| `textHorizontal` | position horizontale | `left`, `center`, `right` (`left`) |
+| `textSize` | taille de l'accroche, en pixels | 12 à 64 (18) |
+| `textColor` | couleur de l'accroche | `#rrggbb` (`#e5e5e5`) |
+| `showScroll` | afficher « Scroll to explore » | `true` / `false` (`true`) |
+| `animation` | arrivée de l'image | `fade`, `zoom`, `none` (`fade`) |
+| `animationDuration` | durée de l'arrivée, en secondes | 0.2 à 4 (0.8) |
+| `parallax` | l'image défile plus lentement que la page | 0 à 100 (0) |
+
+Pour revenir au hero d'origine : « Reset » puis « Save » dans le panneau, ou supprime `settings.json`.
+
+Avec le réglage « réduire les animations » de l'ordinateur du visiteur, la parallaxe et le zoom d'arrivée sont désactivés automatiquement.
+
+---
+
+## Régler le cadrage d'une image
+
+Quand une image est **recadrée** (fond du haut de l'accueil, « Selected Works », bandes de Concept Art et d'Illustration, cartes, portrait d'About), elle est centrée par défaut. Tu peux choisir la partie qui reste visible (par exemple garder le visage d'un personnage).
+
+**Sur le site, en local (le plus simple)** :
+1. Avec `npm run dev`, ouvre la page sur localhost:3000 (les outils doivent être affichés : interrupteur « Show tools » de la bannière).
+2. Clique sur **« Adjust framing »** en haut à droite de l'image.
+3. Clique sur la partie de l'image à garder visible : l'aperçu se recadre en direct (les flèches du clavier déplacent aussi la zone, Échap annule).
+4. Clique sur **« Save »**. **« Reset »** revient au centre.
+
+**À la main** : dans le `infos.json` du dossier de l'image, ajoute `"position"` :
+
+```json
+{
+  "01-dragon-knight.webp": { "position": "50% 20%" }
+}
+```
+
+Le premier nombre est l'horizontal (0 % = gauche, 100 % = droite), le second le vertical (0 % = haut, 100 % = bas). Le cadrage est réglé **une fois par image** : si elle sert à la fois de carte et de bande, il s'applique aux deux. La grille de la page Projects montre toujours les images entières.
+
+---
+
 ## Tailles recommandées
 
 - **Côté le plus long : environ 2400 px.**
 - **Format : WebP ou JPG**, idéalement **moins de 1,5 Mo** par image.
-- **Accueil (`home/`)** : images horizontales, sujet bien centré (elles remplissent tout l'écran, recadrées au centre).
+- **Accueil (`home/`)** : images horizontales, sujet bien centré (elles remplissent tout l'écran, recadrées).
+- **Fond du haut de l'accueil (`hero/`)** : une image horizontale ; le texte est en bas à gauche, un sujet plutôt à droite ou en haut reste bien visible. L'image est assombrie automatiquement.
 - **Listes Concept Art / Illustration** : les bandes sont panoramiques (recadrées au centre) ; la page Projects montre les images entières.
 - Avec la méthode 1, tu n'as pas à t'en occuper : l'envoi réduit et convertit l'image tout seul.
 

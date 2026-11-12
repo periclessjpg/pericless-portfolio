@@ -2,38 +2,45 @@ import Link from "next/link";
 import BlurText from "./components/BlurText";
 import Reveal from "./components/motion/Reveal";
 import ComingSoon from "./components/ComingSoon";
-import { DevDropZoneSlot } from "./components/dev/DevSlots";
+import { DevDropZoneSlot, DevFramingSlot, DevHeroPanelSlot } from "./components/dev/DevSlots";
 import FullscreenProjects from "./components/FullscreenProjects";
-import ScrollIndicator from "./components/ScrollIndicator";
+import HeroView from "./components/HeroView";
 import { container, eyebrow, focusRing, titleMedium } from "./components/styles";
-import { folders, getHomeArtworks } from "./lib/artworks";
+import { folders, getHero, getHomeArtworks } from "./lib/artworks";
 import { site } from "./data/site";
 
 export default function Home() {
   // Images du dossier public/artworks/home/
   const featured = getHomeArtworks();
+  // Hero : réglages, image de fond choisie et images du dossier public/artworks/hero/
+  const hero = getHero();
 
   return (
     <>
-      {/* HERO : accroche (ton nom est affiché en haut à gauche) */}
-      <section
-        aria-labelledby="hero-title"
-        className={`${container} flex min-h-svh flex-col justify-end pb-12 pt-32 md:pb-16`}
-      >
-        <div className="flex flex-1 flex-col justify-center">
-          {/* Titre invisible à l'écran, lu par Google et les lecteurs d'écran */}
-          <h1 id="hero-title" className="sr-only">
-            {site.name}, {site.title}
-          </h1>
-          {/* Accroche : apparaît mot par mot, du flou vers le net, au chargement */}
-          <BlurText as="p" delay={0.2} className="max-w-xl text-lg text-neutral-400">
-            {site.tagline}
-          </BlurText>
-        </div>
-        <Reveal delay={0.8}>
-          <ScrollIndicator targetId="selected-works" />
-        </Reveal>
-      </section>
+      {/* HERO : entièrement réglable (public/artworks/hero/settings.json ou panneau "Customize hero" en local) */}
+      <HeroView
+        settings={hero.settings}
+        image={hero.image && { src: hero.image.src, alt: hero.image.alt, position: hero.image.position }}
+        title={`${site.name}, ${site.title}`}
+        tagline={site.tagline}
+        scrollTarget="selected-works"
+        imageTools={
+          hero.image && (
+            // Mode édition local : cadrage, remplacement, suppression de l'image de fond
+            <DevFramingSlot id={hero.image.id} src={hero.image.src} position={hero.image.position} />
+          )
+        }
+        editTools={
+          <>
+            {/* Mode édition local (npm run dev uniquement) : ajouter des images de fond */}
+            <DevDropZoneSlot category="hero" variant="banner" />
+            <DevHeroPanelSlot
+              settings={hero.settings}
+              images={hero.images.map((image) => ({ file: image.id.split("/").pop() ?? "", title: image.title }))}
+            />
+          </>
+        }
+      />
 
       {/* SELECTED WORKS : images du dossier public/artworks/home/, en plein écran */}
       <section

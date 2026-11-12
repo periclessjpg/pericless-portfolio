@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { Artwork } from "../lib/artworks";
 import BlurText from "./BlurText";
+import { DevFramingSlot } from "./dev/DevSlots";
 import Reveal from "./motion/Reveal";
 import { container, titleMedium } from "./styles";
 
@@ -11,7 +12,7 @@ type Props = {
 /**
  * Œuvres affichées en plein écran, les unes sous les autres (accueil,
  * images du dossier public/artworks/home/). Chaque image remplit toute la
- * fenêtre : elle est recadrée au centre.
+ * fenêtre : elle est recadrée (au centre, ou selon le cadrage de infos.json).
  */
 export default function FullscreenProjects({ artworks }: Props) {
   return (
@@ -24,6 +25,7 @@ export default function FullscreenProjects({ artworks }: Props) {
               alt={artwork.alt}
               fill
               sizes="100vw"
+              style={{ objectPosition: artwork.position }}
               className="object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
             />
 
@@ -48,6 +50,8 @@ export default function FullscreenProjects({ artworks }: Props) {
                 </Reveal>
               )}
             </div>
+            {/* Mode édition local : réglage du cadrage */}
+            <DevFramingSlot id={artwork.id} src={artwork.src} position={artwork.position} />
           </div>
         </li>
       ))}

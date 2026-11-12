@@ -2,7 +2,7 @@ import Image from "next/image";
 import ArtworkGrid from "../components/ArtworkGrid";
 import BlurText from "../components/BlurText";
 import ComingSoon from "../components/ComingSoon";
-import { DevDropZoneSlot } from "../components/dev/DevSlots";
+import { DevDropZoneSlot, DevFramingSlot } from "../components/dev/DevSlots";
 import Reveal from "../components/motion/Reveal";
 import PageHeader from "../components/PageHeader";
 import { container, eyebrow, focusRing, titleMedium } from "../components/styles";
@@ -63,6 +63,7 @@ export default function AboutPage() {
                 fill
                 preload
                 sizes="(min-width: 768px) 40vw, 100vw"
+                style={{ objectPosition: portrait.position }}
                 className="object-cover"
               />
             ) : (
@@ -70,6 +71,10 @@ export default function AboutPage() {
                 folder={folders.about}
                 className="flex h-full flex-col justify-center border-none px-6"
               />
+            )}
+            {/* Mode édition local : réglage du cadrage du portrait */}
+            {portrait && (
+              <DevFramingSlot id={portrait.id} src={portrait.src} position={portrait.position} />
             )}
           </div>
         </Reveal>
@@ -133,7 +138,14 @@ export default function AboutPage() {
       {/* Autres photos du dossier public/artworks/about/ (grille simple) */}
       {others.length > 0 && (
         <section aria-label="Photos" className="mt-32">
-          <ArtworkGrid artworks={others} captions={false} />
+          <ArtworkGrid
+            artworks={others}
+            captions={false}
+            tools={(artwork) => (
+              // Mode édition local : remplacer ou supprimer (ces photos ne sont jamais recadrées)
+              <DevFramingSlot id={artwork.id} src={artwork.src} framing={false} />
+            )}
+          />
         </section>
       )}
 

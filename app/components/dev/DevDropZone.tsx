@@ -16,7 +16,7 @@ export type DropVariant = "card" | "banner" | "fullscreen" | "portrait";
 
 export type DevDropZoneProps = {
   /** Dossier de public/artworks/ où enregistrer les images. */
-  category: "concept-art" | "illustration" | "home" | "about";
+  category: "concept-art" | "illustration" | "home" | "about" | "hero";
   /** Nom affiché de la catégorie (texte sous le titre pour "All"). */
   categoryLabel?: string;
   /** Filtres existants (sous-dossiers), pour Concept Art et Illustration. */

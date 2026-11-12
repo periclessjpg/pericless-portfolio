@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# corbeille du mode édition local (images supprimées ou remplacées, jamais publiées)
+/.artworks-trash/

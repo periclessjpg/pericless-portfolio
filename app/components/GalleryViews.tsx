@@ -13,13 +13,20 @@ function toBanner(artwork: Artwork): BannerItem {
     title: artwork.title,
     kind: artwork.kind,
     image: { src: artwork.src, alt: artwork.alt, width: artwork.width, height: artwork.height },
+    position: artwork.position,
+    framingId: artwork.id,
   };
 }
 
-/** Image de carte : la première œuvre de la liste. */
-function cardImage(artworks: Artwork[]): SectionCard["image"] {
+/** Image de carte : la première œuvre de la liste (avec son cadrage). */
+function cardImage(artworks: Artwork[]): Pick<SectionCard, "image" | "position" | "framingId"> {
   const first = artworks[0];
-  return first && { src: first.src, alt: first.alt, width: first.width, height: first.height };
+  if (!first) return {};
+  return {
+    image: { src: first.src, alt: first.alt, width: first.width, height: first.height },
+    position: first.position,
+    framingId: first.id,
+  };
 }
 
 /**
@@ -53,12 +60,12 @@ export function GalleryOverview({ category }: { category: GalleryCategory }) {
   }
 
   const cards: SectionCard[] = [
-    { key: "all", href: `/${category}/all`, title: "All", image: cardImage(gallery.all) },
+    { key: "all", href: `/${category}/all`, title: "All", ...cardImage(gallery.all) },
     ...gallery.filters.map((filter) => ({
       key: filter.slug,
       href: `/${category}/${filter.slug}`,
       title: filter.label,
-      image: cardImage(filter.artworks),
+      ...cardImage(filter.artworks),
     })),
   ];
   return (

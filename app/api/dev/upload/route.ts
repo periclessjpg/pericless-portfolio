@@ -8,7 +8,7 @@
 // 4. vrai format d'image vérifié, 25 Mo maximum par fichier, 30 fichiers maximum ;
 // 5. nom de fichier généré par le serveur, jamais d'écrasement ;
 // 6. orientation corrigée, métadonnées (GPS compris) supprimées, 2400 px maximum, WebP qualité 85 ;
-// 7. aucune suppression, aucune commande, aucune opération Git.
+// 7. aucune commande, aucune opération Git.
 
 import {
   checkLocalRequest,
@@ -19,12 +19,6 @@ import {
   resolveUploadDirectory,
 } from "../../../lib/dev-guard";
 
-const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25 Mo
-const MAX_FILES = 30;
-const ALLOWED_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp", ".avif"];
-const MAX_SIDE = 2400;
-const WEBP_QUALITY = 85;
-
 export async function POST(request: Request) {
   // 1. Uniquement en développement.
   if (!isDevelopment()) return notFoundResponse();
@@ -32,8 +26,8 @@ export async function POST(request: Request) {
   // Modules chargés seulement en développement.
   const fs = await import("node:fs");
   const path = await import("node:path");
-  const { default: sharp } = await import("sharp");
-  const { baseName, slugify } = await import("../../../lib/artwork-names");
+  const { MAX_FILES, availableName, cleanName, nextPrefix, processImage, readInfosFile, writeInfosFile } =
+    await import("../../../lib/dev-images");
 
   // 2. Requête locale uniquement.
   const forbidden = checkLocalRequest(request);
@@ -54,7 +48,7 @@ export async function POST(request: Request) {
   if ("error" in destination) return errorResponse(destination.error);
   const dir = destination.dir;
 
-  // 4. Contrôle des fichiers.
+  // 4. Nombre de fichiers.
   const files = form.getAll("files").filter((value): value is File => value instanceof File);
   if (files.length === 0) return errorResponse("No file received");
   if (files.length > MAX_FILES) return errorResponse(`Maximum ${MAX_FILES} files per upload`);
@@ -64,73 +58,23 @@ export async function POST(request: Request) {
   const errors: { name: string; error: string }[] = [];
 
   for (const [index, file] of files.entries()) {
-    const extension = path.extname(file.name).toLowerCase();
-    if (!ALLOWED_EXTENSIONS.includes(extension)) {
-      errors.push({ name: file.name, error: "Format not accepted (jpg, jpeg, png, webp, avif)" });
-      continue;
-    }
-    if (file.size > MAX_FILE_SIZE) {
-      errors.push({ name: file.name, error: "File larger than 25 MB" });
-      continue;
-    }
-
-    const input = Buffer.from(await file.arrayBuffer());
-
-    // Vrai type de l'image (lu dans le contenu, pas dans l'extension).
-    let format: string | undefined;
-    let compression: string | undefined;
-    try {
-      const metadata = await sharp(input).metadata();
-      format = metadata.format;
-      compression = metadata.compression;
-    } catch {
-      errors.push({ name: file.name, error: "Not a valid image" });
-      continue;
-    }
-    const realImage =
-      format === "jpeg" || format === "png" || format === "webp" || (format === "heif" && compression === "av1");
-    if (!realImage) {
-      errors.push({ name: file.name, error: "File content is not a jpg, png, webp or avif image" });
-      continue;
-    }
-
-    // 6. Optimisation : orientation corrigée, 2400 px max, WebP 85.
-    // sharp ne recopie aucune métadonnée (EXIF, GPS…) dans le fichier final.
-    let output: Buffer;
-    try {
-      output = await sharp(input)
-        .rotate()
-        .resize({ width: MAX_SIDE, height: MAX_SIDE, fit: "inside", withoutEnlargement: true })
-        .webp({ quality: WEBP_QUALITY })
-        .toBuffer();
-    } catch {
-      errors.push({ name: file.name, error: "Could not process this image" });
+    // 4 et 6. Contrôle du fichier, puis optimisation.
+    const processed = await processImage(file);
+    if ("error" in processed) {
+      errors.push({ name: file.name, error: processed.error });
       continue;
     }
 
     // 5. Nom généré : numéro suivant + nom nettoyé, jamais d'écrasement.
-    const existing = fs.readdirSync(dir);
-    const nextNumber =
-      existing.reduce((max, name) => {
-        const match = /^(\d+)-/.exec(name);
-        return match ? Math.max(max, Number(match[1])) : max;
-      }, 0) + 1;
-    const prefix = String(nextNumber).padStart(2, "0");
-    const cleanName = slugify(baseName(file.name)) || "image";
-
-    let fileName = `${prefix}-${cleanName}.webp`;
-    for (let suffix = 2; existing.includes(fileName); suffix++) {
-      fileName = `${prefix}-${cleanName}-${suffix}.webp`;
-    }
+    const fileName = availableName(dir, nextPrefix(dir), cleanName(file.name));
     const target = path.resolve(dir, fileName);
     if (!isInsideArtworks(target)) {
       errors.push({ name: file.name, error: "Invalid destination" });
       continue;
     }
-
     try {
       // "wx" : échoue si le fichier existe déjà (aucun écrasement possible).
-      fs.writeFileSync(target, output, { flag: "wx" });
+      fs.writeFileSync(target, processed.output, { flag: "wx" });
     } catch {
       errors.push({ name: file.name, error: "Could not save the file" });
       continue;
@@ -139,21 +83,12 @@ export async function POST(request: Request) {
     // Titre facultatif : ajouté dans infos.json (le reste du fichier est conservé).
     const title = titles[index];
     if (title) {
-      const infosPath = path.resolve(dir, "infos.json");
-      let infos: Record<string, Record<string, unknown>> = {};
-      let readable = true;
-      if (fs.existsSync(infosPath)) {
-        try {
-          infos = JSON.parse(fs.readFileSync(infosPath, "utf8"));
-        } catch {
-          readable = false;
-        }
-      }
-      if (readable) {
-        infos[fileName] = { ...(infos[fileName] ?? {}), title };
-        fs.writeFileSync(infosPath, `${JSON.stringify(infos, null, 2)}\n`);
-      } else {
+      const read = readInfosFile(dir);
+      if ("error" in read) {
         errors.push({ name: file.name, error: "Saved, but infos.json is unreadable: title not saved" });
+      } else {
+        read.infos[fileName] = { ...(read.infos[fileName] ?? {}), title };
+        writeInfosFile(dir, read.infos);
       }
     }
 

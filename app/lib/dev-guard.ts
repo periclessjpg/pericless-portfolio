@@ -12,7 +12,7 @@ import { ARTWORKS_ROOT } from "./artworks";
 export const DEV_HEADER = "x-dev-upload";
 
 /** Dossiers où l'on peut déposer des images. */
-const UPLOAD_CATEGORIES = ["concept-art", "illustration", "home", "about"] as const;
+const UPLOAD_CATEGORIES = ["concept-art", "illustration", "home", "about", "hero"] as const;
 /** Dossiers qui ont des filtres (sous-dossiers). */
 export const FILTER_CATEGORIES = ["concept-art", "illustration"] as const;
 
@@ -112,6 +112,37 @@ export function resolveUploadDirectory(
 
   const dir = path.resolve(categoryDir, match.name);
   return isInsideArtworks(dir) && isSafeDirectory(dir) ? { dir } : { error: "Invalid folder" };
+}
+
+/**
+ * Vérifie l'identifiant d'une image existante (chemin relatif dans public/artworks,
+ * ex. "concept-art/character-design/01-dragon-knight.webp") et renvoie son dossier
+ * et son nom. Refuse "..", les chemins absolus, les liens symboliques, les fichiers
+ * masqués et tout ce qui n'est pas une image acceptée.
+ */
+export function resolveArtworkFile(id: string): { dir: string; fileName: string } | { error: string } {
+  if (!id || id.length > 300 || id.includes("\\") || id.includes("\0")) return { error: "Invalid image" };
+  const parts = id.split("/");
+  if (parts.some((part) => !part || part === "." || part === ".." || part.startsWith("_") || part.startsWith("."))) {
+    return { error: "Invalid image" };
+  }
+  if (!(UPLOAD_CATEGORIES as readonly string[]).includes(parts[0]) || parts.length > 3) {
+    return { error: "Invalid image" };
+  }
+  const extension = path.extname(id).toLowerCase();
+  if (![".jpg", ".jpeg", ".png", ".webp", ".avif"].includes(extension)) return { error: "Invalid image" };
+
+  const file = path.resolve(ARTWORKS_ROOT, ...parts);
+  if (!isInsideArtworks(file)) return { error: "Invalid image" };
+  try {
+    const stat = fs.lstatSync(file);
+    if (stat.isSymbolicLink() || !stat.isFile()) return { error: "Invalid image" };
+  } catch {
+    return { error: "Image not found" };
+  }
+  const dir = path.dirname(file);
+  if (!isSafeDirectory(dir)) return { error: "Invalid folder" };
+  return { dir, fileName: path.basename(file) };
 }
 
 /** Dossier d'une catégorie qui accepte les filtres (pour créer un nouveau filtre). */
