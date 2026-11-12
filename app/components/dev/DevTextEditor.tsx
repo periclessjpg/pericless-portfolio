@@ -80,7 +80,8 @@ export default function DevTextEditor({ texts }: DevTextEditorProps) {
           lineHeight: computed.lineHeight,
           textTransform: computed.textTransform as CSSProperties["textTransform"],
           textAlign: computed.textAlign as CSSProperties["textAlign"],
-          color: computed.color,
+          // Texte à couleur transparente (effet chrome) : saisie en blanc pour rester lisible.
+          color: /rgba\(.*,\s*0\)$|transparent/.test(computed.color) ? "#f5f5f5" : computed.color,
         },
       });
     };

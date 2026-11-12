@@ -27,6 +27,8 @@ export type SectionCard = {
 
 type Props = {
   cards: SectionCard[];
+  /** true : cartes centrées, à une taille qui tient entièrement dans la hauteur de la fenêtre. */
+  fitScreen?: boolean;
 };
 
 /**
@@ -34,12 +36,27 @@ type Props = {
  * format 4:5, coins arrondis, fine bordure, ombre ; elles arrivent comme des cartes
  * distribuées et se soulèvent au survol. Chaque carte mène à sa sous-page.
  */
-export default function SectionCards({ cards }: Props) {
+export default function SectionCards({ cards, fitScreen = false }: Props) {
   const t = getTexts();
   return (
-    <DealtList className="grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-8">
+    <DealtList
+      className={
+        fitScreen
+          ? // Cartes centrées ; sur ordinateur, largeur limitée pour que leur hauteur (format 4:5) tienne dans la fenêtre.
+            "flex w-full flex-wrap justify-center gap-6 md:gap-8"
+          : "grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-8"
+      }
+    >
       {cards.map((card, index) => (
-        <DealtItem key={card.key} index={index} className="relative">
+        <DealtItem
+          key={card.key}
+          index={index}
+          className={
+            fitScreen
+              ? "relative w-full md:w-[min(calc((100%_-_4rem)/3),calc((100svh_-_15rem)*0.8))]"
+              : "relative"
+          }
+        >
           <Link
             href={card.href}
             className="group relative block aspect-[4/5] overflow-hidden rounded-2xl border border-white/10 bg-neutral-900 shadow-[0_24px_48px_-20px_rgba(0,0,0,0.85)] transition-[translate,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-2 hover:border-white/25 hover:shadow-[0_40px_70px_-24px_rgba(0,0,0,0.95)] focus-visible:-translate-y-2 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-neutral-100 motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:focus-visible:translate-y-0"

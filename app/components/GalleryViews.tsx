@@ -38,8 +38,13 @@ function cardImage(
   card: string,
   artworks: Artwork[],
   choices: Record<string, string>,
+  /** Images déjà utilisées par d'autres cartes : évitées si aucun choix n'est enregistré. */
+  avoid: Set<string> = new Set(),
 ): Pick<SectionCard, "image" | "position" | "framingId" | "picker"> {
-  const chosen = artworks.find((artwork) => artwork.id === choices[card]) ?? artworks[0];
+  const chosen =
+    artworks.find((artwork) => artwork.id === choices[card]) ??
+    artworks.find((artwork) => !avoid.has(artwork.id)) ??
+    artworks[0];
   const picker = {
     category,
     card,
@@ -61,7 +66,14 @@ function cardImage(
  * - sinon : directement la liste de toutes les images ;
  * - dossier vide : "Coming soon".
  */
-export function GalleryOverview({ category }: { category: GalleryCategory }) {
+export function GalleryOverview({
+  category,
+  centered = false,
+}: {
+  category: GalleryCategory;
+  /** true : cartes à une taille qui tient dans la fenêtre (page Concept Art, cartes au milieu de l'écran). */
+  centered?: boolean;
+}) {
   const gallery = getGallery(category);
   const filters = gallery.filters.map((filter) => ({ slug: filter.slug, label: filter.label }));
 
@@ -94,24 +106,27 @@ export function GalleryOverview({ category }: { category: GalleryCategory }) {
 
   // Image de chaque carte : choix enregistré dans public/artworks/<catégorie>/cards.json.
   const choices = getCardChoices(category);
+  const filterCards: SectionCard[] = gallery.filters.map((filter) => ({
+    key: filter.slug,
+    href: `/${category}/${filter.slug}`,
+    title: filter.label,
+    ...cardImage(category, filter.slug, filter.artworks, choices),
+  }));
+  // Carte "All" : par défaut, une image qui n'est pas déjà sur une autre carte.
+  const usedByFilters = new Set(filterCards.map((card) => card.framingId).filter((id): id is string => !!id));
   const cards: SectionCard[] = [
     {
       key: "all",
       href: `/${category}/all`,
       title: getTexts()["common.all"],
       titleKey: "common.all",
-      ...cardImage(category, "all", gallery.all, choices),
+      ...cardImage(category, "all", gallery.all, choices, usedByFilters),
     },
-    ...gallery.filters.map((filter) => ({
-      key: filter.slug,
-      href: `/${category}/${filter.slug}`,
-      title: filter.label,
-      ...cardImage(category, filter.slug, filter.artworks, choices),
-    })),
+    ...filterCards,
   ];
   return (
     <>
-      <SectionCards cards={cards} />
+      <SectionCards cards={cards} fitScreen={centered} />
       {/* Mode édition local (npm run dev uniquement) */}
       <DevDropZoneSlot
         category={category}

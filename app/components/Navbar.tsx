@@ -132,8 +132,13 @@ export default function Navbar() {
           {/* En haut à gauche : métier puis nom, sur deux lignes (ramène à l'accueil) */}
           <Link href="/" className={`${labelStyle} flex flex-col gap-1 text-neutral-100 ${focusRing}`}>
             <span {...editable("nav.title")}>{shown(t["nav.title"])}</span>
-            {/* Sur l'accueil, le nom est un peu plus gros */}
-            <span className={pathname === "/" ? "text-sm sm:text-lg" : undefined} {...editable("nav.name")}>
+            {/* Nom en grand ; encore plus grand sur l'accueil */}
+            <span
+              className={`block leading-tight ${
+                pathname === "/" ? "text-xl sm:text-3xl md:text-4xl" : "text-lg sm:text-2xl md:text-3xl"
+              }`}
+              {...editable("nav.name")}
+            >
               {shown(t["nav.name"])}
             </span>
           </Link>
