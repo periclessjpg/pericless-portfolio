@@ -14,7 +14,7 @@ const README = (label: string, category: string) => `FILTRE "${label.toUpperCase
 Glisse ici les images de ce filtre. Elles apparaissent dans la carte "${label}" de la page ${category === "illustration" ? "Illustration" : "Concept Art"}, et aussi dans "All".
 
 FORMATS ACCEPTÉS : .jpg .jpeg .png .webp .avif
-TAILLE CONSEILLÉE : côté le plus long environ 2400 px, idéalement moins de 1,5 Mo (WebP ou JPG).
+TAILLE CONSEILLÉE : côté le plus long jusqu'à 3840 px (4K), WebP ou JPG en haute qualité (90 à 95), idéalement moins de 3 Mo.
 
 - Le numéro au début du nom de fichier fixe l'ordre et n'est pas affiché : 01-dragon-knight.webp
 - Pour changer l'ordre des filtres, renomme ce dossier avec un numéro devant (ex. 01-${label.toLowerCase().replace(/\s+/g, "-")}).

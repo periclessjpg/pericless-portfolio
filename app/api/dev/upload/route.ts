@@ -7,7 +7,7 @@
 // 3. dossier de destination pris dans une liste blanche, sans "..", sans lien symbolique ;
 // 4. vrai format d'image vérifié, 25 Mo maximum par fichier, 30 fichiers maximum ;
 // 5. nom de fichier généré par le serveur, jamais d'écrasement ;
-// 6. orientation corrigée, métadonnées (GPS compris) supprimées, 2400 px maximum, WebP qualité 85 ;
+// 6. orientation corrigée, métadonnées (GPS compris) supprimées, 3840 px maximum, WebP qualité 95, profil de couleur conservé ;
 // 7. aucune commande, aucune opération Git.
 
 import {

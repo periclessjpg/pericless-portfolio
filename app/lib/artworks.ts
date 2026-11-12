@@ -65,6 +65,8 @@ export type Gallery = {
   all: Artwork[];
   /** Filtres créés à partir des sous-dossiers (sans "All"). */
   filters: GalleryFilter[];
+  /** Images du seul sous-dossier "all" (pour le réglage de l'ordre en mode édition local). */
+  allFolder: Artwork[];
 };
 
 export type GalleryCategory = "concept-art" | "illustration";
@@ -187,10 +189,8 @@ export function getGallery(category: GalleryCategory): Gallery {
   const label = CATEGORY_LABELS[category];
 
   // Images "sans filtre" : à la racine de la catégorie et dans le sous-dossier "all".
-  const unfiltered = [
-    ...readImages([category], label, label),
-    ...readImages([category, "all"], label, label),
-  ];
+  const allFolder = readImages([category, "all"], label, label);
+  const unfiltered = [...readImages([category], label, label), ...allFolder];
 
   const filters: GalleryFilter[] = readDir(path.join(ROOT, category))
     .filter((entry) => entry.isDirectory() && !isHidden(entry.name))
@@ -214,6 +214,7 @@ export function getGallery(category: GalleryCategory): Gallery {
     // "All" : les images de chaque filtre (dans l'ordre des filtres), puis celles sans filtre.
     all: [...filters.flatMap((filter) => filter.artworks), ...unfiltered],
     filters,
+    allFolder,
   };
 }
 
@@ -246,18 +247,23 @@ export function getHomeArtworks(): Artwork[] {
 
 /**
  * Portrait et photos de la page About (dossier about).
- * Le portrait est le fichier nommé "portrait.*", sinon la première image.
+ * Le portrait est le fichier nommé "portrait.*" (ou "01-portrait.*"), sinon la première image.
  * `portraitAlt` : texte alternatif du portrait, sauf s'il est donné dans infos.json.
  */
-export function getAboutArtworks(portraitAlt: string): { portrait: Artwork | null; others: Artwork[] } {
+export function getAboutArtworks(portraitAlt: string): {
+  portrait: Artwork | null;
+  others: Artwork[];
+  /** Toutes les images du dossier, dans l'ordre (pour le réglage de l'ordre en mode édition local). */
+  all: Artwork[];
+} {
   const images = readImages(["about"], "About", "About");
   const fileName = (image: Artwork) => image.id.split("/").pop() ?? "";
-  const index = images.findIndex((image) => /^portrait\./i.test(fileName(image)));
+  const index = images.findIndex((image) => /^(\d+[\s._-]*)?portrait\./i.test(fileName(image)));
   const portraitIndex = index === -1 ? 0 : index;
   const found = images[portraitIndex];
   const customAlt = found && readInfos(path.join(ROOT, "about"))[fileName(found)]?.alt;
   const portrait = found ? { ...found, alt: customAlt?.trim() || portraitAlt } : null;
-  return { portrait, others: images.filter((_, i) => i !== portraitIndex) };
+  return { portrait, others: images.filter((_, i) => i !== portraitIndex), all: images };
 }
 
 export const folders = {

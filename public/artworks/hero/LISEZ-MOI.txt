@@ -7,7 +7,7 @@ RÉGLAGES (taille, transparence, zoom, flou, couleurs, voile, texte, animation, 
 - en local (npm run dev) : bouton "Customize hero" en bas à droite de l'accueil ;
 - à la main : fichier settings.json de ce dossier (expliqué dans docs/AJOUTER_MES_IMAGES.md).
 
-CONSEILLÉ : image horizontale, environ 2400 px de large, moins de 1,5 Mo (WebP ou JPG).
+CONSEILLÉ : image horizontale, jusqu'à 3840 px de large (4K), WebP ou JPG en haute qualité, idéalement moins de 3 Mo.
 Avec un sujet plutôt à droite ou en haut, le texte (en bas à gauche) reste bien lisible.
 
 CADRAGE : en mode édition local (npm run dev), clique sur "Adjust framing" sur l'image,

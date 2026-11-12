@@ -7,6 +7,7 @@
 import type { DevDropZoneProps } from "./DevDropZone";
 import type { DevFramingProps } from "./DevFraming";
 import type { DevHeroPanelProps } from "./DevHeroPanel";
+import type { DevReorderProps } from "./DevReorder";
 
 /** Tuile "Drop images here" (développement uniquement). */
 export async function DevDropZoneSlot(props: DevDropZoneProps) {
@@ -31,6 +32,15 @@ export async function DevHeroPanelSlot(props: DevHeroPanelProps) {
   if (process.env.NODE_ENV === "development") {
     const { default: DevHeroPanel } = await import("./DevHeroPanel");
     return <DevHeroPanel {...props} />;
+  }
+  return null;
+}
+
+/** Bouton "Reorder" et panneau de vignettes à glisser (développement uniquement). */
+export async function DevReorderSlot(props: DevReorderProps) {
+  if (process.env.NODE_ENV === "development") {
+    const { default: DevReorder } = await import("./DevReorder");
+    return <DevReorder {...props} />;
   }
   return null;
 }

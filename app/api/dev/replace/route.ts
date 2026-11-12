@@ -6,7 +6,7 @@
 //
 // Mêmes protections que l'envoi : développement uniquement, requêtes locales uniquement,
 // image d'origine vérifiée dans public/artworks, nouvelle image contrôlée et optimisée
-// (vrai format, 25 Mo max, orientation, métadonnées supprimées, 2400 px, WebP 85).
+// (vrai format, 25 Mo max, orientation, métadonnées supprimées, 3840 px, WebP 95).
 
 import {
   checkLocalRequest,

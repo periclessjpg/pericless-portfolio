@@ -51,7 +51,8 @@ public/artworks/
 Ce que fait l'envoi automatiquement :
 - il **redresse** les photos prises de travers (orientation de l'appareil) ;
 - il **supprime les informations cachées** de la photo (appareil, date, **position GPS**) ;
-- il réduit l'image à **2400 px** sur le côté le plus long et l'enregistre en **WebP** (qualité 85), un format léger ;
+- il garde ta **taille d'origine jusqu'à 3840 px (4K)** sur le côté le plus long (une image plus grande est réduite à 3840 px, une plus petite n'est jamais agrandie) et l'enregistre en **WebP qualité 95** : la différence avec l'original est invisible à l'œil ;
+- il **conserve le profil de couleur** de ton fichier (couleurs fidèles à ton logiciel de dessin) ;
 - il **nomme le fichier** lui-même (ex. `03-dragon-knight.webp`, à la suite des précédents) et **n'écrase jamais** une image existante ;
 - le titre éventuel est enregistré dans un fichier `infos.json` du même dossier.
 
@@ -80,7 +81,7 @@ Ce que fait l'envoi automatiquement :
 
 **Masquer une image** sans la supprimer : ajoute `_` devant son nom (`_brouillon.jpg`). Elle disparaît des pages. Attention : si tu l'envoies sur GitHub, elle reste accessible à qui connaît son adresse exacte. Pour une image vraiment privée, ne la mets pas dans le projet.
 
-**Changer l'ordre d'affichage** : renomme les fichiers (le numéro devant). Pour inverser l'ordre partout (le plus grand numéro en premier), change `SORT_ORDER` en `"desc"` tout en haut de `app/lib/artworks.ts`.
+**Changer l'ordre d'affichage** : utilise « Reorder » en local (voir plus haut), ou renomme les fichiers à la main (le numéro devant). Pour inverser l'ordre partout (le plus grand numéro en premier), change `SORT_ORDER` en `"desc"` tout en haut de `app/lib/artworks.ts`.
 
 **Option : `infos.json`** (jamais obligatoire). Dans un dossier, ce fichier permet de changer le titre, l'année, la description ou le texte alternatif d'une image, par nom de fichier :
 
@@ -95,7 +96,23 @@ Ce que fait l'envoi automatiquement :
 }
 ```
 
-**About** : nomme ton portrait `portrait.jpg` (ou `.webp`, `.png`…). Sans fichier « portrait », la première image sert de portrait. Les autres images s'affichent dans une grille en dessous.
+**About** : nomme ton portrait `portrait.jpg` (ou `.webp`, `.png`…, et aussi `01-portrait.jpg`). Sans fichier « portrait », la première image sert de portrait. Les autres images s'affichent dans une grille en dessous.
+
+---
+
+## Changer l'ordre en glissant (local uniquement)
+
+Avec `npm run dev`, sur localhost:3000 (outils affichés) :
+
+- **Ordre des images** : clique sur **« Reorder images »** (accueil, page d'un filtre, Illustration, About). Un panneau affiche les images en vignettes : glisse-les avec la poignée **≡** (souris ou doigt), ou utilise les flèches **↑ ↓** au clavier, puis **« Save »**.
+- **Ordre des cartes** (Character Design, Environments…) : clique sur **« Reorder cards »** sur la page Concept Art ou Illustration. « All » reste toujours en premier.
+
+Ce que fait « Save » : il **renumérote les noms** dans le nouvel ordre (`01-…`, `02-…`). Les fichiers (ou les dossiers, pour les cartes) sont seulement **renommés** : rien n'est effacé ni écrasé, les titres et cadrages de `infos.json` suivent les images, et les **adresses des pages ne changent pas**. « Undo changes » annule tes déplacements avant d'enregistrer, « Cancel » (ou Échap) ferme sans rien changer.
+
+À savoir :
+- Sur la page **« All »**, les images apparaissent d'abord dans l'ordre des cartes, puis celles du dossier `all/`. Le panneau y règle l'ordre des images du dossier `all/` ; l'ordre des autres se règle sur la page de leur filtre.
+- Sur **About**, la première image sert de portrait (sauf si un fichier s'appelle `portrait`, ou `01-portrait`).
+- Si un fichier est ouvert dans un autre logiciel (Photoshop…), le renommage peut échouer : ferme-le et réessaie. Rien n'est modifié en cas d'échec.
 
 ---
 
@@ -185,8 +202,9 @@ Le premier nombre est l'horizontal (0 % = gauche, 100 % = droite), le second le 
 
 ## Tailles recommandées
 
-- **Côté le plus long : environ 2400 px.**
-- **Format : WebP ou JPG**, idéalement **moins de 1,5 Mo** par image.
+- **Côté le plus long : jusqu'à 3840 px (4K).** Au-delà, l'envoi en local réduit l'image à 3840 px.
+- **Format : WebP ou JPG en haute qualité (90 à 95)**, idéalement **moins de 3 Mo** par image.
+- **À l'affichage**, le site sert tes images en **qualité 90** (réglage `images.qualities` dans `next.config.ts`) et en plusieurs tailles selon l'écran du visiteur.
 - **Accueil (`home/`)** : images horizontales, sujet bien centré (elles remplissent tout l'écran, recadrées).
 - **Fond du haut de l'accueil (`hero/`)** : une image horizontale ; le texte est en bas à gauche, un sujet plutôt à droite ou en haut reste bien visible. L'image est assombrie automatiquement.
 - **Listes Concept Art / Illustration** : les bandes sont panoramiques (recadrées au centre) ; la page Projects montre les images entières.

@@ -2,7 +2,7 @@ import Link from "next/link";
 import BlurText from "./components/BlurText";
 import Reveal from "./components/motion/Reveal";
 import ComingSoon from "./components/ComingSoon";
-import { DevDropZoneSlot, DevFramingSlot, DevHeroPanelSlot } from "./components/dev/DevSlots";
+import { DevDropZoneSlot, DevFramingSlot, DevHeroPanelSlot, DevReorderSlot } from "./components/dev/DevSlots";
 import FullscreenProjects from "./components/FullscreenProjects";
 import HeroView from "./components/HeroView";
 import { container, eyebrow, focusRing, titleMedium } from "./components/styles";
@@ -78,6 +78,16 @@ export default function Home() {
         {/* Mode édition local (npm run dev uniquement) */}
         <div className={container}>
           <DevDropZoneSlot category="home" variant="fullscreen" />
+          <DevReorderSlot
+            type="images"
+            category="home"
+            title="Selected Works"
+            items={featured.map((artwork) => ({
+              key: artwork.id.split("/").pop() ?? artwork.id,
+              label: artwork.title,
+              src: artwork.src,
+            }))}
+          />
         </div>
       </section>
 

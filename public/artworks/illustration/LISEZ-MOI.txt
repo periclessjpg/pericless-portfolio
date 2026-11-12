@@ -3,7 +3,7 @@ Tant qu'il n'y a que le sous-dossier all/, la page Illustration affiche directem
 Si tu crées un sous-dossier (ex. 01-book-covers), des cartes All + Book Covers apparaissent, comme sur la page Concept Art.
 
 FORMATS ACCEPTÉS : .jpg .jpeg .png .webp .avif
-TAILLE CONSEILLÉE : côté le plus long environ 2400 px, idéalement moins de 1,5 Mo (WebP ou JPG).
+TAILLE CONSEILLÉE : côté le plus long jusqu'à 3840 px (4K), WebP ou JPG en haute qualité (90 à 95), idéalement moins de 3 Mo.
 
 NOMMER LES FICHIERS
 - Le numéro au début fixe l'ordre et n'est pas affiché : 01-dragon-knight.webp, 02-forest-temple.jpg

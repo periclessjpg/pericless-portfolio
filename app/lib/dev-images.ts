@@ -12,8 +12,10 @@ import { ARTWORKS_ROOT } from "./artworks";
 export const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25 Mo
 export const MAX_FILES = 30;
 const ALLOWED_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp", ".avif"];
-const MAX_SIDE = 2400;
-const WEBP_QUALITY = 85;
+// Haute qualité : taille d'origine conservée jusqu'à 3840 px (4K), WebP qualité 95
+// (différence invisible à l'œil avec l'original).
+const MAX_SIDE = 3840;
+const WEBP_QUALITY = 95;
 
 /** Corbeille : à la racine du projet, hors du site, ignorée par Git (.gitignore). */
 export const TRASH_ROOT = path.join(process.cwd(), ".artworks-trash");
@@ -21,8 +23,9 @@ export const TRASH_ROOT = path.join(process.cwd(), ".artworks-trash");
 /**
  * Vérifie et optimise une image envoyée :
  * extension acceptée, 25 Mo maximum, vrai format lu dans le contenu,
- * orientation corrigée, 2400 px maximum, WebP qualité 85.
- * sharp ne recopie aucune métadonnée (EXIF, GPS…) dans le fichier final.
+ * orientation corrigée, 3840 px maximum (jamais agrandie), WebP qualité 95.
+ * Seul le profil de couleur (ICC) est conservé, pour garder des couleurs exactes ;
+ * aucune autre métadonnée (EXIF, GPS…) n'est recopiée dans le fichier final.
  */
 export async function processImage(file: File): Promise<{ output: Buffer } | { error: string }> {
   const extension = path.extname(file.name).toLowerCase();
@@ -51,7 +54,10 @@ export async function processImage(file: File): Promise<{ output: Buffer } | { e
     const output = await sharp(input)
       .rotate()
       .resize({ width: MAX_SIDE, height: MAX_SIDE, fit: "inside", withoutEnlargement: true })
-      .webp({ quality: WEBP_QUALITY })
+      // Profil de couleur d'origine conservé (couleurs fidèles), sans EXIF ni GPS.
+      .keepIccProfile()
+      // smartSubsample : meilleure précision des couleurs fines ; effort 6 : compression plus soignée.
+      .webp({ quality: WEBP_QUALITY, smartSubsample: true, effort: 6 })
       .toBuffer();
     return { output };
   } catch {

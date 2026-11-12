@@ -2,7 +2,7 @@ import Image from "next/image";
 import ArtworkGrid from "../components/ArtworkGrid";
 import BlurText from "../components/BlurText";
 import ComingSoon from "../components/ComingSoon";
-import { DevDropZoneSlot, DevFramingSlot } from "../components/dev/DevSlots";
+import { DevDropZoneSlot, DevFramingSlot, DevReorderSlot } from "../components/dev/DevSlots";
 import Reveal from "../components/motion/Reveal";
 import PageHeader from "../components/PageHeader";
 import { container, eyebrow, focusRing, titleMedium } from "../components/styles";
@@ -46,7 +46,7 @@ const experience = [
 
 export default function AboutPage() {
   // Portrait et photos : dossier public/artworks/about/ (le portrait se nomme portrait.jpg).
-  const { portrait, others } = getAboutArtworks(`Portrait of ${site.name}`);
+  const { portrait, others, all: aboutImages } = getAboutArtworks(`Portrait of ${site.name}`);
 
   return (
     <div className={`${container} pt-32 md:pt-44`}>
@@ -151,6 +151,17 @@ export default function AboutPage() {
 
       {/* Mode édition local (npm run dev uniquement) : la première image sert de portrait */}
       <DevDropZoneSlot category="about" variant="portrait" />
+      <DevReorderSlot
+        type="images"
+        category="about"
+        title="About"
+        items={aboutImages.map((artwork) => ({
+          key: artwork.id.split("/").pop() ?? artwork.id,
+          label: artwork.title,
+          src: artwork.src,
+        }))}
+        note="The first image is the portrait, unless a file is named “portrait”."
+      />
     </div>
   );
 }

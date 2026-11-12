@@ -1,6 +1,6 @@
 import { getGallery, type Artwork, type GalleryCategory } from "../lib/artworks";
 import BackButton from "./BackButton";
-import { DevDropZoneSlot } from "./dev/DevSlots";
+import { DevDropZoneSlot, DevReorderSlot } from "./dev/DevSlots";
 import ComingSoon from "./ComingSoon";
 import PageHeader from "./PageHeader";
 import ProjectBannerList, { type BannerItem } from "./ProjectBannerList";
@@ -16,6 +16,15 @@ function toBanner(artwork: Artwork): BannerItem {
     position: artwork.position,
     framingId: artwork.id,
   };
+}
+
+/** Éléments du panneau "Reorder" (mode édition local) : nom du fichier, titre, vignette. */
+function toReorderItems(artworks: Artwork[]) {
+  return artworks.map((artwork) => ({
+    key: artwork.id.split("/").pop() ?? artwork.id,
+    label: artwork.title,
+    src: artwork.src,
+  }));
 }
 
 /** Image de carte : la première œuvre de la liste (avec son cadrage). */
@@ -55,6 +64,13 @@ export function GalleryOverview({ category }: { category: GalleryCategory }) {
           defaultFilter="all"
           variant="banner"
         />
+        <DevReorderSlot
+          type="images"
+          category={category}
+          filter="all"
+          title={gallery.label}
+          items={toReorderItems(gallery.allFolder)}
+        />
       </>
     );
   }
@@ -78,6 +94,16 @@ export function GalleryOverview({ category }: { category: GalleryCategory }) {
         filters={filters}
         defaultFilter="all"
         variant="card"
+      />
+      <DevReorderSlot
+        type="filters"
+        category={category}
+        title={`${gallery.label} cards`}
+        items={gallery.filters.map((filter) => ({
+          key: filter.slug,
+          label: filter.label,
+          src: filter.artworks[0]?.src,
+        }))}
       />
     </>
   );
@@ -126,6 +152,18 @@ export function GallerySection({ category, slug }: { category: GalleryCategory; 
         filters={gallery.filters.map((f) => ({ slug: f.slug, label: f.label }))}
         defaultFilter={filter ? filter.slug : "all"}
         variant="banner"
+      />
+      <DevReorderSlot
+        type="images"
+        category={category}
+        filter={filter ? filter.slug : "all"}
+        title={title}
+        items={toReorderItems(filter ? filter.artworks : gallery.allFolder)}
+        note={
+          filter
+            ? undefined
+            : "Here you reorder the images of the “all” folder. Images of each filter are reordered on their own page; “All” shows them in card order."
+        }
       />
     </>
   );
