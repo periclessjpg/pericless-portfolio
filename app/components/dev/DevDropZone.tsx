@@ -44,13 +44,13 @@ const MAX_FILES = 30;
 const shapes: Record<DropVariant, string> = {
   card: "aspect-[4/5]",
   portrait: "aspect-[4/5]",
-  banner: "aspect-video md:aspect-[21/9]",
+  banner: "aspect-[4/3]",
   fullscreen: "h-[85svh] md:h-svh",
 };
 const layouts: Record<DropVariant, string> = {
   card: "grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-8",
   portrait: "grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 md:gap-8",
-  banner: "flex flex-col gap-2",
+  banner: "grid grid-cols-1 gap-2 md:grid-cols-2",
   fullscreen: "flex flex-col gap-2",
 };
 

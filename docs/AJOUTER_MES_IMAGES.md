@@ -96,7 +96,25 @@ Ce que fait l'envoi automatiquement :
 }
 ```
 
+**Rendre une image cliquable** (images de l'accueil) : ajoute `"link"` avec l'adresse d'une page du site. Par exemple, dans `public/artworks/home/infos.json` :
+
+```json
+{
+  "01-sicile.webp": { "title": "environment", "link": "/concept-art/environments" },
+  "02-bionic-1.webp": { "title": "chara design", "link": "/concept-art/character-design" },
+  "03-reproduction.webp": { "title": "illustration", "link": "/illustration" }
+}
+```
+
+Seules les adresses internes au site sont acceptées (elles commencent par `/`, en minuscules : `/concept-art/all`, `/about`, `/contact`…). Une petite flèche « → » apparaît alors à côté du titre. Le lien suit l'image si tu la réordonnes.
+
 **About** : nomme ton portrait `portrait.jpg` (ou `.webp`, `.png`…, et aussi `01-portrait.jpg`). Sans fichier « portrait », la première image sert de portrait. Les autres images s'affichent dans une grille en dessous.
+
+---
+
+## Voir les images en grand
+
+Sur les pages Environments, Character Design, All, Illustration, Projects et les photos d'About, **un clic sur une image l'ouvre en grand** dans une visionneuse plein écran : flèches ← → (à l'écran ou au clavier) pour passer à la suivante, glissement du doigt sur mobile, **Échap** ou **×** pour fermer. L'image entière est affichée (jamais recadrée), avec son titre en légende. Rien à régler : ça fonctionne aussi sur le site publié.
 
 ---
 
@@ -253,7 +271,7 @@ Le premier nombre est l'horizontal (0 % = gauche, 100 % = droite), le second le 
 - **À l'affichage**, le site sert tes images en **qualité 90** (réglage `images.qualities` dans `next.config.ts`) et en plusieurs tailles selon l'écran du visiteur.
 - **Accueil (`home/`)** : images horizontales, sujet bien centré (elles remplissent tout l'écran, recadrées).
 - **Fond du haut de l'accueil (`hero/`)** : une image horizontale ; le texte est en bas à gauche, un sujet plutôt à droite ou en haut reste bien visible. L'image est assombrie automatiquement.
-- **Listes Concept Art / Illustration** : les bandes sont panoramiques (recadrées au centre) ; la page Projects montre les images entières.
+- **Listes Concept Art / Illustration** : deux images par ligne (une sur mobile), au format 4:3, recadrées selon leur cadrage ; la page Projects montre les images entières.
 - Avec la méthode 1, tu n'as pas à t'en occuper : l'envoi réduit et convertit l'image tout seul.
 
 ---

@@ -2,8 +2,9 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 import type { Artwork } from "../lib/artworks";
 import BlurText from "./BlurText";
+import { LightboxProvider, LightboxTrigger } from "./Lightbox";
 import { StaggerItem, StaggerList } from "./motion/Stagger";
-import { titleMedium } from "./styles";
+import { focusRing, titleMedium } from "./styles";
 
 type Props = {
   artworks: Artwork[];
@@ -21,36 +22,54 @@ type Props = {
  */
 export default function ArtworkGrid({ artworks, preloadFirst = false, captions = true, tools }: Props) {
   return (
-    <StaggerList className="columns-1 gap-8 sm:columns-2 lg:columns-3">
-      {artworks.map((artwork, index) => (
-        <StaggerItem key={artwork.id} className="mb-12 break-inside-avoid">
-          <figure>
-            <div className="relative">
-              <Image
-                src={artwork.src}
-                alt={artwork.alt}
-                width={artwork.width}
-                height={artwork.height}
-                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                preload={preloadFirst && index === 0}
-                className="h-auto w-full bg-neutral-900"
-              />
-              {tools?.(artwork)}
-            </div>
-            {captions && (
-              <figcaption className="mt-4">
-                <BlurText as="h3" className={`${titleMedium} text-neutral-100`}>
-                  {artwork.title}
-                </BlurText>
-                <p className="mt-1 text-xs uppercase tracking-[0.2em] text-neutral-500">
-                  {artwork.kind}
-                  {artwork.year ? ` · ${artwork.year}` : ""}
-                </p>
-              </figcaption>
-            )}
-          </figure>
-        </StaggerItem>
-      ))}
-    </StaggerList>
+    // Visionneuse plein écran : un clic sur une image l'ouvre en grand.
+    <LightboxProvider
+      items={artworks.map((artwork) => ({
+        src: artwork.src,
+        alt: artwork.alt,
+        width: artwork.width,
+        height: artwork.height,
+        title: artwork.title,
+        kind: artwork.kind,
+      }))}
+    >
+      <StaggerList className="columns-1 gap-8 sm:columns-2 lg:columns-3">
+        {artworks.map((artwork, index) => (
+          <StaggerItem key={artwork.id} className="mb-12 break-inside-avoid">
+            <figure>
+              <div className="relative">
+                <LightboxTrigger
+                  index={index}
+                  href={artwork.src}
+                  className={`group block cursor-zoom-in overflow-hidden ${focusRing}`}
+                >
+                  <Image
+                    src={artwork.src}
+                    alt={artwork.alt}
+                    width={artwork.width}
+                    height={artwork.height}
+                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                    preload={preloadFirst && index === 0}
+                    className="h-auto w-full bg-neutral-900 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+                  />
+                </LightboxTrigger>
+                {tools?.(artwork)}
+              </div>
+              {captions && (
+                <figcaption className="mt-4">
+                  <BlurText as="h3" className={`${titleMedium} text-neutral-100`}>
+                    {artwork.title}
+                  </BlurText>
+                  <p className="mt-1 text-xs uppercase tracking-[0.2em] text-neutral-500">
+                    {artwork.kind}
+                    {artwork.year ? ` · ${artwork.year}` : ""}
+                  </p>
+                </figcaption>
+              )}
+            </figure>
+          </StaggerItem>
+        ))}
+      </StaggerList>
+    </LightboxProvider>
   );
 }

@@ -11,8 +11,8 @@
     "family": "OVR Demorny Trial",
     "file": "/fonts/ovr-demorny-trial-700-bold.otf",
     "weight": 700,
-    "scale": 165,
-    "tracking": 0.08,
+    "scale": 200,
+    "tracking": 0.05,
     "uppercase": true
   },
   "ui": {

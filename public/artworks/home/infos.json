@@ -1,12 +1,15 @@
 {
   "01-sicile.webp": {
-    "title": "environment"
+    "title": "environment",
+    "link": "/concept-art/environments"
   },
   "02-bionic-1.webp": {
     "title": "chara design",
-    "position": "66% 16%"
+    "position": "66% 16%",
+    "link": "/concept-art/character-design"
   },
   "03-reproduction.webp": {
-    "title": "illustration"
+    "title": "illustration",
+    "link": "/illustration"
   }
 }

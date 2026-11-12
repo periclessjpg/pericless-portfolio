@@ -45,6 +45,8 @@ export type Artwork = {
   category: string;
   /** Cadrage quand l'image est recadrée (CSS object-position, ex. "50% 20%"). */
   position?: string;
+  /** Page vers laquelle mène un clic sur l'image (champ "link" de infos.json, adresse interne). */
+  link?: string;
 };
 
 export type GalleryFilter = {
@@ -86,8 +88,13 @@ const collator = new Intl.Collator("en", { numeric: true, sensitivity: "base" })
 
 type Infos = Record<
   string,
-  { title?: string; year?: number; description?: string; alt?: string; position?: string }
+  { title?: string; year?: number; description?: string; alt?: string; position?: string; link?: string }
 >;
+
+/** Accepte seulement une adresse interne au site (ex. "/concept-art/environments"). */
+function readLink(value: unknown): string | undefined {
+  return typeof value === "string" && /^\/[a-z0-9/-]*$/.test(value.trim()) ? value.trim() : undefined;
+}
 
 /** Accepte seulement un cadrage du type "50% 20%" (deux pourcentages entre 0 et 100). */
 function readPosition(value: unknown): string | undefined {
@@ -175,6 +182,7 @@ function readImages(parts: string[], kind: string, category: string): Artwork[] 
       year: typeof info.year === "number" ? info.year : undefined,
       description: info.description?.trim() || undefined,
       position: readPosition(info.position),
+      link: readLink(info.link),
       kind,
       category,
     });
