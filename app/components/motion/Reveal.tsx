@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import type { ReactNode } from "react";
-import { duration, easeOut, offsetY } from "./easing";
+import { duration as defaultDuration, easeOut, offsetY } from "./easing";
 
 type Props = {
   children: ReactNode;
@@ -11,13 +11,21 @@ type Props = {
   className?: string;
   /** Distance du glissement en pixels (0 = simple fondu). */
   distance?: number;
+  /** Durée de l'apparition, en secondes. */
+  duration?: number;
 };
 
 /**
  * Fait apparaître son contenu en fondu, avec un léger glissement vers le haut,
  * quand il entre dans l'écran. L'animation ne se joue qu'une seule fois.
  */
-export default function Reveal({ children, delay = 0, className, distance = offsetY }: Props) {
+export default function Reveal({
+  children,
+  delay = 0,
+  className,
+  distance = offsetY,
+  duration = defaultDuration,
+}: Props) {
   return (
     <motion.div
       className={className}

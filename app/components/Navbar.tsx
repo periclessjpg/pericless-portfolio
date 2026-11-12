@@ -5,6 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, useSyncExternalStore, type KeyboardEvent } from "react";
 import { editable, shown, type TextKey } from "../lib/texts-defaults";
+import BlurText from "./BlurText";
+import Reveal from "./motion/Reveal";
 import { useTexts } from "./TextsProvider";
 import { easeOut } from "./motion/easing";
 import { container, focusRing, label } from "./styles";
@@ -131,16 +133,29 @@ export default function Navbar() {
         <div className={`${container} flex items-start justify-between gap-6 py-5 md:py-6`}>
           {/* En haut à gauche : métier puis nom, sur deux lignes (ramène à l'accueil) */}
           <Link href="/" className={`${labelStyle} flex flex-col gap-1 text-neutral-100 ${focusRing}`}>
-            <span {...editable("nav.title")}>{shown(t["nav.title"])}</span>
+            {/* À l'arrivée sur le site : métier puis nom apparaissent l'un après l'autre
+                (fondu mot par mot avec léger grain, petit glissement vers le haut). Une seule fois :
+                la barre du haut n'est pas rechargée quand on change de page. */}
+            <Reveal delay={0.8} distance={10} duration={1.8}>
+              <BlurText as="span" delay={0.8} duration={1.8} stagger={0.25} textKey="nav.title" className="block">
+                {t["nav.title"]}
+              </BlurText>
+            </Reveal>
             {/* Nom en grand ; encore plus grand sur l'accueil */}
-            <span
-              className={`block leading-tight ${
-                pathname === "/" ? "text-xl sm:text-3xl md:text-4xl" : "text-lg sm:text-2xl md:text-3xl"
-              }`}
-              {...editable("nav.name")}
-            >
-              {shown(t["nav.name"])}
-            </span>
+            <Reveal delay={1.8} distance={10} duration={1.8}>
+              <BlurText
+                as="span"
+                delay={1.8}
+                duration={1.8}
+                stagger={0.25}
+                textKey="nav.name"
+                className={`block leading-tight ${
+                  pathname === "/" ? "text-xl sm:text-3xl md:text-4xl" : "text-lg sm:text-2xl md:text-3xl"
+                }`}
+              >
+                {t["nav.name"]}
+              </BlurText>
+            </Reveal>
           </Link>
 
           <div className="relative">

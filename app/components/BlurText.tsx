@@ -22,12 +22,15 @@ type Props = {
   id?: string;
   /** Identifiant du texte : le rend modifiable en mode édition local. */
   textKey?: TextKey;
+  /** Durée du fondu de chaque mot, en secondes (par défaut : réglage titleReveal). */
+  duration?: number;
 };
 
-const word: Variants = {
+/** Fondu d'un mot ; durée réglable par titre. */
+const wordVariants = (duration: number): Variants => ({
   hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { duration: titleReveal.duration, ease: easeOut } },
-};
+  visible: { opacity: 1, transition: { duration, ease: easeOut } },
+});
 
 /**
  * Titre qui apparaît mot par mot, en fondu, traversé d'un léger bruit (grain)
@@ -51,6 +54,7 @@ export default function BlurText({
   once = true,
   id,
   textKey,
+  duration = titleReveal.duration,
 }: Props) {
   const Tag = motion[as];
   const ref = useRef<HTMLHeadingElement>(null);
@@ -93,7 +97,7 @@ export default function BlurText({
               initial={{ attrScale: titleReveal.noise }}
               animate={{ attrScale: inView ? 0 : titleReveal.noise }}
               transition={{
-                duration: titleReveal.noiseDuration + stagger * words.length,
+                duration: titleReveal.noiseDuration * (duration / titleReveal.duration) + stagger * words.length,
                 delay,
                 ease: easeOut,
               }}
@@ -114,7 +118,7 @@ export default function BlurText({
         {words.map((text, index) => (
           <span key={index}>
             <motion.span
-              variants={word}
+              variants={wordVariants(duration)}
               className="inline-block motion-reduce:opacity-100!"
               style={{ willChange: animating ? "opacity" : "auto" }}
             >
