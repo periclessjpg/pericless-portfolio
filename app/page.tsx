@@ -3,7 +3,7 @@ import BlurText from "./components/BlurText";
 import Reveal from "./components/motion/Reveal";
 import FullscreenProjects from "./components/FullscreenProjects";
 import ScrollIndicator from "./components/ScrollIndicator";
-import { container, eyebrow, focusRing, label } from "./components/styles";
+import { container, eyebrow, focusRing, titleMedium } from "./components/styles";
 import { getFeaturedProjects } from "./data/projects";
 import { site } from "./data/site";
 
@@ -46,7 +46,7 @@ export default function Home() {
             <BlurText
               as="h2"
               id="selected-works-title"
-              className={`${label} mt-4 text-neutral-100`}
+              className={`${titleMedium} mt-4 text-neutral-100`}
             >
               Selected Works
             </BlurText>
@@ -72,7 +72,7 @@ export default function Home() {
           <BlurText
             as="h2"
             id="vision-title"
-            className={`${label} text-neutral-100 md:col-span-4`}
+            className={`${titleMedium} text-neutral-100 md:col-span-4`}
           >
             Vision
           </BlurText>

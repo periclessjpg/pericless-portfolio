@@ -3,7 +3,7 @@ import Link from "next/link";
 import { isPublished, isSvg, type Project } from "../data/projects";
 import BlurText from "./BlurText";
 import { StaggerItem, StaggerList } from "./motion/Stagger";
-import { focusRing } from "./styles";
+import { focusRing, titleMedium } from "./styles";
 
 type Props = {
   projects: Project[];
@@ -59,7 +59,7 @@ export default function ProjectList({ projects, preloadFirst = false }: Props) {
             >
               <BlurText
                 as="h2"
-                className="font-display text-3xl font-medium uppercase leading-none tracking-tight text-neutral-100 sm:text-5xl md:text-7xl"
+                className={`${titleMedium} text-neutral-100`}
               >
                 {project.title}
               </BlurText>

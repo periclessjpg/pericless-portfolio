@@ -1,6 +1,6 @@
 import Link from "next/link";
 import BlurText from "../../components/BlurText";
-import { container, eyebrow, focusRing } from "../../components/styles";
+import { container, eyebrow, focusRing, titleLarge } from "../../components/styles";
 
 export default function ProjectNotFound() {
   return (
@@ -8,7 +8,7 @@ export default function ProjectNotFound() {
       <p className={eyebrow}>Error 404</p>
       <BlurText
         as="h1"
-        className="mt-6 font-display text-5xl font-medium leading-none tracking-tight md:text-8xl"
+        className={`${titleLarge} mt-6 text-neutral-100`}
       >
         Project not found
       </BlurText>

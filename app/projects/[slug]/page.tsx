@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import BackButton from "../../components/BackButton";
 import BlurText from "../../components/BlurText";
 import Reveal from "../../components/motion/Reveal";
-import { container, eyebrow, focusRing } from "../../components/styles";
+import { container, eyebrow, focusRing, titleLarge, titleMedium } from "../../components/styles";
 import {
   getAdjacentProjects,
   getProject,
@@ -62,7 +62,7 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
           <BlurText
             as="h1"
             delay={0.1}
-            className="mt-6 font-display text-5xl font-medium leading-none tracking-tight sm:text-6xl md:text-8xl"
+            className={`${titleLarge} mt-6 text-neutral-100`}
           >
             {project.title}
           </BlurText>
@@ -105,7 +105,7 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
             className={`group py-10 sm:pr-8 ${focusRing}`}
           >
             <span className={eyebrow}>← Previous project</span>
-            <span className="mt-3 block font-display text-3xl text-neutral-400 transition-colors duration-500 group-hover:text-neutral-100 md:text-4xl">
+            <span className={`${titleMedium} mt-3 block text-neutral-400 transition-colors duration-500 group-hover:text-neutral-100`}>
               {previous.title}
             </span>
           </Link>
@@ -116,7 +116,7 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
             className={`group py-10 sm:pl-8 sm:text-right ${focusRing}`}
           >
             <span className={eyebrow}>Next project →</span>
-            <span className="mt-3 block font-display text-3xl text-neutral-400 transition-colors duration-500 group-hover:text-neutral-100 md:text-4xl">
+            <span className={`${titleMedium} mt-3 block text-neutral-400 transition-colors duration-500 group-hover:text-neutral-100`}>
               {next.title}
             </span>
           </Link>

@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { isSvg, type Project } from "../data/projects";
 import BlurText from "./BlurText";
-import { focusRing } from "./styles";
+import { focusRing, titleMedium } from "./styles";
 
 type Props = {
   project: Project;
@@ -44,7 +44,7 @@ export default function ProjectCard({
           <div>
             <BlurText
               as={headingLevel}
-              className="font-display text-2xl leading-tight text-neutral-300 transition-colors duration-500 group-hover:text-neutral-100 group-focus-visible:text-neutral-100 md:text-3xl"
+              className={`${titleMedium} text-neutral-300 transition-colors duration-500 group-hover:text-neutral-100 group-focus-visible:text-neutral-100`}
             >
               {project.title}
             </BlurText>

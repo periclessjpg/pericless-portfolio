@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import BlurText from "./BlurText";
 import Reveal from "./motion/Reveal";
-import { eyebrow } from "./styles";
+import { eyebrow, titleLarge } from "./styles";
 
 type Props = {
   /** Petit sur-titre au-dessus du titre (facultatif). */
@@ -22,7 +22,7 @@ export default function PageHeader({ label, title, children }: Props) {
       <BlurText
         as="h1"
         delay={0.1}
-        className="font-display text-5xl font-medium leading-none tracking-tight sm:text-6xl md:text-8xl"
+        className={`${titleLarge} text-neutral-100`}
       >
         {title}
       </BlurText>

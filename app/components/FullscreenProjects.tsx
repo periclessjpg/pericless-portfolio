@@ -3,7 +3,7 @@ import Link from "next/link";
 import { isSvg, type Project } from "../data/projects";
 import BlurText from "./BlurText";
 import Reveal from "./motion/Reveal";
-import { container, label } from "./styles";
+import { container, titleMedium } from "./styles";
 
 type Props = {
   projects: Project[];
@@ -42,7 +42,7 @@ export default function FullscreenProjects({ projects }: Props) {
             <div
               className={`${container} absolute inset-x-0 bottom-0 flex flex-col gap-2 pb-8 sm:flex-row sm:items-end sm:justify-between sm:gap-8 md:pb-12`}
             >
-              <BlurText as="h3" className={`${label} text-neutral-100`}>
+              <BlurText as="h3" className={`${titleMedium} text-neutral-100`}>
                 {project.title}
               </BlurText>
               <Reveal delay={0.3} className="shrink-0">

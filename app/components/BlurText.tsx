@@ -1,8 +1,8 @@
 "use client";
 
-import { motion, type Variants } from "motion/react";
-import { useState } from "react";
-import { blurText, easeOut } from "./motion/easing";
+import { motion, useInView, type Variants } from "motion/react";
+import { useId, useRef, useState } from "react";
+import { easeOut, titleReveal } from "./motion/easing";
 
 type Tag = "h1" | "h2" | "h3" | "p" | "span";
 
@@ -22,17 +22,13 @@ type Props = {
 };
 
 const word: Variants = {
-  hidden: { opacity: 0, filter: `blur(${blurText.blur}px)`, y: blurText.offsetY },
-  visible: {
-    opacity: 1,
-    filter: "blur(0px)",
-    y: 0,
-    transition: { duration: blurText.duration, ease: easeOut },
-  },
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: titleReveal.duration, ease: easeOut } },
 };
 
 /**
- * Titre qui apparaît mot par mot, du flou vers le net.
+ * Titre qui apparaît mot par mot, en fondu, traversé d'un léger bruit (grain)
+ * qui se dissipe jusqu'au texte net. Réglages dans motion/easing.ts (titleReveal).
  *
  * - Le texte complet reste lisible par Google et les lecteurs d'écran
  *   (span invisible) ; les mots animés sont cachés pour eux (aria-hidden).
@@ -40,6 +36,7 @@ const word: Variants = {
  *   à ceux d'un titre normal.
  * - Se déclenche quand le titre entre dans l'écran (donc dès le chargement
  *   pour un titre en haut de page).
+ * - Le bruit est un filtre SVG retiré dès la fin de l'animation.
  * - "Réduire les animations" activé : le texte s'affiche net immédiatement.
  */
 export default function BlurText({
@@ -47,33 +44,71 @@ export default function BlurText({
   as = "h2",
   className,
   delay = 0,
-  stagger = blurText.stagger,
+  stagger = titleReveal.stagger,
   once = true,
   id,
 }: Props) {
   const Tag = motion[as];
-  // will-change seulement pendant l'animation (meilleures performances ensuite).
+  const ref = useRef<HTMLHeadingElement>(null);
+  const inView = useInView(ref, { once, margin: "0px 0px -10% 0px" });
+  // Le filtre de bruit n'est actif que pendant l'animation (meilleures performances ensuite).
   const [animating, setAnimating] = useState(true);
+  const filterId = `noise-${useId().replace(/[^a-zA-Z0-9_-]/g, "")}`;
   const words = children.split(/\s+/).filter(Boolean);
 
   return (
     <Tag
+      ref={ref}
       id={id}
       className={className}
       initial="hidden"
-      whileInView="visible"
-      viewport={{ once, margin: "0px 0px -10% 0px" }}
+      animate={inView ? "visible" : "hidden"}
       transition={{ staggerChildren: stagger, delayChildren: delay }}
-      onAnimationComplete={() => setAnimating(false)}
     >
       <span className="sr-only">{children}</span>
-      <span aria-hidden="true">
+
+      {/* Filtre de bruit : déforme légèrement le texte, puis s'efface */}
+      {animating && (
+        <svg aria-hidden="true" width="0" height="0" className="absolute">
+          <filter id={filterId}>
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency={titleReveal.grain}
+              numOctaves={2}
+              result="noise"
+            />
+            <motion.feDisplacementMap
+              in="SourceGraphic"
+              in2="noise"
+              xChannelSelector="R"
+              yChannelSelector="G"
+              initial={{ attrScale: titleReveal.noise }}
+              animate={{ attrScale: inView ? 0 : titleReveal.noise }}
+              transition={{
+                duration: titleReveal.noiseDuration + stagger * words.length,
+                delay,
+                ease: easeOut,
+              }}
+              // Bruit entièrement dissipé : on retire le filtre.
+              onAnimationComplete={() => {
+                if (inView) setAnimating(false);
+              }}
+            />
+          </filter>
+        </svg>
+      )}
+
+      <span
+        aria-hidden="true"
+        className="motion-reduce:filter-none!"
+        style={animating ? { filter: `url(#${filterId})` } : undefined}
+      >
         {words.map((text, index) => (
           <span key={index}>
             <motion.span
               variants={word}
-              className="inline-block motion-reduce:transform-none! motion-reduce:opacity-100! motion-reduce:filter-none!"
-              style={{ willChange: animating ? "transform, opacity, filter" : "auto" }}
+              className="inline-block motion-reduce:opacity-100!"
+              style={{ willChange: animating ? "opacity" : "auto" }}
             >
               {text}
             </motion.span>

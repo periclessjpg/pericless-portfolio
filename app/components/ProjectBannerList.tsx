@@ -3,7 +3,7 @@ import Link from "next/link";
 import { isPublished, isSvg, type Project } from "../data/projects";
 import BlurText from "./BlurText";
 import { StaggerItem, StaggerList } from "./motion/Stagger";
-import { label } from "./styles";
+import { titleMedium } from "./styles";
 
 type Props = {
   projects: Project[];
@@ -58,7 +58,7 @@ export default function ProjectBannerList({ projects, preloadFirst = false }: Pr
             <div
               className={`absolute inset-x-0 bottom-0 p-5 transition-transform duration-500 ${ease} sm:p-8 group-hover/row:translate-x-2.5 group-focus-visible/row:translate-x-2.5 motion-reduce:translate-none!`}
             >
-              <BlurText as="h2" className={`${label} text-neutral-100`}>
+              <BlurText as="h2" className={`${titleMedium} text-neutral-100`}>
                 {project.title}
               </BlurText>
               <p className="mt-2 text-xs uppercase tracking-[0.2em] text-neutral-400 sm:text-sm sm:tracking-[0.3em]">

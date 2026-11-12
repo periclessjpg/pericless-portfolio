@@ -10,16 +10,19 @@ export const duration = 0.8;
 export const offsetY = 24;
 
 /**
- * Effet "flou vers net" des titres (composant BlurText).
+ * Effet d'apparition des titres (composant BlurText) : fondu avec un léger
+ * bruit (grain) qui se dissipe jusqu'au texte net.
  * Change ces valeurs ici : tous les titres du site suivent.
  */
-export const blurText = {
-  /** Durée d'apparition de chaque mot (en secondes). */
-  duration: 0.8,
-  /** Flou de départ (en pixels). */
-  blur: 12,
-  /** Décalage vertical de départ (en pixels, vers le bas). */
-  offsetY: 14,
+export const titleReveal = {
+  /** Durée du fondu de chaque mot (en secondes). */
+  duration: 0.9,
+  /** Intensité du bruit au départ (0 = aucun bruit ; 8 à 20 = sobre). */
+  noise: 14,
+  /** Durée pendant laquelle le bruit se dissipe (en secondes). */
+  noiseDuration: 1.2,
+  /** Finesse du grain (plus grand = grain plus fin). */
+  grain: 0.9,
   /** Écart par défaut entre deux mots (en secondes). */
   stagger: 0.06,
 };

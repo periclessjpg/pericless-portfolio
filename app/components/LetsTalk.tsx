@@ -1,7 +1,7 @@
 import { site } from "../data/site";
 import BlurText from "./BlurText";
 import Reveal from "./motion/Reveal";
-import { focusRing } from "./styles";
+import { focusRing, titleMedium } from "./styles";
 
 /** Section "Let's talk !" en bas des pages Concept Art et Illustration. */
 export default function LetsTalk() {
@@ -10,7 +10,7 @@ export default function LetsTalk() {
       <BlurText
         as="h2"
         id="lets-talk-title"
-        className="font-display text-5xl font-medium leading-none tracking-tight sm:text-6xl md:text-8xl"
+        className={`${titleMedium} text-neutral-100`}
       >
         Let&apos;s talk !
       </BlurText>

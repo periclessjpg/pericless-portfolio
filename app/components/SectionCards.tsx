@@ -4,6 +4,7 @@ import type { ConceptArtSection } from "../data/concept-art";
 import { isSvg } from "../data/projects";
 import BlurText from "./BlurText";
 import { StaggerItem, StaggerList } from "./motion/Stagger";
+import { titleMedium } from "./styles";
 
 type Props = {
   sections: ConceptArtSection[];
@@ -41,7 +42,7 @@ export default function SectionCards({ sections }: Props) {
             <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-6 md:p-8">
               <BlurText
                 as="h2"
-                className="font-display text-4xl font-medium uppercase leading-none tracking-tight text-neutral-100 sm:text-5xl"
+                className={`${titleMedium} text-neutral-100`}
               >
                 {section.title}
               </BlurText>

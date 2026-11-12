@@ -2,7 +2,7 @@ import Image from "next/image";
 import BlurText from "../components/BlurText";
 import Reveal from "../components/motion/Reveal";
 import PageHeader from "../components/PageHeader";
-import { container, eyebrow, focusRing } from "../components/styles";
+import { container, eyebrow, focusRing, titleMedium } from "../components/styles";
 import { isSvg } from "../data/projects";
 import { pageMetadata } from "../lib/metadata";
 
@@ -102,7 +102,7 @@ export default function AboutPage() {
             <BlurText
               as="h2"
               id="experience-title"
-              className="font-display text-3xl font-medium md:text-4xl"
+              className={`${titleMedium} text-neutral-100`}
             >
               Experience
             </BlurText>
@@ -132,7 +132,7 @@ export default function AboutPage() {
 function ListSection({ id, title, items }: { id: string; title: string; items: string[] }) {
   return (
     <section aria-labelledby={`${id}-title`}>
-      <BlurText as="h2" id={`${id}-title`} className="font-display text-3xl font-medium md:text-4xl">
+      <BlurText as="h2" id={`${id}-title`} className={`${titleMedium} text-neutral-100`}>
         {title}
       </BlurText>
       <Reveal delay={0.2}>

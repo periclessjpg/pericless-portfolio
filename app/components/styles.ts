@@ -14,5 +14,15 @@ export const focusRing =
 export const label =
   "text-xs font-semibold uppercase tracking-[0.2em] sm:text-sm sm:tracking-[0.3em]";
 
+/**
+ * Titres, dans le même style sobre que `label` (Geist, capitales espacées), en plus gros.
+ * titleLarge : grand titre principal de chaque page.
+ * titleMedium : titres secondaires (sections, cartes, bandes, légendes de l'accueil).
+ */
+export const titleLarge =
+  "font-semibold uppercase leading-tight tracking-[0.12em] text-3xl sm:text-5xl md:text-6xl";
+export const titleMedium =
+  "font-semibold uppercase leading-snug tracking-[0.2em] text-base sm:text-lg md:text-xl";
+
 /** Petit texte en capitales espacées (sur-titres, catégories). */
 export const eyebrow = "text-xs uppercase tracking-[0.3em] text-neutral-500";
