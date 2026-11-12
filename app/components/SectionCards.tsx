@@ -3,8 +3,9 @@ import Link from "next/link";
 import { getTexts } from "../lib/texts";
 import type { TextKey } from "../lib/texts-defaults";
 import BlurText from "./BlurText";
-import { DevFramingSlot } from "./dev/DevSlots";
-import { StaggerItem, StaggerList } from "./motion/Stagger";
+import type { DevCardPickerProps } from "./dev/DevCardPicker";
+import { DevCardPickerSlot, DevFramingSlot } from "./dev/DevSlots";
+import { DealtItem, DealtList } from "./motion/Deal";
 import { label, titleMedium } from "./styles";
 
 /** Une carte : un titre, une adresse et une image (facultative). */
@@ -20,6 +21,8 @@ export type SectionCard = {
   position?: string;
   /** Chemin de l'image dans public/artworks, pour le réglage du cadrage en mode édition local. */
   framingId?: string;
+  /** Choix de l'image de la carte (mode édition local). */
+  picker?: DevCardPickerProps;
 };
 
 type Props = {
@@ -27,18 +30,19 @@ type Props = {
 };
 
 /**
- * Grandes cartes cliquables (pages Concept Art et Illustration) : une image
- * au format 4:5, avec le titre en bas. Chaque carte mène à sa sous-page.
+ * Grandes cartes cliquables (pages Concept Art et Illustration) : image pleine au
+ * format 4:5, coins arrondis, fine bordure, ombre ; elles arrivent comme des cartes
+ * distribuées et se soulèvent au survol. Chaque carte mène à sa sous-page.
  */
 export default function SectionCards({ cards }: Props) {
   const t = getTexts();
   return (
-    <StaggerList className="grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-8">
+    <DealtList className="grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-8">
       {cards.map((card, index) => (
-        <StaggerItem key={card.key} className="relative">
+        <DealtItem key={card.key} index={index} className="relative">
           <Link
             href={card.href}
-            className="group relative block aspect-[4/5] overflow-hidden bg-neutral-900 focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-neutral-100"
+            className="group relative block aspect-[4/5] overflow-hidden rounded-2xl border border-white/10 bg-neutral-900 shadow-[0_24px_48px_-20px_rgba(0,0,0,0.85)] transition-[translate,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-2 hover:border-white/25 hover:shadow-[0_40px_70px_-24px_rgba(0,0,0,0.95)] focus-visible:-translate-y-2 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-neutral-100 motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:focus-visible:translate-y-0"
           >
             {card.image ? (
               <Image
@@ -74,12 +78,13 @@ export default function SectionCards({ cards }: Props) {
               </span>
             </div>
           </Link>
-          {/* Mode édition local : réglage du cadrage (posé à côté du lien, jamais dedans) */}
+          {/* Mode édition local : choix de l'image et cadrage (posés à côté du lien, jamais dedans) */}
+          {card.picker && <DevCardPickerSlot {...card.picker} />}
           {card.image && card.framingId && (
             <DevFramingSlot id={card.framingId} src={card.image.src} position={card.position} />
           )}
-        </StaggerItem>
+        </DealtItem>
       ))}
-    </StaggerList>
+    </DealtList>
   );
 }

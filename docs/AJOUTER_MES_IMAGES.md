@@ -112,6 +112,18 @@ Seules les adresses internes au site sont acceptées (elles commencent par `/`, 
 
 ---
 
+## Choisir l'image de chaque carte (local uniquement)
+
+Sur la page Concept Art (et Illustration, si tu y crées des sous-dossiers), chaque carte affiche par défaut la **première image** de son filtre. Pour en choisir une autre :
+
+1. Avec `npm run dev`, ouvre la page sur localhost:3000 (outils affichés : « Show tools »).
+2. Clique sur **« Choose image »** en haut à gauche d'une carte : les vignettes des images de ce filtre apparaissent (pour « All » : toutes les images de la catégorie).
+3. Clique sur l'image voulue : la carte change. **« First image »** revient à la première image.
+
+Le cadrage de l'image sur la carte se règle avec « Adjust framing ». Les choix sont enregistrés dans `public/artworks/concept-art/cards.json` (modifiable à la main : `{ "environments": "concept-art/environments/02-corridor-windows.webp" }`). Si l'image choisie est supprimée, la carte reprend la première image.
+
+---
+
 ## Voir les images en grand
 
 Sur les pages Environments, Character Design, All, Illustration, Projects et les photos d'About, **un clic sur une image l'ouvre en grand** dans une visionneuse plein écran : flèches ← → (à l'écran ou au clavier) pour passer à la suivante, glissement du doigt sur mobile, **Échap** ou **×** pour fermer. L'image entière est affichée (jamais recadrée), avec son titre en légende. Rien à régler : ça fonctionne aussi sur le site publié.

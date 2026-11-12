@@ -1,4 +1,4 @@
-import { getGallery, type Artwork, type GalleryCategory } from "../lib/artworks";
+import { getCardChoices, getGallery, type Artwork, type GalleryCategory } from "../lib/artworks";
 import { getTexts } from "../lib/texts";
 import BackButton from "./BackButton";
 import { DevDropZoneSlot, DevReorderSlot } from "./dev/DevSlots";
@@ -28,14 +28,30 @@ function toReorderItems(artworks: Artwork[]) {
   }));
 }
 
-/** Image de carte : la première œuvre de la liste (avec son cadrage). */
-function cardImage(artworks: Artwork[]): Pick<SectionCard, "image" | "position" | "framingId"> {
-  const first = artworks[0];
-  if (!first) return {};
+/**
+ * Image de carte : celle choisie (cards.json, "Choose image" en mode édition local)
+ * si elle existe encore parmi les images de la carte, sinon la première (avec son cadrage).
+ * Prépare aussi le choix de l'image pour le mode édition local.
+ */
+function cardImage(
+  category: GalleryCategory,
+  card: string,
+  artworks: Artwork[],
+  choices: Record<string, string>,
+): Pick<SectionCard, "image" | "position" | "framingId" | "picker"> {
+  const chosen = artworks.find((artwork) => artwork.id === choices[card]) ?? artworks[0];
+  const picker = {
+    category,
+    card,
+    current: chosen?.id ?? "",
+    images: artworks.map((artwork) => ({ id: artwork.id, src: artwork.src, title: artwork.title })),
+  };
+  if (!chosen) return { picker };
   return {
-    image: { src: first.src, alt: first.alt, width: first.width, height: first.height },
-    position: first.position,
-    framingId: first.id,
+    image: { src: chosen.src, alt: chosen.alt, width: chosen.width, height: chosen.height },
+    position: chosen.position,
+    framingId: chosen.id,
+    picker,
   };
 }
 
@@ -76,19 +92,21 @@ export function GalleryOverview({ category }: { category: GalleryCategory }) {
     );
   }
 
+  // Image de chaque carte : choix enregistré dans public/artworks/<catégorie>/cards.json.
+  const choices = getCardChoices(category);
   const cards: SectionCard[] = [
     {
       key: "all",
       href: `/${category}/all`,
       title: getTexts()["common.all"],
       titleKey: "common.all",
-      ...cardImage(gallery.all),
+      ...cardImage(category, "all", gallery.all, choices),
     },
     ...gallery.filters.map((filter) => ({
       key: filter.slug,
       href: `/${category}/${filter.slug}`,
       title: filter.label,
-      ...cardImage(filter.artworks),
+      ...cardImage(category, filter.slug, filter.artworks, choices),
     })),
   ];
   return (

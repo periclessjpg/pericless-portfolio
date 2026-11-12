@@ -192,6 +192,25 @@ function readImages(parts: string[], kind: string, category: string): Artwork[] 
 
 // ───────────── Données pour les pages ─────────────
 
+/**
+ * Image choisie pour chaque carte d'une catégorie (fichier public/artworks/<catégorie>/cards.json,
+ * réglé avec "Choose image" en mode édition local) : { "<carte>": "<chemin de l'image>" },
+ * par exemple { "all": "concept-art/environments/03-priest.webp" }. Fichier absent = aucun choix.
+ */
+export function getCardChoices(category: GalleryCategory): Record<string, string> {
+  try {
+    const parsed = JSON.parse(fs.readFileSync(path.join(ROOT, category, "cards.json"), "utf8"));
+    if (!parsed || typeof parsed !== "object") return {};
+    return Object.fromEntries(
+      Object.entries(parsed as Record<string, unknown>).filter(
+        (entry): entry is [string, string] => typeof entry[1] === "string",
+      ),
+    );
+  } catch {
+    return {};
+  }
+}
+
 /** Galerie d'une catégorie (Concept Art ou Illustration), avec ses filtres. */
 export function getGallery(category: GalleryCategory): Gallery {
   const label = CATEGORY_LABELS[category];

@@ -4,6 +4,7 @@
 // de dépôt et la bannière. Sur le site publié (production), ils renvoient null :
 // le code de l'interface d'édition n'est ni rendu ni chargé.
 
+import type { DevCardPickerProps } from "./DevCardPicker";
 import type { DevDropZoneProps } from "./DevDropZone";
 import type { DevFramingProps } from "./DevFraming";
 import type { DevHeroPanelProps } from "./DevHeroPanel";
@@ -61,6 +62,15 @@ export async function DevTypographyPanelSlot(props: DevTypographyPanelProps) {
   if (process.env.NODE_ENV === "development") {
     const { default: DevTypographyPanel } = await import("./DevTypographyPanel");
     return <DevTypographyPanel {...props} />;
+  }
+  return null;
+}
+
+/** Bouton "Choose image" sur une carte (développement uniquement). */
+export async function DevCardPickerSlot(props: DevCardPickerProps) {
+  if (process.env.NODE_ENV === "development") {
+    const { default: DevCardPicker } = await import("./DevCardPicker");
+    return <DevCardPicker {...props} />;
   }
   return null;
 }
