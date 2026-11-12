@@ -4,7 +4,6 @@ import BlurText from "../components/BlurText";
 import ComingSoon from "../components/ComingSoon";
 import { DevDropZoneSlot, DevFramingSlot, DevReorderSlot } from "../components/dev/DevSlots";
 import Reveal from "../components/motion/Reveal";
-import PageHeader from "../components/PageHeader";
 import { container, eyebrow, focusRing, titleMedium } from "../components/styles";
 import { site } from "../data/site";
 import { folders, getAboutArtworks } from "../lib/artworks";
@@ -33,17 +32,19 @@ export default function AboutPage() {
   const experienceIndexes = Array.from({ length: ABOUT_LIST_SIZES.experience }, (_, i) => i);
 
   return (
-    <div className={`${container} pt-32 md:pt-44`}>
-      <PageHeader
-        label={t["about.eyebrow"]}
-        title={t["about.title"]}
-        keys={{ label: "about.eyebrow", title: "about.title" }}
-      />
+    <div className={container}>
+      {/* Titre invisible à l'écran, lu par Google et les lecteurs d'écran */}
+      <h1 className="sr-only">{t["about.title"]}</h1>
 
-      <div className="grid gap-16 md:grid-cols-12 md:gap-12">
-        {/* Portrait */}
+      {/* L'espace au-dessus place le portrait (format 4:5) au milieu de l'écran :
+          50 % de la hauteur de l'écran moins la moitié de la hauteur du portrait,
+          avec un minimum pour rester sous la barre du haut.
+          - mobile : portrait sur toute la largeur (marges de 3rem, puis 4rem) ;
+          - ordinateur : portrait sur 5 colonnes sur 12, sa hauteur limitée pour tenir dans l'écran. */}
+      <div className="grid gap-16 pt-[max(7rem,calc(50svh_-_(100vw_-_3rem)*0.625))] sm:pt-[max(7rem,calc(50svh_-_(100vw_-_4rem)*0.625))] md:grid-cols-12 md:gap-12 md:pt-[max(8rem,calc(50svh_-_min((min(100vw,96rem)_-_8rem)*0.5208_-_2.1875rem,100svh_-_12rem)/2))]">
+        {/* Portrait (hauteur limitée sur ordinateur pour tenir entièrement dans l'écran) */}
         <Reveal className="md:col-span-5">
-          <div className="relative aspect-[4/5] overflow-hidden bg-neutral-900">
+          <div className="relative aspect-[4/5] overflow-hidden bg-neutral-900 md:max-w-[calc((100svh_-_12rem)*0.8)]">
             {portrait ? (
               <Image
                 src={portrait.src}
