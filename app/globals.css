@@ -48,8 +48,11 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* Texte courant : rôle "Body text" du panneau Typography (Geist par défaut). */
 body {
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-family: var(--type-body-family, var(--font-geist-sans)), system-ui, sans-serif;
+  font-weight: var(--type-body-weight, 400);
+  letter-spacing: var(--type-body-tracking, 0);
 }
 
 :root {

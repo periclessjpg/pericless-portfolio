@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { hasPreviousPageOnSite } from "../lib/navigation-history";
-import { focusRing } from "./styles";
+import { editable } from "../lib/texts-defaults";
+import { useTexts } from "./TextsProvider";
+import { focusRing, label } from "./styles";
 
 type Props = {
   /** Page où aller si le visiteur est arrivé directement sur cette page. */
@@ -16,6 +18,7 @@ type Props = {
  */
 export default function BackButton({ fallbackHref }: Props) {
   const router = useRouter();
+  const t = useTexts();
 
   return (
     <Link
@@ -26,7 +29,7 @@ export default function BackButton({ fallbackHref }: Props) {
           router.back();
         }
       }}
-      className={`group inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.2em] text-neutral-400 transition-colors duration-300 hover:text-neutral-100 sm:text-sm sm:tracking-[0.3em] ${focusRing}`}
+      className={`group inline-flex items-center gap-3 ${label} text-neutral-400 transition-colors duration-300 hover:text-neutral-100 ${focusRing}`}
     >
       <span
         aria-hidden="true"
@@ -34,7 +37,7 @@ export default function BackButton({ fallbackHref }: Props) {
       >
         ←
       </span>
-      Back
+      <span {...editable("common.back")}>{t["common.back"]}</span>
     </Link>
   );
 }

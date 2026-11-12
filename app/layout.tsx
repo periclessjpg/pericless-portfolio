@@ -3,7 +3,11 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import { DevEditBannerSlot } from "./components/dev/DevSlots";
+import { DevEditBannerSlot, DevTextEditorSlot, DevTypographyPanelSlot } from "./components/dev/DevSlots";
+import { TextsProvider } from "./components/TextsProvider";
+import { getTexts } from "./lib/texts";
+import { typographyCss } from "./lib/typography";
+import { getTypography } from "./lib/typography-server";
 import MotionProvider from "./components/motion/MotionProvider";
 import { site } from "./data/site";
 import { siteUrl } from "./lib/metadata";
@@ -36,11 +40,20 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
+  // Textes du site (content/texts.json), transmis aux composants du navigateur.
+  const texts = getTexts();
+  // Typographie par rôle (content/typography.json) : polices de public/fonts/ et variables CSS.
+  const typography = getTypography();
+
   return (
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} dark h-full antialiased`}
     >
+      <head>
+        {/* Valeurs nettoyées par sanitizeTypography : aucun code ne peut y être injecté */}
+        <style id="site-typography" dangerouslySetInnerHTML={{ __html: typographyCss(typography) }} />
+      </head>
       <body className="min-h-full flex flex-col bg-neutral-950 text-neutral-100">
         {/* Lien caché, visible au clavier : permet de sauter directement au contenu */}
         <a
@@ -50,13 +63,17 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Skip to content
         </a>
         <MotionProvider>
-          <Navbar />
-          <main id="main-content" tabIndex={-1} className="flex-1 outline-none">
-            {children}
-          </main>
-          <Footer />
-          {/* Bannière "Local edit mode" (npm run dev uniquement) */}
-          <DevEditBannerSlot />
+          <TextsProvider texts={texts}>
+            <Navbar />
+            <main id="main-content" tabIndex={-1} className="flex-1 outline-none">
+              {children}
+            </main>
+            <Footer />
+            {/* Bannière "Local edit mode" et édition des textes (npm run dev uniquement) */}
+            <DevEditBannerSlot />
+            <DevTextEditorSlot texts={texts} />
+            <DevTypographyPanelSlot typography={typography} />
+          </TextsProvider>
         </MotionProvider>
       </body>
     </html>

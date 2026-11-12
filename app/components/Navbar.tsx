@@ -4,16 +4,18 @@ import { AnimatePresence, motion, type Variants } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, useSyncExternalStore, type KeyboardEvent } from "react";
-import { site } from "../data/site";
+import { editable, shown, type TextKey } from "../lib/texts-defaults";
+import { useTexts } from "./TextsProvider";
 import { easeOut } from "./motion/easing";
 import { container, focusRing, label } from "./styles";
 
 
-const links = [
-  { href: "/concept-art", label: "Concept Art" },
-  { href: "/illustration", label: "Illustration" },
-  { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
+// Liens du menu (noms modifiables en mode édition local).
+const links: { href: string; key: TextKey }[] = [
+  { href: "/concept-art", key: "nav.link.concept-art" },
+  { href: "/illustration", key: "nav.link.illustration" },
+  { href: "/about", key: "nav.link.about" },
+  { href: "/contact", key: "nav.link.contact" },
 ];
 
 /** Même style pour le texte de gauche, le bouton Menu et les liens du menu (défini dans styles.ts). */
@@ -49,6 +51,7 @@ function isActive(pathname: string, href: string) {
 
 export default function Navbar() {
   const pathname = usePathname();
+  const t = useTexts();
   // On retient la page sur laquelle le menu a été ouvert :
   // si on change de page, le menu se ferme tout seul.
   const [openOn, setOpenOn] = useState<string | null>(null);
@@ -128,10 +131,10 @@ export default function Navbar() {
         <div className={`${container} flex items-start justify-between gap-6 py-5 md:py-6`}>
           {/* En haut à gauche : métier puis nom, sur deux lignes (ramène à l'accueil) */}
           <Link href="/" className={`${labelStyle} flex flex-col gap-1 text-neutral-100 ${focusRing}`}>
-            <span>{site.title}</span>
+            <span {...editable("nav.title")}>{shown(t["nav.title"])}</span>
             {/* Sur l'accueil, le nom est un peu plus gros */}
-            <span className={pathname === "/" ? "text-sm sm:text-lg" : undefined}>
-              {site.name}
+            <span className={pathname === "/" ? "text-sm sm:text-lg" : undefined} {...editable("nav.name")}>
+              {shown(t["nav.name"])}
             </span>
           </Link>
 
@@ -149,12 +152,13 @@ export default function Navbar() {
                 <motion.span
                   key={open ? "close" : "menu"}
                   className="block"
+                  {...editable(open ? "nav.close" : "nav.menu")}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.2 }}
                 >
-                  {open ? "Close" : "Menu"}
+                  {shown(open ? t["nav.close"] : t["nav.menu"])}
                 </motion.span>
               </AnimatePresence>
             </button>
@@ -184,7 +188,7 @@ export default function Navbar() {
                               active ? "text-neutral-100" : "text-neutral-400 hover:text-neutral-100"
                             }`}
                           >
-                            {link.label}
+                            <span {...editable(link.key)}>{shown(t[link.key])}</span>
                           </Link>
                         </motion.li>
                       );

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { Artwork } from "../lib/artworks";
 import ArtworkGrid from "./ArtworkGrid";
+import { useTexts } from "./TextsProvider";
 import { focusRing } from "./styles";
 
 type Props = {
@@ -13,6 +14,7 @@ type Props = {
 
 /** Boutons All + une catégorie par bouton, puis la grille d'œuvres filtrée. */
 export default function ArtworkFilter({ artworks, categories }: Props) {
+  const t = useTexts();
   const filters = ["All", ...categories];
   const [active, setActive] = useState("All");
   const visible = active === "All" ? artworks : artworks.filter((a) => a.category === active);
@@ -38,7 +40,7 @@ export default function ArtworkFilter({ artworks, categories }: Props) {
                   : "border-transparent text-neutral-500 hover:text-neutral-100"
               }`}
             >
-              {filter}
+              {filter === "All" ? t["common.all"] : filter}
             </button>
           );
         })}

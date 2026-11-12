@@ -136,6 +136,52 @@ Sans le mode édition, tu peux aussi supprimer ou remplacer un fichier directeme
 
 ---
 
+## Modifier les textes du site (local uniquement)
+
+Tous les textes du site sont modifiables sans toucher au code : haut de page et menu, titres et introductions des pages, sections de l'accueil, biographie, compétences, logiciels et expériences d'About, Contact, « Let's talk ! », « Back », « Coming soon », pied de page, noms des réseaux sociaux…
+
+1. Avec `npm run dev`, ouvre le site sur localhost:3000.
+2. Dans la bannière « Local edit mode » (en bas à gauche), active **« Edit texts »**.
+3. Survole un texte : un contour en pointillés montre qu'il est modifiable. **Clique dessus** : une zone de saisie apparaît par-dessus, avec la même police.
+4. Modifie le texte, puis **« Save »** (ou **Ctrl + Entrée**). **Échap** annule, **« Original text »** remet le texte d'origine.
+5. Désactive « Edit texts » pour naviguer normalement (quand il est activé, un clic sur un lien ouvre son texte au lieu de changer de page). Pour modifier les liens du menu, ouvre d'abord le menu, puis active « Edit texts ».
+
+À savoir :
+- **Laisser un texte vide le masque** sur le site. En local, il reste visible sous la forme « (empty) » pour pouvoir le remplir plus tard.
+- **About** : les listes ont des emplacements vides en plus (6 compétences, 6 logiciels, 4 expériences) : remplis-les pour ajouter des lignes.
+- **L'email** est le même partout (pied de page, Contact, « Let's talk ! ») : le modifier une fois change aussi le lien qui ouvre la messagerie.
+- Les textes sont du **texte simple** : les retours à la ligne sont gardés, mais aucun code (HTML) n'est interprété.
+- Tes modifications sont enregistrées dans **`content/texts.json`** (seulement les textes différents de l'original). Tu peux aussi l'ouvrir et le modifier à la main. Supprimer une ligne de ce fichier remet le texte d'origine.
+- Les titres des images (déduits du nom de fichier ou de `infos.json`) et les titres des cartes de filtres (déduits du nom du dossier) ne passent pas par ce système.
+
+---
+
+## Choisir les polices (local uniquement)
+
+Comme des styles de paragraphe dans InDesign, chaque **rôle** a sa police et ses réglages :
+
+| Rôle | Où | Réglages |
+|---|---|---|
+| **Page titles** | grand titre en haut de chaque page | police, graisse, taille, espacement, capitales |
+| **Secondary titles** | sections, cartes, bandes, légendes de l'accueil | police, graisse, taille, espacement, capitales |
+| **Header & menu** | nom en haut à gauche, « Menu », liens du menu, « Back » | police, graisse, taille, espacement, capitales |
+| **Body text** | paragraphes, listes, liens, petits textes | police, graisse, espacement |
+
+1. Avec `npm run dev`, ouvre le site sur localhost:3000 (outils affichés : « Show tools »).
+2. Clique sur **« Typography »** en bas à droite. La liste de tes **polices installées sur Windows** se charge.
+3. Pour chaque rôle : cherche une police, choisis son **style** (Regular, Bold, Light… : c'est ce qui fixe la graisse), règle la taille, l'espacement des lettres et les capitales. Le site change **en direct**.
+4. **« Save »** : les fichiers des polices choisies sont **copiés dans `public/fonts/`** (pour que tes visiteurs les voient) et les réglages enregistrés dans **`content/typography.json`**. **« Reset all »** revient à Geist partout, **« Cancel »** (ou Échap) annule.
+
+**Important : les licences.** Une police installée sur ton ordinateur n'est pas forcément autorisée sur un site web. **Vérifie la licence de chaque police avant de publier** (site de la fonderie, fichier de licence fourni). Les polices dont le fichier interdit l'intégration sont marquées « no web use » et refusées ; les polices de Windows (Arial, Segoe…) ne sont en général **pas** autorisées sur un site. Privilégie des polices libres (Google Fonts, licence SIL Open Font) ou achetées avec une licence « web ».
+
+À savoir :
+- Les polices **Adobe Fonts** (Creative Cloud) n'apparaissent pas : leurs fichiers sont protégés. Pour les utiliser sur le site, il faut un « projet web » Adobe Fonts (dis-le-moi si tu en as besoin).
+- Seuls les fichiers `.ttf` et `.otf` sont listés. Chaque police ajoutée alourdit un peu le site : 2 ou 3 polices au maximum.
+- Les anciennes polices copiées restent dans `public/fonts/` (rien n'est supprimé automatiquement) : tu peux supprimer celles que tu n'utilises plus.
+- Le panneau ne fait que **lire** tes dossiers de polices Windows : rien n'y est modifié.
+
+---
+
 ## Personnaliser le hero (haut de l'accueil)
 
 Le hero est **entièrement réglable** : image, taille, transparence, filtres, voile, texte, animation.

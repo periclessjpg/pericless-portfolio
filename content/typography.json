@@ -1,0 +1,34 @@
+{
+  "display": {
+    "family": "OVR Demorny Trial",
+    "file": "/fonts/ovr-demorny-trial-600-semibold.otf",
+    "weight": 600,
+    "scale": 120,
+    "tracking": 0.12,
+    "uppercase": true
+  },
+  "heading": {
+    "family": "OVR Demorny Trial",
+    "file": "/fonts/ovr-demorny-trial-700-bold.otf",
+    "weight": 700,
+    "scale": 165,
+    "tracking": 0.08,
+    "uppercase": true
+  },
+  "ui": {
+    "family": "OVR Demorny Trial",
+    "file": "/fonts/ovr-demorny-trial-700-bold.otf",
+    "weight": 700,
+    "scale": 135,
+    "tracking": 0.2,
+    "uppercase": true
+  },
+  "body": {
+    "family": "",
+    "file": "",
+    "weight": 400,
+    "scale": 100,
+    "tracking": 0,
+    "uppercase": false
+  }
+}

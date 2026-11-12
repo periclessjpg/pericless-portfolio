@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import { getTexts } from "../lib/texts";
+import type { TextKey } from "../lib/texts-defaults";
 import BlurText from "./BlurText";
 import { DevFramingSlot } from "./dev/DevSlots";
 import { StaggerItem, StaggerList } from "./motion/Stagger";
@@ -10,6 +12,8 @@ export type SectionCard = {
   key: string;
   href: string;
   title: string;
+  /** Identifiant du titre, s'il est modifiable en mode édition local (carte "All"). */
+  titleKey?: TextKey;
   /** Image de la carte ; si absente (dossier vide), la carte affiche "Coming soon". */
   image?: { src: string; alt: string; width: number; height: number };
   /** Cadrage de l'image recadrée (ex. "50% 20%"), centre par défaut. */
@@ -27,6 +31,7 @@ type Props = {
  * au format 4:5, avec le titre en bas. Chaque carte mène à sa sous-page.
  */
 export default function SectionCards({ cards }: Props) {
+  const t = getTexts();
   return (
     <StaggerList className="grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-8">
       {cards.map((card, index) => (
@@ -47,7 +52,7 @@ export default function SectionCards({ cards }: Props) {
               />
             ) : (
               <p className={`${label} absolute inset-0 flex items-center justify-center text-neutral-600`}>
-                Coming soon
+                {t["common.comingSoon"]}
               </p>
             )}
 
@@ -58,7 +63,7 @@ export default function SectionCards({ cards }: Props) {
             />
 
             <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-6 md:p-8">
-              <BlurText as="h2" className={`${titleMedium} text-neutral-100`}>
+              <BlurText as="h2" textKey={card.titleKey} className={`${titleMedium} text-neutral-100`}>
                 {card.title}
               </BlurText>
               <span

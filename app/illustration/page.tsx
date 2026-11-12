@@ -3,6 +3,7 @@ import LetsTalk from "../components/LetsTalk";
 import PageHeader from "../components/PageHeader";
 import { container } from "../components/styles";
 import { pageMetadata } from "../lib/metadata";
+import { getTexts } from "../lib/texts";
 
 export const metadata = pageMetadata({
   title: "Illustration",
@@ -11,14 +12,15 @@ export const metadata = pageMetadata({
 });
 
 export default function IllustrationPage() {
+  const t = getTexts();
   return (
     <div className={`${container} pt-32 md:pt-44`}>
-      <PageHeader label="Portfolio" title="Illustration">
-        <p>
-          [À REMPLACER] A short introduction to your illustration work: the stories you tell,
-          the clients or projects, and your influences.
-        </p>
-      </PageHeader>
+      <PageHeader
+        label={t["illustration.eyebrow"]}
+        title={t["illustration.title"]}
+        intro={t["illustration.intro"]}
+        keys={{ label: "illustration.eyebrow", title: "illustration.title", intro: "illustration.intro" }}
+      />
       {/* Images de public/artworks/illustration/ (cartes dès qu'il y a des sous-dossiers) */}
       <GalleryOverview category="illustration" />
       <LetsTalk />

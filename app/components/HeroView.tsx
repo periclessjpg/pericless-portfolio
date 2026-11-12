@@ -19,6 +19,8 @@ type Props = {
   title: string;
   /** Accroche affichée ("" = aucune). */
   tagline: string;
+  /** Texte de "Scroll to explore". */
+  scrollLabel: string;
   /** Section vers laquelle mène "Scroll to explore". */
   scrollTarget: string;
   /** Outils posés sur l'image (mode édition local uniquement). */
@@ -44,7 +46,16 @@ const scrollPosition = {
  * Les réglages sont appliqués par des variables CSS (--hero-…), ce qui permet au
  * panneau du mode édition de les modifier en direct.
  */
-export default function HeroView({ settings, image, title, tagline, scrollTarget, imageTools, editTools }: Props) {
+export default function HeroView({
+  settings,
+  image,
+  title,
+  tagline,
+  scrollLabel,
+  scrollTarget,
+  imageTools,
+  editTools,
+}: Props) {
   const ref = useRef<HTMLElement>(null);
   const reduceMotion = useReducedMotion();
 
@@ -113,18 +124,17 @@ export default function HeroView({ settings, image, title, tagline, scrollTarget
             {title}
           </h1>
           {/* Accroche (facultative, app/data/site.ts) : apparaît mot par mot au chargement */}
-          {tagline && (
-            <div style={{ fontSize: "var(--hero-text-size)", color: "var(--hero-text-color)" }}>
-              <BlurText as="p" delay={0.2} className="max-w-xl leading-snug">
-                {tagline}
-              </BlurText>
-            </div>
-          )}
+          {/* Vide : rien sur le site publié ; en mode édition local, un repère "(empty)" cliquable */}
+          <div style={{ fontSize: "var(--hero-text-size)", color: "var(--hero-text-color)" }}>
+            <BlurText as="p" delay={0.2} textKey="home.tagline" className="max-w-xl leading-snug">
+              {tagline}
+            </BlurText>
+          </div>
         </div>
 
         <div style={scrollPosition}>
           <Reveal delay={0.8}>
-            <ScrollIndicator targetId={scrollTarget} />
+            <ScrollIndicator targetId={scrollTarget} label={scrollLabel} />
           </Reveal>
         </div>
 

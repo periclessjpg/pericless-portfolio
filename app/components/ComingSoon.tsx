@@ -1,3 +1,5 @@
+import { getTexts } from "../lib/texts";
+import { editable } from "../lib/texts-defaults";
 import { label } from "./styles";
 
 type Props = {
@@ -11,9 +13,13 @@ type Props = {
  * En développement uniquement, indique où déposer les images.
  */
 export default function ComingSoon({ folder, className = "" }: Props) {
+  const t = getTexts();
+
   return (
     <div className={`border-y border-neutral-900 py-16 md:py-24 ${className}`}>
-      <p className={`${label} text-neutral-500`}>Coming soon</p>
+      <p className={`${label} text-neutral-500`} {...editable("common.comingSoon")}>
+        {t["common.comingSoon"]}
+      </p>
       {process.env.NODE_ENV === "development" && (
         <p className="mt-4 text-sm text-neutral-600">
           Dev only · Drop images in <code className="text-neutral-400">{folder}</code>

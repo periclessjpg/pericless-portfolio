@@ -1,4 +1,5 @@
 import { getGallery, type Artwork, type GalleryCategory } from "../lib/artworks";
+import { getTexts } from "../lib/texts";
 import BackButton from "./BackButton";
 import { DevDropZoneSlot, DevReorderSlot } from "./dev/DevSlots";
 import ComingSoon from "./ComingSoon";
@@ -76,7 +77,13 @@ export function GalleryOverview({ category }: { category: GalleryCategory }) {
   }
 
   const cards: SectionCard[] = [
-    { key: "all", href: `/${category}/all`, title: "All", ...cardImage(gallery.all) },
+    {
+      key: "all",
+      href: `/${category}/all`,
+      title: getTexts()["common.all"],
+      titleKey: "common.all",
+      ...cardImage(gallery.all),
+    },
     ...gallery.filters.map((filter) => ({
       key: filter.slug,
       href: `/${category}/${filter.slug}`,
@@ -116,7 +123,7 @@ export function gallerySectionSlugs(category: GalleryCategory) {
 
 /** Titre d'une sous-page, ou undefined si elle n'existe pas. */
 export function gallerySectionTitle(category: GalleryCategory, slug: string) {
-  if (slug === "all") return "All";
+  if (slug === "all") return getTexts()["common.all"];
   return getGallery(category).filters.find((filter) => filter.slug === slug)?.label;
 }
 
@@ -130,7 +137,7 @@ export function GallerySection({ category, slug }: { category: GalleryCategory; 
   const filter = gallery.filters.find((f) => f.slug === slug);
   if (slug !== "all" && !filter) return null;
 
-  const title = filter ? filter.label : "All";
+  const title = filter ? filter.label : getTexts()["common.all"];
   const artworks = filter ? filter.artworks : gallery.all;
   const folder = filter ? filter.folder : `${gallery.folder}all/`;
 
@@ -139,7 +146,7 @@ export function GallerySection({ category, slug }: { category: GalleryCategory; 
       <div className="mb-12 md:mb-16">
         <BackButton fallbackHref={`/${category}`} />
       </div>
-      <PageHeader label={gallery.label} title={title} />
+      <PageHeader label={gallery.label} title={title} keys={filter ? {} : { title: "common.all" }} />
       {artworks.length > 0 ? (
         <ProjectBannerList items={artworks.map(toBanner)} preloadFirst />
       ) : (

@@ -7,11 +7,14 @@ import FullscreenProjects from "./components/FullscreenProjects";
 import HeroView from "./components/HeroView";
 import { container, eyebrow, focusRing, titleMedium } from "./components/styles";
 import { folders, getHero, getHomeArtworks } from "./lib/artworks";
-import { site } from "./data/site";
+import { getTexts } from "./lib/texts";
+import { editable, shown } from "./lib/texts-defaults";
 
 export default function Home() {
   // Images du dossier public/artworks/home/
   const featured = getHomeArtworks();
+  // Textes : modifiables en mode édition local (content/texts.json).
+  const t = getTexts();
   // Hero : réglages, image de fond choisie et images du dossier public/artworks/hero/
   const hero = getHero();
 
@@ -21,8 +24,9 @@ export default function Home() {
       <HeroView
         settings={hero.settings}
         image={hero.image && { src: hero.image.src, alt: hero.image.alt, position: hero.image.position }}
-        title={`${site.name}, ${site.title}`}
-        tagline={site.tagline}
+        title={`${t["nav.name"]}, ${t["nav.title"]}`}
+        tagline={t["home.tagline"]}
+        scrollLabel={t["common.scroll"]}
         scrollTarget="selected-works"
         imageTools={
           hero.image && (
@@ -51,22 +55,26 @@ export default function Home() {
         <div className={`${container} mb-12 flex flex-wrap items-end justify-between gap-6 md:mb-16`}>
           <div>
             <Reveal>
-              <p className={eyebrow}>Portfolio</p>
+              <p className={eyebrow} {...editable("home.selectedWorks.eyebrow")}>
+                {shown(t["home.selectedWorks.eyebrow"])}
+              </p>
             </Reveal>
             <BlurText
               as="h2"
               id="selected-works-title"
+              textKey="home.selectedWorks.title"
               className={`${titleMedium} mt-4 text-neutral-100`}
             >
-              Selected Works
+              {t["home.selectedWorks.title"]}
             </BlurText>
           </div>
           <Reveal delay={0.2}>
             <Link
               href="/projects"
               className={`text-sm text-neutral-400 underline decoration-neutral-700 underline-offset-8 transition-colors duration-300 hover:text-neutral-100 hover:decoration-neutral-100 ${focusRing}`}
+              {...editable("home.selectedWorks.viewAll")}
             >
-              View all projects
+              {shown(t["home.selectedWorks.viewAll"])}
             </Link>
           </Reveal>
         </div>
@@ -100,19 +108,24 @@ export default function Home() {
           <BlurText
             as="h2"
             id="vision-title"
+            textKey="home.vision.title"
             className={`${titleMedium} text-neutral-100 md:col-span-4`}
           >
-            Vision
+            {t["home.vision.title"]}
           </BlurText>
           <Reveal delay={0.2} className="md:col-span-7 md:col-start-6">
-            <p className="text-xl leading-relaxed text-neutral-300 md:text-2xl md:leading-relaxed">
-              {site.vision}
+            <p
+              className="whitespace-pre-line text-xl leading-relaxed text-neutral-300 md:text-2xl md:leading-relaxed"
+              {...editable("home.vision.text")}
+            >
+              {shown(t["home.vision.text"])}
             </p>
             <Link
               href="/about"
               className={`mt-10 inline-block text-sm text-neutral-400 underline decoration-neutral-700 underline-offset-8 transition-colors duration-300 hover:text-neutral-100 hover:decoration-neutral-100 ${focusRing}`}
+              {...editable("home.vision.link")}
             >
-              More about me
+              {shown(t["home.vision.link"])}
             </Link>
           </Reveal>
         </div>

@@ -2,6 +2,7 @@
 
 import { motion, useInView, type Variants } from "motion/react";
 import { useId, useRef, useState } from "react";
+import { editable, type TextKey } from "../lib/texts-defaults";
 import { easeOut, titleReveal } from "./motion/easing";
 
 type Tag = "h1" | "h2" | "h3" | "p" | "span";
@@ -19,6 +20,8 @@ type Props = {
   /** true : l'animation ne se joue qu'une seule fois. */
   once?: boolean;
   id?: string;
+  /** Identifiant du texte : le rend modifiable en mode édition local. */
+  textKey?: TextKey;
 };
 
 const word: Variants = {
@@ -47,6 +50,7 @@ export default function BlurText({
   stagger = titleReveal.stagger,
   once = true,
   id,
+  textKey,
 }: Props) {
   const Tag = motion[as];
   const ref = useRef<HTMLHeadingElement>(null);
@@ -54,12 +58,16 @@ export default function BlurText({
   // Le filtre de bruit n'est actif que pendant l'animation (meilleures performances ensuite).
   const [animating, setAnimating] = useState(true);
   const filterId = `noise-${useId().replace(/[^a-zA-Z0-9_-]/g, "")}`;
-  const words = children.split(/\s+/).filter(Boolean);
+  const found = children.split(/\s+/).filter(Boolean);
+  // Texte vide : rien sur le site publié ; en mode édition local, un repère cliquable.
+  if (found.length === 0 && !(process.env.NODE_ENV === "development" && textKey)) return null;
+  const words = found.length > 0 ? found : ["(empty)"];
 
   return (
     <Tag
       ref={ref}
       id={id}
+      {...(textKey ? editable(textKey) : {})}
       className={className}
       initial="hidden"
       animate={inView ? "visible" : "hidden"}

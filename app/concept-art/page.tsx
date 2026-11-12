@@ -3,6 +3,7 @@ import LetsTalk from "../components/LetsTalk";
 import PageHeader from "../components/PageHeader";
 import { container } from "../components/styles";
 import { pageMetadata } from "../lib/metadata";
+import { getTexts } from "../lib/texts";
 
 export const metadata = pageMetadata({
   title: "Concept Art",
@@ -12,14 +13,15 @@ export const metadata = pageMetadata({
 });
 
 export default function ConceptArtPage() {
+  const t = getTexts();
   return (
     <div className={`${container} pt-32 md:pt-44`}>
-      <PageHeader label="Portfolio" title="Concept Art">
-        <p>
-          [À REMPLACER] A short introduction to your concept art: the characters and worlds
-          you design for video games and animation, and your process.
-        </p>
-      </PageHeader>
+      <PageHeader
+        label={t["conceptArt.eyebrow"]}
+        title={t["conceptArt.title"]}
+        intro={t["conceptArt.intro"]}
+        keys={{ label: "conceptArt.eyebrow", title: "conceptArt.title", intro: "conceptArt.intro" }}
+      />
       {/* Cartes créées automatiquement à partir des sous-dossiers de public/artworks/concept-art/ */}
       <GalleryOverview category="concept-art" />
       <LetsTalk />

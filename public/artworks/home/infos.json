@@ -1,11 +1,12 @@
 {
-  "01-bionic-1.webp": {
-    "position": "65% 17%"
+  "01-sicile.webp": {
+    "title": "environment"
   },
-  "03-library-final.webp": {
-    "title": "The Library"
+  "02-bionic-1.webp": {
+    "title": "chara design",
+    "position": "66% 16%"
   },
-  "04-nueva-cantina-final-1.webp": {
-    "title": "La Nueva Cantina"
+  "03-reproduction.webp": {
+    "title": "illustration"
   }
 }

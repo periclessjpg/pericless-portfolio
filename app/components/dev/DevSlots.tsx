@@ -8,6 +8,8 @@ import type { DevDropZoneProps } from "./DevDropZone";
 import type { DevFramingProps } from "./DevFraming";
 import type { DevHeroPanelProps } from "./DevHeroPanel";
 import type { DevReorderProps } from "./DevReorder";
+import type { DevTextEditorProps } from "./DevTextEditor";
+import type { DevTypographyPanelProps } from "./DevTypographyPanel";
 
 /** Tuile "Drop images here" (développement uniquement). */
 export async function DevDropZoneSlot(props: DevDropZoneProps) {
@@ -41,6 +43,24 @@ export async function DevReorderSlot(props: DevReorderProps) {
   if (process.env.NODE_ENV === "development") {
     const { default: DevReorder } = await import("./DevReorder");
     return <DevReorder {...props} />;
+  }
+  return null;
+}
+
+/** Modification des textes sur la page (développement uniquement). */
+export async function DevTextEditorSlot(props: DevTextEditorProps) {
+  if (process.env.NODE_ENV === "development") {
+    const { default: DevTextEditor } = await import("./DevTextEditor");
+    return <DevTextEditor {...props} />;
+  }
+  return null;
+}
+
+/** Panneau "Typography" (développement uniquement). */
+export async function DevTypographyPanelSlot(props: DevTypographyPanelProps) {
+  if (process.env.NODE_ENV === "development") {
+    const { default: DevTypographyPanel } = await import("./DevTypographyPanel");
+    return <DevTypographyPanel {...props} />;
   }
   return null;
 }
