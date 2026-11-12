@@ -1,8 +1,7 @@
+import { GalleryOverview } from "../components/GalleryViews";
 import LetsTalk from "../components/LetsTalk";
 import PageHeader from "../components/PageHeader";
-import SectionCards from "../components/SectionCards";
 import { container } from "../components/styles";
-import { conceptArtSections } from "../data/concept-art";
 import { pageMetadata } from "../lib/metadata";
 
 export const metadata = pageMetadata({
@@ -21,8 +20,8 @@ export default function ConceptArtPage() {
           you design for video games and animation, and your process.
         </p>
       </PageHeader>
-      {/* Les 3 cartes : Chara Design, Environment, All (définies dans app/data/concept-art.ts) */}
-      <SectionCards sections={conceptArtSections} />
+      {/* Cartes créées automatiquement à partir des sous-dossiers de public/artworks/concept-art/ */}
+      <GalleryOverview category="concept-art" />
       <LetsTalk />
     </div>
   );

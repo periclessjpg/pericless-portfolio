@@ -1,8 +1,7 @@
+import { GalleryOverview } from "../components/GalleryViews";
 import LetsTalk from "../components/LetsTalk";
 import PageHeader from "../components/PageHeader";
-import ProjectBannerList from "../components/ProjectBannerList";
 import { container } from "../components/styles";
-import { getProjectsByCategory } from "../data/projects";
 import { pageMetadata } from "../lib/metadata";
 
 export const metadata = pageMetadata({
@@ -20,7 +19,8 @@ export default function IllustrationPage() {
           the clients or projects, and your influences.
         </p>
       </PageHeader>
-      <ProjectBannerList projects={getProjectsByCategory("Illustration")} preloadFirst />
+      {/* Images de public/artworks/illustration/ (cartes dès qu'il y a des sous-dossiers) */}
+      <GalleryOverview category="illustration" />
       <LetsTalk />
     </div>
   );

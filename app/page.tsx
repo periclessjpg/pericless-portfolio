@@ -1,14 +1,17 @@
 import Link from "next/link";
 import BlurText from "./components/BlurText";
 import Reveal from "./components/motion/Reveal";
+import ComingSoon from "./components/ComingSoon";
+import { DevDropZoneSlot } from "./components/dev/DevSlots";
 import FullscreenProjects from "./components/FullscreenProjects";
 import ScrollIndicator from "./components/ScrollIndicator";
 import { container, eyebrow, focusRing, titleMedium } from "./components/styles";
-import { getFeaturedProjects } from "./data/projects";
+import { folders, getHomeArtworks } from "./lib/artworks";
 import { site } from "./data/site";
 
 export default function Home() {
-  const featured = getFeaturedProjects();
+  // Images du dossier public/artworks/home/
+  const featured = getHomeArtworks();
 
   return (
     <>
@@ -32,7 +35,7 @@ export default function Home() {
         </Reveal>
       </section>
 
-      {/* SELECTED WORKS : 6 projets mis en avant (featured: true), en plein écran */}
+      {/* SELECTED WORKS : images du dossier public/artworks/home/, en plein écran */}
       <section
         id="selected-works"
         aria-labelledby="selected-works-title"
@@ -60,7 +63,15 @@ export default function Home() {
             </Link>
           </Reveal>
         </div>
-        <FullscreenProjects projects={featured} />
+        {featured.length > 0 ? (
+          <FullscreenProjects artworks={featured} />
+        ) : (
+          <ComingSoon folder={folders.home} className={container} />
+        )}
+        {/* Mode édition local (npm run dev uniquement) */}
+        <div className={container}>
+          <DevDropZoneSlot category="home" variant="fullscreen" />
+        </div>
       </section>
 
       {/* VISION : court texte + lien vers About */}

@@ -1,0 +1,17 @@
+CONCEPT ART > CHARACTER DESIGN
+Glisse ici tes images de character design.
+Elles apparaissent dans la carte "Character Design" de la page Concept Art, et aussi dans "All".
+
+FORMATS ACCEPTÉS : .jpg .jpeg .png .webp .avif
+TAILLE CONSEILLÉE : côté le plus long environ 2400 px, idéalement moins de 1,5 Mo (WebP ou JPG).
+
+NOMMER LES FICHIERS
+- Le numéro au début fixe l'ordre et n'est pas affiché : 01-dragon-knight.webp, 02-forest-temple.jpg
+- Le titre est déduit du nom : "01-dragon-knight.webp" devient "Dragon Knight".
+- Préfère des noms simples : minuscules, chiffres et tirets, sans espaces ni accents.
+- Pour masquer une image sans la supprimer, ajoute "_" devant son nom : _brouillon.jpg
+
+OPTION : un fichier infos.json dans ce dossier permet de changer le titre, l'année,
+la description ou le texte alternatif d'une image. Voir docs/AJOUTER_MES_IMAGES.md.
+
+Ce fichier LISEZ-MOI.txt est ignoré par le site : tu peux le laisser ici.

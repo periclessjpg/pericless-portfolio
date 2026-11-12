@@ -1,9 +1,13 @@
 import Image from "next/image";
+import ArtworkGrid from "../components/ArtworkGrid";
 import BlurText from "../components/BlurText";
+import ComingSoon from "../components/ComingSoon";
+import { DevDropZoneSlot } from "../components/dev/DevSlots";
 import Reveal from "../components/motion/Reveal";
 import PageHeader from "../components/PageHeader";
 import { container, eyebrow, focusRing, titleMedium } from "../components/styles";
-import { isSvg } from "../data/projects";
+import { site } from "../data/site";
+import { folders, getAboutArtworks } from "../lib/artworks";
 import { pageMetadata } from "../lib/metadata";
 
 export const metadata = pageMetadata({
@@ -13,15 +17,6 @@ export const metadata = pageMetadata({
 });
 
 // ───────────── Contenu de la page (à remplacer) ─────────────
-
-// Ton portrait : mets ta photo dans public/artworks/about/portrait.jpg,
-// puis remplace src, alt, width et height ci-dessous.
-const portrait = {
-  src: "/placeholders/portrait-4x5.svg",
-  alt: "[À REMPLACER] Portrait of Rayan Houstti",
-  width: 1200,
-  height: 1500,
-};
 
 const bio = [
   "[À REMPLACER] Paragraph 1: who you are, where you are based and what you do (concept art, illustration, graphic design).",
@@ -50,6 +45,9 @@ const experience = [
 // ─────────────────────────────────────────────────────────────
 
 export default function AboutPage() {
+  // Portrait et photos : dossier public/artworks/about/ (le portrait se nomme portrait.jpg).
+  const { portrait, others } = getAboutArtworks(`Portrait of ${site.name}`);
+
   return (
     <div className={`${container} pt-32 md:pt-44`}>
       <PageHeader label="About" title="[À REMPLACER] Hello, I'm Rayan Houstti." />
@@ -58,15 +56,21 @@ export default function AboutPage() {
         {/* Portrait */}
         <Reveal className="md:col-span-5">
           <div className="relative aspect-[4/5] overflow-hidden bg-neutral-900">
-            <Image
-              src={portrait.src}
-              alt={portrait.alt}
-              fill
-              preload
-              sizes="(min-width: 768px) 40vw, 100vw"
-              unoptimized={isSvg(portrait.src)}
-              className="object-cover"
-            />
+            {portrait ? (
+              <Image
+                src={portrait.src}
+                alt={portrait.alt}
+                fill
+                preload
+                sizes="(min-width: 768px) 40vw, 100vw"
+                className="object-cover"
+              />
+            ) : (
+              <ComingSoon
+                folder={folders.about}
+                className="flex h-full flex-col justify-center border-none px-6"
+              />
+            )}
           </div>
         </Reveal>
 
@@ -125,6 +129,16 @@ export default function AboutPage() {
           </section>
         </div>
       </div>
+
+      {/* Autres photos du dossier public/artworks/about/ (grille simple) */}
+      {others.length > 0 && (
+        <section aria-label="Photos" className="mt-32">
+          <ArtworkGrid artworks={others} captions={false} />
+        </section>
+      )}
+
+      {/* Mode édition local (npm run dev uniquement) : la première image sert de portrait */}
+      <DevDropZoneSlot category="about" variant="portrait" />
     </div>
   );
 }

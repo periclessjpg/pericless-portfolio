@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import { DevEditBannerSlot } from "./components/dev/DevSlots";
 import MotionProvider from "./components/motion/MotionProvider";
 import { site } from "./data/site";
 import { siteUrl } from "./lib/metadata";
@@ -60,6 +61,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             {children}
           </main>
           <Footer />
+          {/* Bannière "Local edit mode" (npm run dev uniquement) */}
+          <DevEditBannerSlot />
         </MotionProvider>
       </body>
     </html>
