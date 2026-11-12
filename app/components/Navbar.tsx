@@ -3,7 +3,7 @@
 import { AnimatePresence, motion, type Variants } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore, type KeyboardEvent } from "react";
 import { site } from "../data/site";
 import { easeOut } from "./motion/easing";
 import { container, focusRing, label } from "./styles";
@@ -29,6 +29,19 @@ const item: Variants = {
   closed: { opacity: 0, y: -12, transition: { duration: 0.3, ease: easeOut } },
 };
 
+/** true dès que la page a défilé de quelques pixels (fond de la barre du haut). */
+function subscribeScroll(callback: () => void) {
+  window.addEventListener("scroll", callback, { passive: true });
+  return () => window.removeEventListener("scroll", callback);
+}
+function useScrolled() {
+  return useSyncExternalStore(
+    subscribeScroll,
+    () => window.scrollY > 24,
+    () => false,
+  );
+}
+
 /** Le lien est actif sur sa page et ses sous-pages. */
 function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
@@ -41,6 +54,7 @@ export default function Navbar() {
   const [openOn, setOpenOn] = useState<string | null>(null);
   const open = openOn === pathname;
 
+  const scrolled = useScrolled();
   const headerRef = useRef<HTMLElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const firstLinkRef = useRef<HTMLAnchorElement>(null);
@@ -103,9 +117,12 @@ export default function Navbar() {
         )}
       </AnimatePresence>
 
+      {/* Barre transparente en haut de la page ; fond sombre discret dès qu'on fait défiler */}
       <div
-        className={`relative z-10 transition-colors duration-700 ${
-          open ? "bg-transparent" : "bg-neutral-950/80 backdrop-blur-md"
+        className={`relative z-10 transition-[background-color,backdrop-filter] duration-700 ${
+          scrolled && !open
+            ? "bg-neutral-950/80 backdrop-blur-md"
+            : "bg-transparent [text-shadow:0_1px_12px_rgb(0_0_0/0.45)]"
         }`}
       >
         <div className={`${container} flex items-start justify-between gap-6 py-5 md:py-6`}>

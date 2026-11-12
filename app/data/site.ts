@@ -11,8 +11,10 @@ export const site = {
   name: "Rayan Houstti",
   /** Texte en haut à gauche, au-dessus de ton nom. */
   title: "Concept Artist & Illustrator",
-  // Accroche et description : traduction en anglais de tes textes actuels.
-  tagline: "Concept art for video games and animation.",
+  // Accroche affichée dans le hero de l'accueil. Laisse "" pour ne rien afficher
+  // (ancienne accroche : "Concept art for video games and animation.").
+  tagline: "",
+  // Description (Google et aperçus de partage) : traduction en anglais de tes textes actuels.
   description:
     "Portfolio of Rayan Houstti (Pericless), concept artist, illustrator and graphic designer specializing in video games and animation.",
   vision:

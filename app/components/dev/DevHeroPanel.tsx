@@ -268,6 +268,7 @@ export default function DevHeroPanel({ settings, images }: DevHeroPanelProps) {
               />
             </label>
           </>,
+          "Size and color apply to the tagline (set it in app/data/site.ts, currently empty). Position also moves “Scroll to explore”.",
         )}
         {group(
           "Animation",

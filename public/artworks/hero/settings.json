@@ -1,0 +1,23 @@
+{
+  "image": "03-le-peuple-vaincra-4k.webp",
+  "height": 100,
+  "imageOpacity": 100,
+  "zoom": 100,
+  "blur": 3,
+  "grayscale": 0,
+  "saturation": 110,
+  "brightness": 100,
+  "contrast": 92,
+  "overlayColor": "#0a0a0a",
+  "overlayOpacity": 25,
+  "gradient": "bottom-left",
+  "gradientStrength": 100,
+  "textVertical": "center",
+  "textHorizontal": "left",
+  "textSize": 27,
+  "textColor": "#e5e5e5",
+  "showScroll": false,
+  "animation": "fade",
+  "animationDuration": 1.3,
+  "parallax": 0
+}

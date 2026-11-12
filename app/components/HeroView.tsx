@@ -17,7 +17,7 @@ type Props = {
   image: { src: string; alt: string; position?: string } | null;
   /** Titre principal de la page (invisible à l'écran, lu par Google et les lecteurs d'écran). */
   title: string;
-  /** Accroche affichée. */
+  /** Accroche affichée ("" = aucune). */
   tagline: string;
   /** Section vers laquelle mène "Scroll to explore". */
   scrollTarget: string;
@@ -112,12 +112,14 @@ export default function HeroView({ settings, image, title, tagline, scrollTarget
           <h1 id="hero-title" className="sr-only">
             {title}
           </h1>
-          {/* Accroche : apparaît mot par mot au chargement */}
-          <div style={{ fontSize: "var(--hero-text-size)", color: "var(--hero-text-color)" }}>
-            <BlurText as="p" delay={0.2} className="max-w-xl leading-snug">
-              {tagline}
-            </BlurText>
-          </div>
+          {/* Accroche (facultative, app/data/site.ts) : apparaît mot par mot au chargement */}
+          {tagline && (
+            <div style={{ fontSize: "var(--hero-text-size)", color: "var(--hero-text-color)" }}>
+              <BlurText as="p" delay={0.2} className="max-w-xl leading-snug">
+                {tagline}
+              </BlurText>
+            </div>
+          )}
         </div>
 
         <div style={scrollPosition}>
