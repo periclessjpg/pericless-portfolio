@@ -158,7 +158,11 @@ export default function Navbar({ portfolio = null }: NavbarProps) {
       >
         <div className={`${container} flex items-start justify-between gap-6 py-5 md:py-6`}>
           {/* En haut à gauche : métier puis nom, sur deux lignes (ramène à l'accueil) */}
-          <Link href={localizeHref("/", locale)} className={`${labelStyle} flex flex-col gap-1 text-neutral-100 ${focusRing}`}>
+          <Link
+            href={localizeHref("/", locale)}
+            // min-w-0 : sur petit écran, le texte passe à la ligne au lieu de pousser le menu hors de l'écran.
+            className={`${labelStyle} flex min-w-0 flex-col gap-1 break-words text-neutral-100 ${focusRing}`}
+          >
             {/* À l'arrivée sur le site : métier puis nom apparaissent l'un après l'autre
                 (fondu mot par mot avec léger grain, petit glissement vers le haut). Une seule fois :
                 la barre du haut n'est pas rechargée quand on change de page. */}
@@ -192,25 +196,24 @@ export default function Navbar({ portfolio = null }: NavbarProps) {
             </Reveal>
           </Link>
 
-          <div className="flex items-baseline gap-5 md:gap-8">
-          {/* Choix de la langue : EN / FR, à gauche du bouton Menu */}
-          {/* Accueil uniquement : télécharger le portfolio PDF (s'il existe) */}
+          {/* shrink-0 : FR et Menu ne sont jamais écrasés ni poussés hors de l'écran */}
+          <div className="flex shrink-0 items-baseline gap-4 sm:gap-5 md:gap-8">
+          {/* Accueil, à partir de la tablette : télécharger le portfolio PDF (s'il existe).
+              Sur téléphone, il est dans le menu (manque de place dans la barre). */}
           {portfolio && path === "/" && (
             <a
               href={portfolio.href}
               download={portfolio.fileName}
-              className={`[font-family:var(--type-body-family,var(--font-geist-sans))] [font-weight:var(--type-body-weight,400)] text-sm uppercase tracking-[0.2em] text-neutral-100 underline decoration-neutral-600 underline-offset-8 transition-colors duration-300 hover:decoration-neutral-100 sm:text-base ${focusRing}`}
+              className={`hidden sm:inline [font-family:var(--type-body-family,var(--font-geist-sans))] [font-weight:var(--type-body-weight,400)] text-sm uppercase tracking-[0.2em] text-neutral-100 underline decoration-neutral-600 underline-offset-8 transition-colors duration-300 hover:decoration-neutral-100 sm:text-base ${focusRing}`}
             >
-              <span className="sm:hidden" {...editable("nav.portfolio.short")}>
-                {shown(t["nav.portfolio.short"])}
-              </span>
-              <span className="hidden sm:inline" {...editable("nav.portfolio")}>
+              <span {...editable("nav.portfolio")}>
                 {shown(t["nav.portfolio"])}
               </span>
               <span aria-hidden="true"> ↓</span>
               <span className="sr-only"> (PDF)</span>
             </a>
           )}
+          {/* Choix de la langue (FR / EN), à gauche du bouton Menu */}
           <LanguageSwitcher />
 
           <div className="relative">
@@ -268,6 +271,21 @@ export default function Navbar({ portfolio = null }: NavbarProps) {
                         </motion.li>
                       );
                     })}
+                    {/* Téléphone uniquement : télécharger le portfolio PDF, en dernier dans le menu */}
+                    {portfolio && (
+                      <motion.li key="portfolio" variants={item} className="sm:hidden">
+                        <a
+                          href={portfolio.href}
+                          download={portfolio.fileName}
+                          onClick={() => setOpenOn(null)}
+                          className={`${labelStyle} whitespace-nowrap text-neutral-400 transition-colors duration-300 hover:text-neutral-100 ${focusRing}`}
+                        >
+                          <span {...editable("nav.portfolio.short")}>{shown(t["nav.portfolio.short"])}</span>
+                          <span aria-hidden="true"> ↓</span>
+                          <span className="sr-only"> (PDF)</span>
+                        </a>
+                      </motion.li>
+                    )}
                   </motion.ul>
                 )}
               </AnimatePresence>
