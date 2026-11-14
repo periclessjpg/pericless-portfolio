@@ -9,6 +9,13 @@ export type SocialLink = {
 export const site = {
   /** Ton nom : barre du haut, pied de page, titres des onglets, aperçus de partage. */
   name: "Rayan Houstti",
+  /** Ton nom d'artiste (Google : "aussi connu sous le nom de"). */
+  alternateName: "Pericless",
+  /** Ville et pays (Google). Laisse "" pour ne pas les indiquer. */
+  city: "Montpellier",
+  country: "FR",
+  /** École (Google). Laisse "" pour ne pas l'indiquer. */
+  school: "ESMA Montpellier",
   /** Texte en haut à gauche, au-dessus de ton nom. */
   title: "Concept Artist & Illustrator",
   // Accroche affichée dans le hero de l'accueil. Laisse "" pour ne rien afficher

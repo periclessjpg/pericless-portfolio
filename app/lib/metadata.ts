@@ -3,14 +3,8 @@ import { site } from "../data/site";
 import { DEFAULT_LOCALE, LOCALES, OG_LOCALES, localizeHref, type Locale, type Localized } from "./i18n";
 import { getLocale } from "./locale";
 
-/**
- * Adresse publique du site, utilisée pour les aperçus de partage (Open Graph).
- * Sur Vercel, elle est fournie automatiquement : c'est ton domaine, https://www.rayanhoustti.com
- * (rayanhoustti.com redirige vers www). En local : http://localhost:3000.
- */
-export const siteUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
-  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-  : "http://localhost:3000";
+/** Adresse publique du site (définie dans site-url.ts), utilisée pour les aperçus de partage (Open Graph). */
+export { siteUrl } from "./site-url";
 
 /** Description générale du site (Google et aperçus de partage). */
 export const siteDescription: Localized = {

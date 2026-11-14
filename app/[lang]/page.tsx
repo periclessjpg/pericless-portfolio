@@ -5,6 +5,7 @@ import ComingSoon from "../components/ComingSoon";
 import { DevDropZoneSlot, DevFramingSlot, DevHeroPanelSlot, DevReorderSlot } from "../components/dev/DevSlots";
 import FullscreenProjects from "../components/FullscreenProjects";
 import HeroView from "../components/HeroView";
+import PersonJsonLd from "../components/PersonJsonLd";
 import { container, eyebrow, focusRing, titleMedium } from "../components/styles";
 import { folders, getHero, getHomeArtworks } from "../lib/artworks";
 import { localHref } from "../lib/locale";
@@ -21,6 +22,8 @@ export default async function Home() {
 
   return (
     <>
+      {/* Fiche pour Google (invisible) : qui tu es, ton métier, tes réseaux */}
+      <PersonJsonLd />
       {/* HERO : entièrement réglable (public/artworks/hero/settings.json ou panneau "Customize hero" en local) */}
       <HeroView
         settings={hero.settings}
