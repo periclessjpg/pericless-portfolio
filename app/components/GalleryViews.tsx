@@ -17,6 +17,7 @@ function toBanner(artwork: Artwork): BannerItem {
     kind: artwork.kind,
     image: { src: artwork.src, alt: artwork.alt, width: artwork.width, height: artwork.height },
     position: artwork.position,
+    positionMobile: artwork.positionMobile,
     framingId: artwork.id,
   };
 }
@@ -42,7 +43,7 @@ function cardImage(
   choices: Record<string, string>,
   /** Images déjà utilisées par d'autres cartes : évitées si aucun choix n'est enregistré. */
   avoid: Set<string> = new Set(),
-): Pick<SectionCard, "image" | "position" | "framingId" | "picker"> {
+): Pick<SectionCard, "image" | "position" | "positionMobile" | "framingId" | "picker"> {
   const chosen =
     artworks.find((artwork) => artwork.id === choices[card]) ??
     artworks.find((artwork) => !avoid.has(artwork.id)) ??
@@ -57,6 +58,7 @@ function cardImage(
   return {
     image: { src: chosen.src, alt: chosen.alt, width: chosen.width, height: chosen.height },
     position: chosen.position,
+    positionMobile: chosen.positionMobile,
     framingId: chosen.id,
     picker,
   };

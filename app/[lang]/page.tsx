@@ -24,7 +24,14 @@ export default async function Home() {
       {/* HERO : entièrement réglable (public/artworks/hero/settings.json ou panneau "Customize hero" en local) */}
       <HeroView
         settings={hero.settings}
-        image={hero.image && { src: hero.image.src, alt: hero.image.alt, position: hero.image.position }}
+        image={
+          hero.image && {
+            src: hero.image.src,
+            alt: hero.image.alt,
+            position: hero.image.position,
+            positionMobile: hero.image.positionMobile,
+          }
+        }
         title={`${t["nav.name"]}, ${t["nav.title"]}`}
         tagline={t["home.tagline"]}
         scrollLabel={t["common.scroll"]}
@@ -32,7 +39,12 @@ export default async function Home() {
         imageTools={
           hero.image && (
             // Mode édition local : cadrage, remplacement, suppression de l'image de fond
-            <DevFramingSlot id={hero.image.id} src={hero.image.src} position={hero.image.position} />
+            <DevFramingSlot
+              id={hero.image.id}
+              src={hero.image.src}
+              position={hero.image.position}
+              positionMobile={hero.image.positionMobile}
+            />
           )
         }
         editTools={

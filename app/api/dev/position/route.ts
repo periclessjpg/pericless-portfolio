@@ -1,4 +1,5 @@
-// MODE ÉDITION LOCAL : enregistre le cadrage d'une image (champ "position" de infos.json).
+// MODE ÉDITION LOCAL : enregistre le cadrage d'une image dans infos.json : champ "position"
+// (ordinateur) ou "positionMobile" (téléphones, quand target = "mobile").
 // Sur le site publié (production), cette adresse répond toujours 404.
 //
 // Mêmes protections que l'envoi d'images : développement uniquement, requêtes locales
@@ -24,7 +25,7 @@ export async function POST(request: Request) {
   const forbidden = checkLocalRequest(request);
   if (forbidden) return errorResponse(forbidden, 403);
 
-  let body: { id?: unknown; x?: unknown; y?: unknown; reset?: unknown };
+  let body: { id?: unknown; x?: unknown; y?: unknown; reset?: unknown; target?: unknown };
   try {
     body = await request.json();
   } catch {
@@ -43,6 +44,9 @@ export async function POST(request: Request) {
     return errorResponse("Invalid position");
   }
 
+  // Champ modifié : cadrage ordinateur ou téléphone.
+  const field = body.target === "mobile" ? "positionMobile" : "position";
+
   // Mise à jour de infos.json (le reste du fichier est conservé).
   const infosPath = path.resolve(target.dir, "infos.json");
   let infos: Record<string, Record<string, unknown>> = {};
@@ -55,14 +59,14 @@ export async function POST(request: Request) {
   }
 
   const entry = { ...(infos[target.fileName] ?? {}) };
-  if (reset) delete entry.position;
-  else entry.position = `${x}% ${y}%`;
+  if (reset) delete entry[field];
+  else entry[field] = `${x}% ${y}%`;
 
   if (Object.keys(entry).length > 0) infos[target.fileName] = entry;
   else delete infos[target.fileName];
 
   fs.writeFileSync(infosPath, `${JSON.stringify(infos, null, 2)}\n`);
-  return Response.json({ position: reset ? null : `${x}% ${y}%` });
+  return Response.json({ field, position: reset ? null : `${x}% ${y}%` });
 }
 
 /** Toute autre méthode (ex. simple visite de l'adresse) : 404, en développement comme en production. */

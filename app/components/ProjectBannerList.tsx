@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { framingClass, framingStyle } from "../lib/framing";
 import BlurText from "./BlurText";
 import { LightboxProvider, LightboxTrigger } from "./Lightbox";
 import { DevFramingSlot } from "./dev/DevSlots";
@@ -15,6 +16,8 @@ export type BannerItem = {
   image: { src: string; alt: string; width: number; height: number };
   /** Cadrage de l'image recadrée (ex. "50% 20%"), centre par défaut. */
   position?: string;
+  /** Cadrage téléphone (absent = même que position). */
+  positionMobile?: string;
   /** Chemin de l'image dans public/artworks, pour le réglage du cadrage en mode édition local. */
   framingId?: string;
   /** Si présent, toute la bande est un lien vers cette adresse. */
@@ -58,8 +61,8 @@ export default function ProjectBannerList({ items, preloadFirst = false }: Props
                 fill
                 sizes="(min-width: 1536px) 704px, (min-width: 768px) 50vw, 100vw"
                 preload={preloadFirst && index === 0}
-                style={{ objectPosition: item.position }}
-                className={`object-cover transition-transform duration-700 ${ease} group-hover/row:scale-[1.03] group-focus-visible/row:scale-[1.03] motion-reduce:scale-100!`}
+                style={framingStyle(item.position, item.positionMobile)}
+                className={`${framingClass} object-cover transition-transform duration-700 ${ease} group-hover/row:scale-[1.03] group-focus-visible/row:scale-[1.03] motion-reduce:scale-100!`}
               />
 
               {/* Dégradé sombre en bas, pour que le texte reste lisible sur toutes les images */}
@@ -95,7 +98,7 @@ export default function ProjectBannerList({ items, preloadFirst = false }: Props
                 // Clic : ouvre l'image en grand dans la visionneuse.
                 <LightboxTrigger
                   index={index}
-                  href={item.image.src}
+                  label={item.image.alt}
                   className={`${rowClass} cursor-zoom-in focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-neutral-100`}
                 >
                   {content}
@@ -103,7 +106,12 @@ export default function ProjectBannerList({ items, preloadFirst = false }: Props
               )}
               {/* Mode édition local : réglage du cadrage (posé à côté du lien, jamais dedans) */}
               {item.framingId && (
-                <DevFramingSlot id={item.framingId} src={item.image.src} position={item.position} />
+                <DevFramingSlot
+                  id={item.framingId}
+                  src={item.image.src}
+                  position={item.position}
+                  positionMobile={item.positionMobile}
+                />
               )}
             </StaggerItem>
           );

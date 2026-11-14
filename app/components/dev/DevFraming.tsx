@@ -2,14 +2,16 @@
 
 // MODE ÉDITION LOCAL : barre d'outils posée sur chaque image (uniquement pendant `npm run dev`) :
 // - "Adjust framing" : un clic sur l'image choisit la zone à garder visible, "Save" l'enregistre
-//   dans infos.json via /api/dev/position ;
+//   dans infos.json via /api/dev/position. Sur un écran de téléphone (aperçu "Phone" de la
+//   bannière, ou vrai téléphone), c'est le cadrage propre aux téléphones qui est réglé ;
+
 // - "Replace" : remplace l'image par une nouvelle (même place, même titre) via /api/dev/replace ;
 // - "Delete" : après confirmation, déplace l'image dans la corbeille .artworks-trash/ via /api/dev/delete.
 
 import { useRouter } from "next/navigation";
 import { useRef, useState, type ChangeEvent, type KeyboardEvent, type MouseEvent } from "react";
 import { focusRing } from "../styles";
-import { useToolsVisible } from "./edit-mode-store";
+import { useIsPhone, useToolsVisible } from "./edit-mode-store";
 
 export type DevFramingProps = {
   /** Chemin de l'image dans public/artworks (ex. "home/01-hero.webp"). */
@@ -18,6 +20,8 @@ export type DevFramingProps = {
   src: string;
   /** Cadrage actuel, ex. "50% 20%" (centre par défaut). */
   position?: string;
+  /** Cadrage téléphone actuel (absent = même que le cadrage ordinateur). */
+  positionMobile?: string;
   /** false pour une image jamais recadrée (pas de bouton "Adjust framing"). */
   framing?: boolean;
 };
@@ -29,11 +33,14 @@ function parse(position?: string) {
 
 const buttonClass = `rounded-full bg-neutral-950/85 px-3 py-1.5 text-[0.65rem] uppercase tracking-[0.2em] text-neutral-100 backdrop-blur-sm hover:bg-neutral-900 disabled:opacity-50 ${focusRing}`;
 
-export default function DevFraming({ id, src, position, framing = true }: DevFramingProps) {
+export default function DevFraming({ id, src, position, positionMobile, framing = true }: DevFramingProps) {
   const router = useRouter();
   const visible = useToolsVisible();
+  // Écran de téléphone : on règle le cadrage téléphone (qui part du cadrage ordinateur s'il n'existe pas).
+  const phone = useIsPhone();
+  const current = phone ? (positionMobile ?? position) : position;
   const [editing, setEditing] = useState(false);
-  const [point, setPoint] = useState(() => parse(position));
+  const [point, setPoint] = useState(() => parse(current));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -43,7 +50,7 @@ export default function DevFraming({ id, src, position, framing = true }: DevFra
   if (!visible) return null;
 
   function start() {
-    setPoint(parse(position));
+    setPoint(parse(current));
     setError("");
     setEditing(true);
   }
@@ -85,7 +92,11 @@ export default function DevFraming({ id, src, position, framing = true }: DevFra
       const response = await fetch("/api/dev/position", {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-dev-upload": "1" },
-        body: JSON.stringify(reset ? { id, reset: true } : { id, x: point.x, y: point.y }),
+        body: JSON.stringify({
+          id,
+          target: phone ? "mobile" : "desktop",
+          ...(reset ? { reset: true } : { x: point.x, y: point.y }),
+        }),
       });
       const data = await response.json();
       if (!response.ok) {
@@ -180,7 +191,7 @@ export default function DevFraming({ id, src, position, framing = true }: DevFra
             <>
               {framing && (
                 <button type="button" onClick={start} className={buttonClass}>
-                  Adjust framing
+                  {phone ? "Adjust framing (phone)" : "Adjust framing"}
                 </button>
               )}
               <button type="button" onClick={() => replaceInput.current?.click()} className={buttonClass}>
@@ -238,6 +249,7 @@ export default function DevFraming({ id, src, position, framing = true }: DevFra
 
       <div className="absolute right-3 top-3 flex flex-wrap justify-end gap-2">
         <span className="rounded-full bg-neutral-950/85 px-3 py-1.5 text-[0.65rem] tabular-nums text-amber-200">
+          {phone ? "Phone · " : ""}
           {point.x}% {point.y}%
         </span>
         <button type="button" onClick={() => save()} disabled={saving} className={buttonClass}>

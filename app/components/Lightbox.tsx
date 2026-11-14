@@ -216,32 +216,31 @@ export function LightboxProvider({ items, children }: { items: LightboxItem[]; c
 
 /**
  * Rend son contenu cliquable pour ouvrir l'image `index` dans la visionneuse.
- * C'est un lien vers l'image elle-même : sans JavaScript, il l'ouvre directement.
+ * C'est un bouton (et non un lien vers le fichier de l'image) : un visiteur ne peut pas
+ * ouvrir l'image seule dans un nouvel onglet pour l'enregistrer.
  */
 export function LightboxTrigger({
   index,
-  href,
+  label,
   className,
   children,
 }: {
   index: number;
-  href: string;
+  /** Nom lu par les lecteurs d'écran (titre de l'image). */
+  label: string;
   className?: string;
   children: ReactNode;
 }) {
   const open = useContext(LightboxContext);
   return (
-    <a
-      href={href}
+    <button
+      type="button"
       aria-haspopup="dialog"
-      className={className}
-      onClick={(event) => {
-        if (!open || event.metaKey || event.ctrlKey || event.shiftKey) return;
-        event.preventDefault();
-        open(index, event.currentTarget);
-      }}
+      aria-label={label}
+      className={`w-full text-left ${className ?? ""}`}
+      onClick={(event) => open?.(index, event.currentTarget)}
     >
       {children}
-    </a>
+    </button>
   );
 }

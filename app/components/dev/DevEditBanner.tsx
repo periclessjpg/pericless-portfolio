@@ -2,10 +2,14 @@
 
 // MODE ÉDITION LOCAL : bannière en bas de l'écran, visible uniquement pendant `npm run dev`.
 // - "Show tools" : affiche ou masque tous les outils d'édition (pour voir le site comme un visiteur) ;
-// - "Edit texts" : un clic sur un texte l'ouvre pour le modifier (désactivé = navigation normale).
+// - "Edit texts" : un clic sur un texte l'ouvre pour le modifier (désactivé = navigation normale) ;
+// - "Phone" : affiche le site à la taille d'un téléphone pour régler les versions téléphone
+//   (cadrage des images, hero). Dans cet aperçu, la bannière indique "Phone view".
 
+import { useState } from "react";
 import { focusRing, label } from "../styles";
-import { setTextMode, setToolsVisible, useTextMode, useToolsVisible } from "./edit-mode-store";
+import DevPhonePreview from "./DevPhonePreview";
+import { setTextMode, setToolsVisible, useInPhonePreview, useTextMode, useToolsVisible } from "./edit-mode-store";
 
 function Switch({ on, onToggle, children }: { on: boolean; onToggle: () => void; children: string }) {
   return (
@@ -32,6 +36,8 @@ function Switch({ on, onToggle, children }: { on: boolean; onToggle: () => void;
 export default function DevEditBanner() {
   const visible = useToolsVisible();
   const textMode = useTextMode();
+  const inPhone = useInPhonePreview();
+  const [phoneOpen, setPhoneOpen] = useState(false);
 
   return (
     <div
@@ -40,7 +46,7 @@ export default function DevEditBanner() {
       className="fixed bottom-4 left-4 z-[60] flex flex-wrap items-center gap-x-3 gap-y-1 rounded-3xl border border-dashed border-amber-400/60 bg-neutral-950/90 py-2 pl-4 pr-2 text-amber-200 backdrop-blur-md"
       style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
-      <span className={`${label} text-[0.65rem] sm:text-xs`}>Local edit mode</span>
+      <span className={`${label} text-[0.65rem] sm:text-xs`}>{inPhone ? "Phone view" : "Local edit mode"}</span>
       <Switch on={visible} onToggle={() => setToolsVisible(!visible)}>
         Show tools
       </Switch>
@@ -49,6 +55,13 @@ export default function DevEditBanner() {
           Edit texts
         </Switch>
       )}
+      {/* Aperçu téléphone (pas à l'intérieur de l'aperçu lui-même) */}
+      {!inPhone && (
+        <Switch on={phoneOpen} onToggle={() => setPhoneOpen(!phoneOpen)}>
+          Phone
+        </Switch>
+      )}
+      {phoneOpen && <DevPhonePreview onClose={() => setPhoneOpen(false)} />}
     </div>
   );
 }

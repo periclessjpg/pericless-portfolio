@@ -45,6 +45,8 @@ export type Artwork = {
   category: string;
   /** Cadrage quand l'image est recadrée (CSS object-position, ex. "50% 20%"). */
   position?: string;
+  /** Cadrage propre aux téléphones (champ "positionMobile" de infos.json) ; absent = même que "position". */
+  positionMobile?: string;
   /** Page vers laquelle mène un clic sur l'image (champ "link" de infos.json, adresse interne). */
   link?: string;
 };
@@ -88,7 +90,7 @@ const collator = new Intl.Collator("en", { numeric: true, sensitivity: "base" })
 
 type Infos = Record<
   string,
-  { title?: string; year?: number; description?: string; alt?: string; position?: string; link?: string }
+  { title?: string; year?: number; description?: string; alt?: string; position?: string; positionMobile?: string; link?: string }
 >;
 
 /** Accepte seulement une adresse interne au site (ex. "/concept-art/environments"). */
@@ -182,6 +184,7 @@ function readImages(parts: string[], kind: string, category: string): Artwork[] 
       year: typeof info.year === "number" ? info.year : undefined,
       description: info.description?.trim() || undefined,
       position: readPosition(info.position),
+      positionMobile: readPosition(info.positionMobile),
       link: readLink(info.link),
       kind,
       category,

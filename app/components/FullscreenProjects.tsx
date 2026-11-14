@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Artwork } from "../lib/artworks";
+import { framingClass, framingStyle } from "../lib/framing";
 import { localizeHref } from "../lib/i18n";
 import { getLocale } from "../lib/locale";
 import BlurText from "./BlurText";
@@ -34,8 +35,8 @@ export default async function FullscreenProjects({ artworks }: Props) {
               alt={artwork.alt}
               fill
               sizes="100vw"
-              style={{ objectPosition: artwork.position }}
-              className="object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03] group-focus-visible:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100 motion-reduce:group-focus-visible:scale-100"
+              style={framingStyle(artwork.position, artwork.positionMobile)}
+              className={`${framingClass} object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03] group-focus-visible:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100 motion-reduce:group-focus-visible:scale-100`}
             />
 
             {/* Dégradé sombre en bas, pour que la légende reste lisible sur toutes les images */}
@@ -82,7 +83,12 @@ export default async function FullscreenProjects({ artworks }: Props) {
               <div className={boxClass}>{content}</div>
             )}
             {/* Mode édition local : réglage du cadrage (posé à côté du lien, jamais dedans) */}
-            <DevFramingSlot id={artwork.id} src={artwork.src} position={artwork.position} />
+            <DevFramingSlot
+              id={artwork.id}
+              src={artwork.src}
+              position={artwork.position}
+              positionMobile={artwork.positionMobile}
+            />
           </li>
         );
       })}

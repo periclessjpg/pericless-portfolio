@@ -3,7 +3,8 @@
 import { motion, useReducedMotion, useScroll, useTransform, type TargetAndTransition } from "motion/react";
 import Image from "next/image";
 import { useRef, type CSSProperties, type ReactNode } from "react";
-import { heroCssVars, type HeroSettings } from "../lib/hero-settings";
+import { framingClass, framingStyle } from "../lib/framing";
+import { heroCssVars, heroPhoneSettings, type HeroSettings } from "../lib/hero-settings";
 import BlurText from "./BlurText";
 import { easeOut } from "./motion/easing";
 import Reveal from "./motion/Reveal";
@@ -14,7 +15,7 @@ type Props = {
   /** Réglages (public/artworks/hero/settings.json, valeurs vérifiées). */
   settings: HeroSettings;
   /** Image de fond (dossier public/artworks/hero/), ou null. */
-  image: { src: string; alt: string; position?: string } | null;
+  image: { src: string; alt: string; position?: string; positionMobile?: string } | null;
   /** Titre principal de la page (invisible à l'écran, lu par Google et les lecteurs d'écran). */
   title: string;
   /** Accroche affichée ("" = aucune). */
@@ -78,7 +79,14 @@ export default function HeroView({
       id="hero"
       aria-labelledby="hero-title"
       className="relative overflow-hidden"
-      style={{ ...heroCssVars(settings), minHeight: "var(--hero-height)" } as CSSProperties}
+      // Réglages ordinateur et téléphone ; app/globals.css choisit selon la largeur de l'écran.
+      style={
+        {
+          ...heroCssVars(settings, "d"),
+          ...heroCssVars(heroPhoneSettings(settings), "m"),
+          minHeight: "var(--hero-height)",
+        } as CSSProperties
+      }
     >
       {image && (
         <motion.div className="absolute inset-x-0 bottom-0" style={{ top: `-${shift}%`, y }}>
@@ -94,9 +102,9 @@ export default function HeroView({
               fill
               preload
               sizes="100vw"
-              className="object-cover"
+              className={`${framingClass} object-cover`}
               style={{
-                objectPosition: image.position,
+                ...framingStyle(image.position, image.positionMobile),
                 opacity: "var(--hero-img-opacity)",
                 filter: "var(--hero-filter)",
                 transform: "scale(var(--hero-zoom))",

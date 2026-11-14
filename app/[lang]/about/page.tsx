@@ -7,6 +7,7 @@ import Reveal from "../../components/motion/Reveal";
 import { container, eyebrow, focusRing, titleMedium } from "../../components/styles";
 import { site } from "../../data/site";
 import { folders, getAboutArtworks } from "../../lib/artworks";
+import { framingClass, framingStyle } from "../../lib/framing";
 import { pick } from "../../lib/locale";
 import { pageMetadata } from "../../lib/metadata";
 import { getTexts } from "../../lib/texts";
@@ -58,8 +59,8 @@ export default async function AboutPage() {
                 fill
                 preload
                 sizes="(min-width: 768px) 40vw, 100vw"
-                style={{ objectPosition: portrait.position }}
-                className="object-cover"
+                style={framingStyle(portrait.position, portrait.positionMobile)}
+                className={`${framingClass} object-cover`}
               />
             ) : (
               <ComingSoon
@@ -69,7 +70,12 @@ export default async function AboutPage() {
             )}
             {/* Mode édition local : réglage du cadrage du portrait */}
             {portrait && (
-              <DevFramingSlot id={portrait.id} src={portrait.src} position={portrait.position} />
+              <DevFramingSlot
+                id={portrait.id}
+                src={portrait.src}
+                position={portrait.position}
+                positionMobile={portrait.positionMobile}
+              />
             )}
           </div>
         </Reveal>

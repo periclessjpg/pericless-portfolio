@@ -47,7 +47,35 @@ export type HeroSettings = {
   animationDuration: number;
   /** Effet de parallaxe au défilement, en % (0 = aucun). */
   parallax: number;
+  /**
+   * Réglages propres aux téléphones (écrans de moins de 768 px) : seulement ceux qui
+   * diffèrent de l'ordinateur. Panneau "Customize hero" ouvert dans l'aperçu "Phone".
+   */
+  mobile: HeroMobileSettings;
 };
+
+/** Réglages qui peuvent être différents sur téléphone (pas l'image, l'animation ni la parallaxe). */
+export const HERO_MOBILE_KEYS = [
+  "height",
+  "imageOpacity",
+  "zoom",
+  "blur",
+  "grayscale",
+  "saturation",
+  "brightness",
+  "contrast",
+  "overlayColor",
+  "overlayOpacity",
+  "gradient",
+  "gradientStrength",
+  "textVertical",
+  "textHorizontal",
+  "textSize",
+  "textColor",
+  "showScroll",
+] as const;
+export type HeroMobileKey = (typeof HERO_MOBILE_KEYS)[number];
+export type HeroMobileSettings = Partial<Pick<HeroSettings, HeroMobileKey>>;
 
 /** Valeurs par défaut : elles reproduisent le hero d'origine. */
 export const HERO_DEFAULTS: HeroSettings = {
@@ -72,11 +100,14 @@ export const HERO_DEFAULTS: HeroSettings = {
   animation: "fade",
   animationDuration: 0.8,
   parallax: 0,
+  mobile: {},
 };
 
 type NumberKey = {
   [K in keyof HeroSettings]: HeroSettings[K] extends number ? K : never;
 }[keyof HeroSettings];
+
+type ValueKey = Exclude<keyof HeroSettings, "mobile">;
 
 /** Limites des réglages numériques (et texte du panneau). */
 export const HERO_RANGES: Record<NumberKey, { min: number; max: number; step: number; label: string; unit: string }> = {
@@ -105,32 +136,55 @@ export const HERO_CHOICES = {
 const HEX = /^#[0-9a-fA-F]{6}$/;
 
 /**
+ * Vérifie une valeur (type, limites, choix autorisés, couleur valide).
+ * Renvoie undefined si elle n'est pas valable.
+ */
+function cleanValue(key: ValueKey, value: unknown, images: string[]): unknown {
+  if (key in HERO_RANGES) {
+    const number = Number(value);
+    if (value === undefined || value === null || value === "" || !Number.isFinite(number)) return undefined;
+    const { min, max } = HERO_RANGES[key as NumberKey];
+    return Math.min(max, Math.max(min, Math.round(number * 10) / 10));
+  }
+  if (key in HERO_CHOICES) {
+    return (HERO_CHOICES[key as keyof typeof HERO_CHOICES] as readonly unknown[]).includes(value) ? value : undefined;
+  }
+  if (key === "overlayColor" || key === "textColor") {
+    return typeof value === "string" && HEX.test(value) ? value.toLowerCase() : undefined;
+  }
+  if (key === "showScroll") return typeof value === "boolean" ? value : undefined;
+  if (key === "image") return typeof value === "string" && images.includes(value) ? value : undefined;
+  return undefined;
+}
+
+/**
  * Nettoie des réglages venant d'un fichier ou du panneau : chaque valeur est
  * vérifiée (type, limites, choix autorisés, couleur valide, image existante),
- * sinon remplacée par la valeur par défaut.
+ * sinon remplacée par la valeur par défaut. Les réglages téléphone ("mobile")
+ * sont vérifiés de la même façon ; une valeur invalide y est simplement ignorée.
  */
 export function sanitizeHeroSettings(input: unknown, images: string[]): HeroSettings {
   const raw = (input && typeof input === "object" ? input : {}) as Record<string, unknown>;
-  const result: HeroSettings = { ...HERO_DEFAULTS };
+  const result: HeroSettings = { ...HERO_DEFAULTS, mobile: {} };
 
-  for (const key of Object.keys(HERO_RANGES) as NumberKey[]) {
-    const value = Number(raw[key]);
-    const { min, max } = HERO_RANGES[key];
-    if (raw[key] !== undefined && raw[key] !== null && raw[key] !== "" && Number.isFinite(value)) {
-      result[key] = Math.min(max, Math.max(min, Math.round(value * 10) / 10));
-    }
+  for (const key of Object.keys(HERO_DEFAULTS) as (keyof HeroSettings)[]) {
+    if (key === "mobile") continue;
+    const value = cleanValue(key, raw[key], images);
+    if (value !== undefined) (result as Record<string, unknown>)[key] = value;
   }
-  for (const key of Object.keys(HERO_CHOICES) as (keyof typeof HERO_CHOICES)[]) {
-    const value = raw[key];
-    if ((HERO_CHOICES[key] as readonly unknown[]).includes(value)) {
-      (result as Record<string, unknown>)[key] = value;
-    }
+
+  const rawMobile = (raw.mobile && typeof raw.mobile === "object" ? raw.mobile : {}) as Record<string, unknown>;
+  for (const key of HERO_MOBILE_KEYS) {
+    const value = cleanValue(key, rawMobile[key], images);
+    // Seules les valeurs différentes de l'ordinateur sont gardées.
+    if (value !== undefined && value !== result[key]) (result.mobile as Record<string, unknown>)[key] = value;
   }
-  if (typeof raw.overlayColor === "string" && HEX.test(raw.overlayColor)) result.overlayColor = raw.overlayColor.toLowerCase();
-  if (typeof raw.textColor === "string" && HEX.test(raw.textColor)) result.textColor = raw.textColor.toLowerCase();
-  if (typeof raw.showScroll === "boolean") result.showScroll = raw.showScroll;
-  if (typeof raw.image === "string" && images.includes(raw.image)) result.image = raw.image;
   return result;
+}
+
+/** Réglages vus sur téléphone : ceux de l'ordinateur, remplacés par les réglages téléphone. */
+export function heroPhoneSettings(s: HeroSettings): HeroSettings {
+  return { ...s, ...s.mobile };
 }
 
 function rgba(hex: string, alpha: number) {
@@ -139,10 +193,18 @@ function rgba(hex: string, alpha: number) {
 }
 
 /**
- * Traduit les réglages en variables CSS appliquées sur le hero.
+ * Traduit les réglages en variables CSS appliquées sur le hero :
+ * --hero-d-… (ordinateur) ou --hero-m-… (téléphone) ; app/globals.css choisit
+ * les unes ou les autres selon la largeur de l'écran (variables --hero-…).
  * Le panneau du mode édition utilise la même fonction pour l'aperçu en direct.
  */
-export function heroCssVars(s: HeroSettings): Record<string, string> {
+export function heroCssVars(s: HeroSettings, device: "d" | "m" = "d"): Record<string, string> {
+  return Object.fromEntries(
+    Object.entries(heroVars(s)).map(([name, value]) => [name.replace("--hero-", `--hero-${device}-`), value]),
+  );
+}
+
+function heroVars(s: HeroSettings): Record<string, string> {
   const strength = s.gradientStrength / 100;
   const color = s.overlayColor;
   const gradients: Record<HeroSettings["gradient"], string> = {

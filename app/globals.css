@@ -135,3 +135,46 @@ body {
     @apply font-sans;
   }
 }
+
+/* Hero de l'accueil (app/components/HeroView.tsx, app/lib/hero-settings.ts) :
+   réglages ordinateur (--hero-d-…) ou téléphone (--hero-m-…, écrans de moins de 768 px). */
+#hero {
+  --hero-height: var(--hero-d-height);
+  --hero-img-opacity: var(--hero-d-img-opacity);
+  --hero-zoom: var(--hero-d-zoom);
+  --hero-filter: var(--hero-d-filter);
+  --hero-overlay: var(--hero-d-overlay);
+  --hero-gradient: var(--hero-d-gradient);
+  --hero-justify: var(--hero-d-justify);
+  --hero-align: var(--hero-d-align);
+  --hero-text-align: var(--hero-d-text-align);
+  --hero-text-size: var(--hero-d-text-size);
+  --hero-text-color: var(--hero-d-text-color);
+  --hero-scroll-display: var(--hero-d-scroll-display);
+}
+@media (max-width: 767px) {
+  #hero {
+    --hero-height: var(--hero-m-height);
+    --hero-img-opacity: var(--hero-m-img-opacity);
+    --hero-zoom: var(--hero-m-zoom);
+    --hero-filter: var(--hero-m-filter);
+    --hero-overlay: var(--hero-m-overlay);
+    --hero-gradient: var(--hero-m-gradient);
+    --hero-justify: var(--hero-m-justify);
+    --hero-align: var(--hero-m-align);
+    --hero-text-align: var(--hero-m-text-align);
+    --hero-text-size: var(--hero-m-text-size);
+    --hero-text-color: var(--hero-m-text-color);
+    --hero-scroll-display: var(--hero-m-scroll-display);
+  }
+}
+
+/* Images protégées contre l'enregistrement facile (voir app/components/ImageGuard.tsx) :
+   pas d'appui long "Enregistrer l'image" sur téléphone, pas de glisser-déposer, pas de sélection. */
+img,
+picture,
+[data-protect-image] {
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+  user-select: none;
+}

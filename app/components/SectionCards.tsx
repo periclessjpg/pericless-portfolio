@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { framingClass, framingStyle } from "../lib/framing";
 import { getTexts } from "../lib/texts";
 import type { TextKey } from "../lib/texts-defaults";
 import BlurText from "./BlurText";
@@ -19,6 +20,8 @@ export type SectionCard = {
   image?: { src: string; alt: string; width: number; height: number };
   /** Cadrage de l'image recadrée (ex. "50% 20%"), centre par défaut. */
   position?: string;
+  /** Cadrage téléphone (absent = même que position). */
+  positionMobile?: string;
   /** Chemin de l'image dans public/artworks, pour le réglage du cadrage en mode édition local. */
   framingId?: string;
   /** Choix de l'image de la carte (mode édition local). */
@@ -68,8 +71,8 @@ export default async function SectionCards({ cards, fitScreen = false }: Props) 
                 fill
                 sizes="(min-width: 768px) 33vw, 100vw"
                 preload={index === 0}
-                style={{ objectPosition: card.position }}
-                className="object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03] group-focus-visible:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100 motion-reduce:group-focus-visible:scale-100"
+                style={framingStyle(card.position, card.positionMobile)}
+                className={`${framingClass} object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03] group-focus-visible:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100 motion-reduce:group-focus-visible:scale-100`}
               />
             ) : (
               <p className={`${label} absolute inset-0 flex items-center justify-center text-neutral-600`}>
@@ -98,7 +101,12 @@ export default async function SectionCards({ cards, fitScreen = false }: Props) 
           {/* Mode édition local : choix de l'image et cadrage (posés à côté du lien, jamais dedans) */}
           {card.picker && <DevCardPickerSlot {...card.picker} />}
           {card.image && card.framingId && (
-            <DevFramingSlot id={card.framingId} src={card.image.src} position={card.position} />
+            <DevFramingSlot
+              id={card.framingId}
+              src={card.image.src}
+              position={card.position}
+              positionMobile={card.positionMobile}
+            />
           )}
         </DealtItem>
       ))}

@@ -1,7 +1,8 @@
 {
   "01-sicile.webp": {
     "title": "environment",
-    "link": "/concept-art/environments"
+    "link": "/concept-art/environments",
+    "positionMobile": "64% 46%"
   },
   "02-bionic-1.webp": {
     "title": "chara design",

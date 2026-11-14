@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import ImageGuard from "../components/ImageGuard";
 import { DevEditBannerSlot, DevTextEditorSlot, DevTypographyPanelSlot } from "../components/dev/DevSlots";
 import { TextsProvider } from "../components/TextsProvider";
 import { LOCALES, OG_LOCALES } from "../lib/i18n";
@@ -87,6 +88,8 @@ export default async function RootLayout({ children }: LayoutProps<"/[lang]">) {
               {children}
             </main>
             <Footer />
+            {/* Pas de clic droit ni de glisser-déposer sur les images */}
+            <ImageGuard />
             {/* Bannière "Local edit mode" et édition des textes (npm run dev uniquement) */}
             <DevEditBannerSlot />
             <DevTextEditorSlot texts={texts} defaults={getBaseTextsFor(locale)} locale={locale} />

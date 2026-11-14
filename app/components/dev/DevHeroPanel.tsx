@@ -3,18 +3,22 @@
 // MODE ÉDITION LOCAL : panneau "Customize hero" (uniquement pendant `npm run dev`).
 // Les curseurs modifient le hero en direct (variables CSS --hero-…) ; "Save" enregistre
 // les réglages dans public/artworks/hero/settings.json via /api/dev/hero.
+// Sur un écran de téléphone (aperçu "Phone" de la bannière), le panneau règle seulement
+// la version téléphone du hero (champ "mobile" de settings.json).
 
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useState, type ReactNode } from "react";
 import {
   HERO_CHOICES,
   HERO_DEFAULTS,
+  HERO_MOBILE_KEYS,
   HERO_RANGES,
   heroCssVars,
+  heroPhoneSettings,
   type HeroSettings,
 } from "../../lib/hero-settings";
 import { focusRing, label } from "../styles";
-import { useToolsVisible } from "./edit-mode-store";
+import { useIsPhone, useToolsVisible } from "./edit-mode-store";
 
 export type DevHeroPanelProps = {
   /** Réglages enregistrés actuellement. */
@@ -25,11 +29,11 @@ export type DevHeroPanelProps = {
 
 type NumberKey = keyof typeof HERO_RANGES;
 
-/** Applique des réglages au hero affiché (aperçu en direct). */
-function applyToPage(settings: HeroSettings) {
+/** Applique des réglages au hero affiché (aperçu en direct) : ordinateur ("d") ou téléphone ("m"). */
+function applyToPage(settings: HeroSettings, device: "d" | "m") {
   const hero = document.getElementById("hero");
   if (!hero) return;
-  for (const [name, value] of Object.entries(heroCssVars(settings))) hero.style.setProperty(name, value);
+  for (const [name, value] of Object.entries(heroCssVars(settings, device))) hero.style.setProperty(name, value);
 }
 
 const buttonClass = `rounded-full border border-neutral-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-neutral-200 transition-colors hover:border-neutral-100 hover:text-neutral-100 disabled:opacity-40 ${focusRing}`;
@@ -50,6 +54,8 @@ const choiceLabels: Record<string, string> = {
 export default function DevHeroPanel({ settings, images }: DevHeroPanelProps) {
   const router = useRouter();
   const visible = useToolsVisible();
+  // Écran de téléphone : le panneau règle la version téléphone du hero.
+  const phone = useIsPhone();
   const baseId = useId();
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState<HeroSettings>(settings);
@@ -58,8 +64,14 @@ export default function DevHeroPanel({ settings, images }: DevHeroPanelProps) {
 
   // Aperçu en direct pendant que le panneau est ouvert ; à la fermeture, retour aux réglages enregistrés.
   useEffect(() => {
-    applyToPage(open ? draft : settings);
-  }, [open, draft, settings]);
+    if (phone) {
+      applyToPage(settings, "d");
+      applyToPage(open ? draft : heroPhoneSettings(settings), "m");
+    } else {
+      applyToPage(open ? draft : settings, "d");
+      applyToPage(heroPhoneSettings(open ? { ...draft, mobile: settings.mobile } : settings), "m");
+    }
+  }, [open, draft, settings, phone]);
 
   // Échap ferme le panneau sans enregistrer.
   useEffect(() => {
@@ -84,14 +96,20 @@ export default function DevHeroPanel({ settings, images }: DevHeroPanelProps) {
       const response = await fetch("/api/dev/hero", {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-dev-upload": "1" },
-        body: JSON.stringify(draft),
+        // Téléphone : réglages ordinateur inchangés, seuls les réglages téléphone changent
+        // (le serveur ne garde que ceux qui diffèrent de l'ordinateur).
+        body: JSON.stringify(
+          phone
+            ? { ...settings, mobile: Object.fromEntries(HERO_MOBILE_KEYS.map((key) => [key, draft[key]])) }
+            : { ...draft, mobile: settings.mobile },
+        ),
       });
       const data = await response.json();
       if (!response.ok) {
         setMessage(data.error ?? "Could not save");
         return;
       }
-      setDraft(data.settings);
+      setDraft(phone ? heroPhoneSettings(data.settings) : data.settings);
       setMessage("Saved");
       router.refresh();
     } catch {
@@ -180,13 +198,13 @@ export default function DevHeroPanel({ settings, images }: DevHeroPanelProps) {
       <button
         type="button"
         onClick={() => {
-          setDraft(settings);
+          setDraft(phone ? heroPhoneSettings(settings) : settings);
           setMessage("");
           setOpen(true);
         }}
         className={`fixed bottom-4 right-4 z-[60] rounded-full border border-dashed border-amber-400/60 bg-neutral-950/90 px-4 py-2 text-xs uppercase tracking-[0.2em] text-amber-200 backdrop-blur-md hover:text-amber-100 ${focusRing}`}
       >
-        Customize hero
+        {phone ? "Customize hero (phone)" : "Customize hero"}
       </button>
     );
   }
@@ -198,14 +216,20 @@ export default function DevHeroPanel({ settings, images }: DevHeroPanelProps) {
       className="fixed bottom-4 right-4 top-24 z-[65] flex w-[min(22rem,calc(100vw-2rem))] flex-col rounded-md border border-dashed border-amber-400/50 bg-neutral-950/95 backdrop-blur-md"
     >
       <div className="flex items-center justify-between gap-3 border-b border-neutral-800 p-4">
-        <p className={`${label} text-amber-200`}>Customize hero</p>
+        <p className={`${label} text-amber-200`}>{phone ? "Customize hero · Phone" : "Customize hero"}</p>
         <button type="button" onClick={() => setOpen(false)} className={buttonClass} aria-label="Close without saving">
           ×
         </button>
       </div>
 
       <div className="flex flex-1 flex-col gap-6 overflow-y-auto p-4">
-        {group(
+        {phone && (
+          <p className="text-xs text-amber-200/80">
+            Phone version: changes apply only to screens narrower than 768 px. Settings you don’t touch stay the same
+            as on computer. Background image and animation are shared: change them on the computer view.
+          </p>
+        )}
+        {!phone && group(
           "Image",
           <div>
             <label htmlFor={`${baseId}-image`} className="text-xs text-neutral-400">
@@ -270,7 +294,7 @@ export default function DevHeroPanel({ settings, images }: DevHeroPanelProps) {
           </>,
           "Size and color apply to the tagline (set it in app/data/site.ts, currently empty). Position also moves “Scroll to explore”.",
         )}
-        {group(
+        {!phone && group(
           "Animation",
           <>
             {choice("animation", "Image entrance")}
@@ -285,7 +309,10 @@ export default function DevHeroPanel({ settings, images }: DevHeroPanelProps) {
         <button type="button" onClick={save} disabled={saving} className={`${buttonClass} border-amber-400/60 text-amber-100`}>
           {saving ? "Saving…" : "Save"}
         </button>
-        <button type="button" onClick={() => setDraft({ ...HERO_DEFAULTS, image: draft.image })} className={buttonClass}>
+        <button type="button" onClick={() =>
+            // Téléphone : retour aux réglages de l'ordinateur ; ordinateur : valeurs d'origine.
+            setDraft(phone ? { ...settings, mobile: {} } : { ...HERO_DEFAULTS, image: draft.image, mobile: settings.mobile })
+          } className={buttonClass}>
           Reset
         </button>
         <button type="button" onClick={() => setOpen(false)} className={buttonClass}>

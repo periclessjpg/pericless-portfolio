@@ -80,9 +80,10 @@ export async function POST(request: Request) {
   }
 
   // Réglages : même titre (celui de infos.json, ou celui déduit de l'ancien nom),
-  // année et description conservées, cadrage remis au centre.
+  // année et description conservées, cadrage remis au centre (ordinateur et téléphone).
   const rest = { ...oldEntry };
   delete rest.position;
+  delete rest.positionMobile;
   const title =
     typeof oldEntry.title === "string" && oldEntry.title.trim()
       ? oldEntry.title

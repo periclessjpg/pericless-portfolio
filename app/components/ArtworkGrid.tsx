@@ -40,7 +40,7 @@ export default function ArtworkGrid({ artworks, preloadFirst = false, captions =
               <div className="relative">
                 <LightboxTrigger
                   index={index}
-                  href={artwork.src}
+                  label={artwork.alt}
                   className={`group block cursor-zoom-in overflow-hidden ${focusRing}`}
                 >
                   <Image
