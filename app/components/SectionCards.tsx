@@ -66,6 +66,7 @@ export default async function SectionCards({ cards, fitScreen = false }: Props) 
           >
             {card.image ? (
               <Image
+                data-ambient
                 src={card.image.src}
                 alt={card.image.alt}
                 fill

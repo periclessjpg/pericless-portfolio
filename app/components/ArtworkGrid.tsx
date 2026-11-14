@@ -44,6 +44,7 @@ export default function ArtworkGrid({ artworks, preloadFirst = false, captions =
                   className={`group block cursor-zoom-in overflow-hidden ${focusRing}`}
                 >
                   <Image
+                    data-ambient
                     src={artwork.src}
                     alt={artwork.alt}
                     width={artwork.width}

@@ -54,6 +54,7 @@ export default async function AboutPage() {
           <div className="relative aspect-[4/5] overflow-hidden bg-neutral-900 md:max-w-[calc((100svh_-_12rem)*0.8)]">
             {portrait ? (
               <Image
+                data-ambient
                 src={portrait.src}
                 alt={portrait.alt}
                 fill

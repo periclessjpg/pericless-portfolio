@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import Navbar from "../components/Navbar";
+import AmbientBackground from "../components/AmbientBackground";
 import Footer from "../components/Footer";
 import ImageGuard from "../components/ImageGuard";
 import { DevEditBannerSlot, DevTextEditorSlot, DevTypographyPanelSlot } from "../components/dev/DevSlots";
@@ -84,6 +85,8 @@ export default async function RootLayout({ children }: LayoutProps<"/[lang]">) {
             texts={process.env.NODE_ENV === "development" ? texts : { ...texts, "common.email": "" }}
             locale={locale}
           >
+            {/* Fond teinté par l'œuvre affichée au milieu de l'écran */}
+            <AmbientBackground />
             {/* Bouton "Download my portfolio" sur l'accueil, si public/portfolio.pdf existe */}
             <Navbar
               portfolio={hasPortfolio() ? { href: PORTFOLIO_URL, fileName: PORTFOLIO_DOWNLOAD_NAME } : null}

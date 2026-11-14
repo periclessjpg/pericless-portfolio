@@ -31,6 +31,7 @@ export default async function FullscreenProjects({ artworks }: Props) {
         const content = (
           <>
             <Image
+              data-ambient
               src={artwork.src}
               alt={artwork.alt}
               fill

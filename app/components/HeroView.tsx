@@ -97,6 +97,7 @@ export default function HeroView({
             transition={{ duration: settings.animationDuration, ease: easeOut }}
           >
             <Image
+              data-ambient
               src={image.src}
               alt={image.alt}
               fill

@@ -5,8 +5,8 @@ import { getLocale } from "./locale";
 
 /**
  * Adresse publique du site, utilisée pour les aperçus de partage (Open Graph).
- * Sur Vercel, elle est fournie automatiquement. Quand pericless.fr sera branché,
- * tu pourras la remplacer par "https://pericless.fr".
+ * Sur Vercel, elle est fournie automatiquement : c'est ton domaine, https://www.rayanhoustti.com
+ * (rayanhoustti.com redirige vers www). En local : http://localhost:3000.
  */
 export const siteUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
   ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`

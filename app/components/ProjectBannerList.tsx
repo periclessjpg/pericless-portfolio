@@ -56,6 +56,7 @@ export default function ProjectBannerList({ items, preloadFirst = false }: Props
           const content = (
             <>
               <Image
+                data-ambient
                 src={item.image.src}
                 alt={item.image.alt}
                 fill
