@@ -22,6 +22,8 @@ export const DEFAULT_TEXTS = {
   "nav.link.about": "About",
   "nav.link.contact": "Contact",
   "nav.language": "Language",
+  "nav.portfolio": "Download my portfolio",
+  "nav.portfolio.short": "Portfolio",
 
   // ───────────── Commun ─────────────
   // Adresse email : dans content/texts.json seulement (jamais dans le code envoyé au navigateur).
@@ -90,7 +92,6 @@ export const DEFAULT_TEXTS = {
     "[À REMPLACER] Paragraph 2: your background, training and the projects or studios that shaped you.",
   "about.bio.2":
     "[À REMPLACER] Paragraph 3: what you are looking for now (studios, types of projects) and how to reach you.",
-  "about.cv": "Download CV",
   "about.skills.title": "Skills",
   "about.skills.0": "[À REMPLACER] Character design",
   "about.skills.1": "[À REMPLACER] Environment design",
@@ -126,6 +127,8 @@ export const DEFAULT_TEXTS = {
     "[À REMPLACER] A short sentence about your availability: freelance, full-time positions, the kind of projects you are interested in.",
   "contact.emailLabel": "Email",
   "contact.elsewhere": "Elsewhere",
+  "contact.portfolio.title": "Portfolio",
+  "contact.portfolio": "Download my portfolio",
 
   // ───────────── Page introuvable ─────────────
   "notFound.eyebrow": "Error 404",
@@ -221,6 +224,8 @@ export const DEFAULT_TEXTS_FR: Partial<Texts> = {
   "nav.link.about": "À propos",
   "nav.link.contact": "Contact",
   "nav.language": "Langue",
+  "nav.portfolio": "Télécharger mon portfolio",
+  "nav.portfolio.short": "Portfolio",
 
   "common.back": "Retour",
   "common.comingSoon": "Bientôt",
@@ -258,7 +263,6 @@ export const DEFAULT_TEXTS_FR: Partial<Texts> = {
 
   "about.eyebrow": "À propos",
   "about.title": "Bonjour, je suis Rayan Houstti.",
-  "about.cv": "Télécharger mon CV",
   "about.skills.title": "Compétences",
   "about.software.title": "Logiciels",
   "about.experience.title": "Expériences",
@@ -266,6 +270,8 @@ export const DEFAULT_TEXTS_FR: Partial<Texts> = {
   "contact.eyebrow": "Contact",
   "contact.emailLabel": "Email",
   "contact.elsewhere": "Ailleurs",
+  "contact.portfolio.title": "Portfolio",
+  "contact.portfolio": "Télécharger mon portfolio",
 
   "notFound.eyebrow": "Erreur 404",
   "notFound.title": "Projet introuvable",

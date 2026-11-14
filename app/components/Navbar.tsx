@@ -69,7 +69,12 @@ function titleWordClass(title: string, index: number, path: string) {
   return dimmed ? `${fade} text-neutral-500` : fade;
 }
 
-export default function Navbar() {
+type NavbarProps = {
+  /** Portfolio PDF à télécharger (public/portfolio.pdf), ou null s'il n'existe pas. */
+  portfolio?: { href: string; fileName: string } | null;
+};
+
+export default function Navbar({ portfolio = null }: NavbarProps) {
   const pathname = usePathname();
   const locale = useLocale();
   // Adresse sans la langue ("/fr/about" -> "/about"), pour savoir quel lien est actif.
@@ -189,6 +194,23 @@ export default function Navbar() {
 
           <div className="flex items-baseline gap-5 md:gap-8">
           {/* Choix de la langue : EN / FR, à gauche du bouton Menu */}
+          {/* Accueil uniquement : télécharger le portfolio PDF (s'il existe) */}
+          {portfolio && path === "/" && (
+            <a
+              href={portfolio.href}
+              download={portfolio.fileName}
+              className={`[font-family:var(--type-body-family,var(--font-geist-sans))] [font-weight:var(--type-body-weight,400)] text-sm uppercase tracking-[0.2em] text-neutral-100 underline decoration-neutral-600 underline-offset-8 transition-colors duration-300 hover:decoration-neutral-100 sm:text-base ${focusRing}`}
+            >
+              <span className="sm:hidden" {...editable("nav.portfolio.short")}>
+                {shown(t["nav.portfolio.short"])}
+              </span>
+              <span className="hidden sm:inline" {...editable("nav.portfolio")}>
+                {shown(t["nav.portfolio"])}
+              </span>
+              <span aria-hidden="true"> ↓</span>
+              <span className="sr-only"> (PDF)</span>
+            </a>
+          )}
           <LanguageSwitcher />
 
           <div className="relative">

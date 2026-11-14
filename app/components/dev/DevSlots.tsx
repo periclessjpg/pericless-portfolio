@@ -8,6 +8,7 @@ import type { DevCardPickerProps } from "./DevCardPicker";
 import type { DevDropZoneProps } from "./DevDropZone";
 import type { DevFramingProps } from "./DevFraming";
 import type { DevHeroPanelProps } from "./DevHeroPanel";
+import type { DevPortfolioDropProps } from "./DevPortfolioDrop";
 import type { DevReorderProps } from "./DevReorder";
 import type { DevTextEditorProps } from "./DevTextEditor";
 import type { DevTypographyPanelProps } from "./DevTypographyPanel";
@@ -17,6 +18,15 @@ export async function DevDropZoneSlot(props: DevDropZoneProps) {
   if (process.env.NODE_ENV === "development") {
     const { default: DevDropZone } = await import("./DevDropZone");
     return <DevDropZone {...props} />;
+  }
+  return null;
+}
+
+/** Zone de dépôt du portfolio PDF, page Contact (développement uniquement). */
+export async function DevPortfolioDropSlot(props: DevPortfolioDropProps) {
+  if (process.env.NODE_ENV === "development") {
+    const { default: DevPortfolioDrop } = await import("./DevPortfolioDrop");
+    return <DevPortfolioDrop {...props} />;
   }
   return null;
 }

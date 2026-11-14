@@ -8,6 +8,7 @@ import { DevEditBannerSlot, DevTextEditorSlot, DevTypographyPanelSlot } from "..
 import { TextsProvider } from "../components/TextsProvider";
 import { LOCALES, OG_LOCALES } from "../lib/i18n";
 import { getLocale } from "../lib/locale";
+import { PORTFOLIO_DOWNLOAD_NAME, PORTFOLIO_URL, hasPortfolio } from "../lib/portfolio";
 import { getBaseTextsFor, getTextsFor } from "../lib/texts";
 import { typographyCss } from "../lib/typography";
 import { getTypography } from "../lib/typography-server";
@@ -83,7 +84,10 @@ export default async function RootLayout({ children }: LayoutProps<"/[lang]">) {
             texts={process.env.NODE_ENV === "development" ? texts : { ...texts, "common.email": "" }}
             locale={locale}
           >
-            <Navbar />
+            {/* Bouton "Download my portfolio" sur l'accueil, si public/portfolio.pdf existe */}
+            <Navbar
+              portfolio={hasPortfolio() ? { href: PORTFOLIO_URL, fileName: PORTFOLIO_DOWNLOAD_NAME } : null}
+            />
             <main id="main-content" tabIndex={-1} className="flex-1 outline-none">
               {children}
             </main>

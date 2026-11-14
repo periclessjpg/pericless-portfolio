@@ -4,7 +4,7 @@ import BlurText from "../../components/BlurText";
 import ComingSoon from "../../components/ComingSoon";
 import { DevDropZoneSlot, DevFramingSlot, DevReorderSlot } from "../../components/dev/DevSlots";
 import Reveal from "../../components/motion/Reveal";
-import { container, eyebrow, focusRing, titleMedium } from "../../components/styles";
+import { container, eyebrow, titleMedium } from "../../components/styles";
 import { site } from "../../data/site";
 import { folders, getAboutArtworks } from "../../lib/artworks";
 import { framingClass, framingStyle } from "../../lib/framing";
@@ -96,14 +96,6 @@ export default async function AboutPage() {
                   ) : null,
                 )}
               </div>
-              <a
-                href="/cv.pdf"
-                download
-                className={`mt-10 inline-flex items-center gap-3 border border-neutral-700 px-6 py-3 text-sm text-neutral-100 transition-colors duration-300 hover:border-neutral-100 hover:bg-neutral-100 hover:text-neutral-950 ${focusRing}`}
-              >
-                <span {...editable("about.cv")}>{shown(t["about.cv"])}</span>
-                <span className="sr-only"> (PDF)</span>
-              </a>
             </section>
           </Reveal>
 

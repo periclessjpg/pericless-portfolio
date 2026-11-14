@@ -415,7 +415,7 @@ Supprime son bloc complet (de `{` jusqu'à `},`) dans `app/data/projects.ts`.
 
 - **Cartes de la page Concept Art (Chara Design, Environment, All)** : mets tes images dans `public/artworks/concept-art/` (ex. `chara-design.jpg`), puis change `src`, `alt`, `width` et `height` de chaque carte dans `app/data/concept-art.ts`. Les cartes sont au format vertical 4:5 : choisis une image dont le sujet est centré. Tu peux aussi y changer le titre et l'introduction de chaque sous-page.
 - **Portrait (page About)** : mets ta photo dans `public/artworks/about/portrait.jpg`, puis change le chemin dans `app/about/page.tsx`.
-- **CV** : dépose ton fichier sous le nom exact `cv.pdf` directement dans `public/`. Le bouton « Download CV » pointe déjà dessus.
+- **Portfolio PDF** : dépose ton fichier sous le nom exact `portfolio.pdf` directement dans `public/`. Le plus simple : en local (`npm run dev`), glisse ton PDF dans la zone « Drop your portfolio PDF here » de la page Contact. Le bouton « Télécharger mon portfolio » apparaît alors tout seul (il reste caché tant que le fichier n’existe pas).
 - **Réseaux sociaux** : dans `app/data/site.ts`, remplace chaque `"#"` par l'adresse complète de ton profil (ex. `"https://www.artstation.com/tonnom"`).
 
 ---
