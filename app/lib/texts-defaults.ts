@@ -23,7 +23,6 @@ export const DEFAULT_TEXTS = {
   "nav.link.contact": "Contact",
   "nav.language": "Language",
   "nav.portfolio": "Download my portfolio",
-  "nav.portfolio.short": "Portfolio",
 
   // ───────────── Commun ─────────────
   // Adresse email : dans content/texts.json seulement (jamais dans le code envoyé au navigateur).
@@ -225,7 +224,6 @@ export const DEFAULT_TEXTS_FR: Partial<Texts> = {
   "nav.link.contact": "Contact",
   "nav.language": "Langue",
   "nav.portfolio": "Télécharger mon portfolio",
-  "nav.portfolio.short": "Portfolio",
 
   "common.back": "Retour",
   "common.comingSoon": "Bientôt",

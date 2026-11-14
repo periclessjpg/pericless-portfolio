@@ -34,7 +34,7 @@ export default function LanguageSwitcher({ className = "" }: { className?: strin
       title={t["nav.language"]}
       onClick={() => rememberLocale(other)}
       // Police des textes courants (rôle « body » du panneau Typography), en capitales espacées.
-      className={`[font-family:var(--type-body-family,var(--font-geist-sans))] [font-weight:var(--type-body-weight,400)] text-sm uppercase tracking-[0.2em] sm:text-base text-neutral-300 transition-colors duration-300 hover:text-neutral-100 ${focusRing} ${className}`}
+      className={`[font-family:var(--type-body-family,var(--font-geist-sans))] [font-weight:var(--type-body-weight,400)] text-xs uppercase tracking-[0.2em] sm:text-base text-neutral-300 transition-colors duration-300 hover:text-neutral-100 ${focusRing} ${className}`}
     >
       {LOCALE_LABELS[other].short}
     </Link>

@@ -156,12 +156,13 @@ export default function Navbar({ portfolio = null }: NavbarProps) {
             : "bg-transparent [text-shadow:0_1px_12px_rgb(0_0_0/0.45)]"
         }`}
       >
-        <div className={`${container} flex items-start justify-between gap-6 py-5 md:py-6`}>
+        <div className={`${container} flex items-start justify-between gap-4 py-3 sm:gap-6 sm:py-5 md:py-6`}>
           {/* En haut à gauche : métier puis nom, sur deux lignes (ramène à l'accueil) */}
           <Link
             href={localizeHref("/", locale)}
             // min-w-0 : sur petit écran, le texte passe à la ligne au lieu de pousser le menu hors de l'écran.
-            className={`${labelStyle} flex min-w-0 flex-col gap-1 break-words text-neutral-100 ${focusRing}`}
+            // Téléphone (max-sm) : métier en plus petit, pour une barre plus compacte.
+            className={`${labelStyle} flex min-w-0 flex-col gap-0.5 break-words text-neutral-100 max-sm:text-[length:calc(0.6rem*var(--type-ui-scale,1))] sm:gap-1 ${focusRing}`}
           >
             {/* À l'arrivée sur le site : métier puis nom apparaissent l'un après l'autre
                 (fondu mot par mot avec léger grain, petit glissement vers le haut). Une seule fois :
@@ -188,7 +189,7 @@ export default function Navbar({ portfolio = null }: NavbarProps) {
                 stagger={0.25}
                 textKey="nav.name"
                 className={`block leading-tight ${
-                  path === "/" ? "text-xl sm:text-3xl md:text-4xl" : "text-lg sm:text-2xl md:text-3xl"
+                  path === "/" ? "text-base sm:text-3xl md:text-4xl" : "text-sm sm:text-2xl md:text-3xl"
                 }`}
               >
                 {t["nav.name"]}
@@ -224,7 +225,7 @@ export default function Navbar({ portfolio = null }: NavbarProps) {
               onClick={() => setOpenOn(open ? null : pathname)}
               aria-expanded={open}
               aria-controls="site-menu"
-              className={`${labelStyle} block text-neutral-100 ${focusRing}`}
+              className={`${labelStyle} block text-neutral-100 max-sm:text-[length:calc(0.6rem*var(--type-ui-scale,1))] ${focusRing}`}
             >
               <AnimatePresence mode="wait" initial={false}>
                 <motion.span
@@ -271,21 +272,6 @@ export default function Navbar({ portfolio = null }: NavbarProps) {
                         </motion.li>
                       );
                     })}
-                    {/* Téléphone uniquement : télécharger le portfolio PDF, en dernier dans le menu */}
-                    {portfolio && (
-                      <motion.li key="portfolio" variants={item} className="sm:hidden">
-                        <a
-                          href={portfolio.href}
-                          download={portfolio.fileName}
-                          onClick={() => setOpenOn(null)}
-                          className={`${labelStyle} whitespace-nowrap text-neutral-400 transition-colors duration-300 hover:text-neutral-100 ${focusRing}`}
-                        >
-                          <span {...editable("nav.portfolio.short")}>{shown(t["nav.portfolio.short"])}</span>
-                          <span aria-hidden="true"> ↓</span>
-                          <span className="sr-only"> (PDF)</span>
-                        </a>
-                      </motion.li>
-                    )}
                   </motion.ul>
                 )}
               </AnimatePresence>
