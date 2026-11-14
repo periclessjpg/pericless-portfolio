@@ -1,4 +1,6 @@
 import { getCardChoices, getGallery, type Artwork, type GalleryCategory } from "../lib/artworks";
+import { localizeHref } from "../lib/i18n";
+import { getLocale, localHref } from "../lib/locale";
 import { getTexts } from "../lib/texts";
 import BackButton from "./BackButton";
 import { DevDropZoneSlot, DevReorderSlot } from "./dev/DevSlots";
@@ -66,7 +68,7 @@ function cardImage(
  * - sinon : directement la liste de toutes les images ;
  * - dossier vide : "Coming soon".
  */
-export function GalleryOverview({
+export async function GalleryOverview({
   category,
   centered = false,
 }: {
@@ -106,9 +108,11 @@ export function GalleryOverview({
 
   // Image de chaque carte : choix enregistré dans public/artworks/<catégorie>/cards.json.
   const choices = getCardChoices(category);
+  const t = await getTexts();
+  const locale = await getLocale();
   const filterCards: SectionCard[] = gallery.filters.map((filter) => ({
     key: filter.slug,
-    href: `/${category}/${filter.slug}`,
+    href: localizeHref(`/${category}/${filter.slug}`, locale),
     title: filter.label,
     ...cardImage(category, filter.slug, filter.artworks, choices),
   }));
@@ -117,8 +121,8 @@ export function GalleryOverview({
   const cards: SectionCard[] = [
     {
       key: "all",
-      href: `/${category}/all`,
-      title: getTexts()["common.all"],
+      href: localizeHref(`/${category}/all`, locale),
+      title: t["common.all"],
       titleKey: "common.all",
       ...cardImage(category, "all", gallery.all, choices, usedByFilters),
     },
@@ -155,8 +159,8 @@ export function gallerySectionSlugs(category: GalleryCategory) {
 }
 
 /** Titre d'une sous-page, ou undefined si elle n'existe pas. */
-export function gallerySectionTitle(category: GalleryCategory, slug: string) {
-  if (slug === "all") return getTexts()["common.all"];
+export async function gallerySectionTitle(category: GalleryCategory, slug: string) {
+  if (slug === "all") return (await getTexts())["common.all"];
   return getGallery(category).filters.find((filter) => filter.slug === slug)?.label;
 }
 
@@ -165,19 +169,19 @@ export function gallerySectionTitle(category: GalleryCategory, slug: string) {
  * bouton Back, titre, puis la liste des images du filtre.
  * Renvoie null si la sous-page n'existe pas (la page affiche alors une 404).
  */
-export function GallerySection({ category, slug }: { category: GalleryCategory; slug: string }) {
+export async function GallerySection({ category, slug }: { category: GalleryCategory; slug: string }) {
   const gallery = getGallery(category);
   const filter = gallery.filters.find((f) => f.slug === slug);
   if (slug !== "all" && !filter) return null;
 
-  const title = filter ? filter.label : getTexts()["common.all"];
+  const title = filter ? filter.label : (await getTexts())["common.all"];
   const artworks = filter ? filter.artworks : gallery.all;
   const folder = filter ? filter.folder : `${gallery.folder}all/`;
 
   return (
     <>
       <div className="mb-12 md:mb-16">
-        <BackButton fallbackHref={`/${category}`} />
+        <BackButton fallbackHref={await localHref(`/${category}`)} />
       </div>
       <PageHeader label={gallery.label} title={title} keys={filter ? {} : { title: "common.all" }} />
       {artworks.length > 0 ? (

@@ -1,11 +1,12 @@
 import Link from "next/link";
-import BlurText from "../../components/BlurText";
-import { container, eyebrow, focusRing, titleLarge } from "../../components/styles";
-import { getTexts } from "../../lib/texts";
-import { editable, shown } from "../../lib/texts-defaults";
+import BlurText from "../../../components/BlurText";
+import { container, eyebrow, focusRing, titleLarge } from "../../../components/styles";
+import { localHref } from "../../../lib/locale";
+import { getTexts } from "../../../lib/texts";
+import { editable, shown } from "../../../lib/texts-defaults";
 
-export default function ProjectNotFound() {
-  const t = getTexts();
+export default async function ProjectNotFound() {
+  const t = await getTexts();
 
   return (
     <div className={`${container} flex min-h-[70svh] flex-col justify-center pt-32`}>
@@ -19,7 +20,7 @@ export default function ProjectNotFound() {
         {shown(t["notFound.text"])}
       </p>
       <Link
-        href="/projects"
+        href={await localHref("/projects")}
         className={`mt-10 inline-block self-start text-sm text-neutral-400 underline decoration-neutral-700 underline-offset-8 transition-colors duration-300 hover:text-neutral-100 hover:decoration-neutral-100 ${focusRing}`}
         {...editable("notFound.link")}
       >

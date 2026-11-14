@@ -11,8 +11,8 @@ type Props = {
  * Liens vers ArtStation, Instagram, LinkedIn : adresses dans app/data/site.ts,
  * noms affichés modifiables en mode édition local.
  */
-export default function SocialLinks({ className = "" }: Props) {
-  const t = getTexts();
+export default async function SocialLinks({ className = "" }: Props) {
+  const t = await getTexts();
 
   return (
     <ul className={`flex flex-wrap gap-x-8 gap-y-3 text-sm ${className}`}>
@@ -28,7 +28,7 @@ export default function SocialLinks({ className = "" }: Props) {
               className={`text-neutral-400 transition-colors duration-300 hover:text-neutral-100 ${focusRing}`}
             >
               <span {...editable(key)}>{label}</span>
-              {external && <span className="sr-only"> (opens in a new tab)</span>}
+              {external && <span className="sr-only"> {t["common.newTab"]}</span>}
             </a>
           </li>
         );

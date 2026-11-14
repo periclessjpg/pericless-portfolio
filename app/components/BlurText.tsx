@@ -24,6 +24,8 @@ type Props = {
   textKey?: TextKey;
   /** Durée du fondu de chaque mot, en secondes (par défaut : réglage titleReveal). */
   duration?: number;
+  /** Classe CSS propre à certains mots (ex. mot grisé), d'après leur position dans le texte. */
+  wordClassName?: (index: number, word: string) => string | undefined;
 };
 
 /** Fondu d'un mot ; durée réglable par titre. */
@@ -55,6 +57,7 @@ export default function BlurText({
   id,
   textKey,
   duration = titleReveal.duration,
+  wordClassName,
 }: Props) {
   const Tag = motion[as];
   const ref = useRef<HTMLHeadingElement>(null);
@@ -116,7 +119,7 @@ export default function BlurText({
         style={animating ? { filter: `url(#${filterId})` } : undefined}
       >
         {words.map((text, index) => (
-          <span key={index}>
+          <span key={index} className={wordClassName?.(index, text)}>
             <motion.span
               variants={wordVariants(duration)}
               className="inline-block motion-reduce:opacity-100!"

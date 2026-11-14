@@ -1,32 +1,38 @@
 import Image from "next/image";
-import ArtworkGrid from "../components/ArtworkGrid";
-import BlurText from "../components/BlurText";
-import ComingSoon from "../components/ComingSoon";
-import { DevDropZoneSlot, DevFramingSlot, DevReorderSlot } from "../components/dev/DevSlots";
-import Reveal from "../components/motion/Reveal";
-import { container, eyebrow, focusRing, titleMedium } from "../components/styles";
-import { site } from "../data/site";
-import { folders, getAboutArtworks } from "../lib/artworks";
-import { pageMetadata } from "../lib/metadata";
-import { getTexts } from "../lib/texts";
-import { ABOUT_LIST_SIZES, editable, shown, type TextKey, type Texts } from "../lib/texts-defaults";
+import ArtworkGrid from "../../components/ArtworkGrid";
+import BlurText from "../../components/BlurText";
+import ComingSoon from "../../components/ComingSoon";
+import { DevDropZoneSlot, DevFramingSlot, DevReorderSlot } from "../../components/dev/DevSlots";
+import Reveal from "../../components/motion/Reveal";
+import { container, eyebrow, focusRing, titleMedium } from "../../components/styles";
+import { site } from "../../data/site";
+import { folders, getAboutArtworks } from "../../lib/artworks";
+import { pick } from "../../lib/locale";
+import { pageMetadata } from "../../lib/metadata";
+import { getTexts } from "../../lib/texts";
+import { ABOUT_LIST_SIZES, editable, shown, type TextKey, type Texts } from "../../lib/texts-defaults";
 
-export const metadata = pageMetadata({
-  title: "About",
-  description: "About Rayan Houstti: background, skills, software and experience.",
-  path: "/about",
-});
+export async function generateMetadata() {
+  return pageMetadata({
+    title: { en: "About", fr: "À propos" },
+    description: {
+      en: "About Rayan Houstti: background, skills, software and experience.",
+      fr: "À propos de Rayan Houstti : parcours, compétences, logiciels et expériences.",
+    },
+    path: "/about",
+  });
+}
 
 /** Clés d'une liste de la page About : "about.skills.0", "about.skills.1"… */
 function listKeys(name: "skills" | "software", size: number) {
   return Array.from({ length: size }, (_, i) => `about.${name}.${i}` as TextKey);
 }
 
-export default function AboutPage() {
+export default async function AboutPage() {
   // Textes : modifiables en mode édition local (content/texts.json).
-  const t = getTexts();
+  const t = await getTexts();
   // Portrait et photos : dossier public/artworks/about/ (le portrait se nomme portrait.jpg).
-  const { portrait, others, all: aboutImages } = getAboutArtworks(`Portrait of ${site.name}`);
+  const { portrait, others, all: aboutImages } = getAboutArtworks(await pick({ en: `Portrait of ${site.name}`, fr: `Portrait de ${site.name}` }));
 
   const bioKeys = ["about.bio.0", "about.bio.1", "about.bio.2"] as const;
   const experienceIndexes = Array.from({ length: ABOUT_LIST_SIZES.experience }, (_, i) => i);
@@ -73,7 +79,7 @@ export default function AboutPage() {
           <Reveal delay={0.15}>
             <section aria-labelledby="bio-title">
               <h2 id="bio-title" className="sr-only">
-                Biography
+                {await pick({ en: "Biography", fr: "Biographie" })}
               </h2>
               <div className="flex flex-col gap-6 text-lg leading-relaxed text-neutral-300">
                 {bioKeys.map((key) =>

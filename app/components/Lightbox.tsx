@@ -21,6 +21,7 @@ import {
 } from "react";
 import { easeOut } from "./motion/easing";
 import { focusRing, label } from "./styles";
+import { useTexts } from "./TextsProvider";
 
 export type LightboxItem = {
   src: string;
@@ -45,6 +46,7 @@ export function LightboxProvider({ items, children }: { items: LightboxItem[]; c
   const closeRef = useRef<HTMLButtonElement>(null);
   const swipeStart = useRef<number | null>(null);
   const reduceMotion = useReducedMotion();
+  const t = useTexts();
 
   const open = useCallback((i: number, trigger: HTMLElement) => {
     triggerRef.current = trigger;
@@ -139,7 +141,7 @@ export function LightboxProvider({ items, children }: { items: LightboxItem[]; c
               <p className={`${label} text-neutral-400`} aria-hidden="true">
                 {index + 1} / {items.length}
               </p>
-              <button ref={closeRef} type="button" onClick={close} aria-label="Close" className={controlClass}>
+              <button ref={closeRef} type="button" onClick={close} aria-label={t["nav.close"]} className={controlClass}>
                 ×
               </button>
             </div>
@@ -183,7 +185,7 @@ export function LightboxProvider({ items, children }: { items: LightboxItem[]; c
                   <button
                     type="button"
                     onClick={() => go(-1)}
-                    aria-label="Previous image"
+                    aria-label={t["a11y.previousImage"]}
                     className={`absolute left-2 top-1/2 -translate-y-1/2 md:left-6 ${controlClass}`}
                   >
                     ←
@@ -191,7 +193,7 @@ export function LightboxProvider({ items, children }: { items: LightboxItem[]; c
                   <button
                     type="button"
                     onClick={() => go(1)}
-                    aria-label="Next image"
+                    aria-label={t["a11y.nextImage"]}
                     className={`absolute right-2 top-1/2 -translate-y-1/2 md:right-6 ${controlClass}`}
                   >
                     →

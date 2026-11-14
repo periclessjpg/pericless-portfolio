@@ -3,8 +3,8 @@
 import { motion } from "motion/react";
 import { usePathname } from "next/navigation";
 import { useEffect, type ReactNode } from "react";
-import { easeOut } from "./components/motion/easing";
-import { recordPageVisit } from "./lib/navigation-history";
+import { easeOut } from "../components/motion/easing";
+import { recordPageVisit } from "../lib/navigation-history";
 
 /**
  * Transition discrète entre les pages : la nouvelle page apparaît en fondu

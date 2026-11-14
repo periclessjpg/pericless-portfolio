@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Artwork } from "../lib/artworks";
+import { localizeHref } from "../lib/i18n";
+import { getLocale } from "../lib/locale";
 import BlurText from "./BlurText";
 import { DevFramingSlot } from "./dev/DevSlots";
 import Reveal from "./motion/Reveal";
@@ -16,7 +18,9 @@ type Props = {
  * fenêtre : elle est recadrée (au centre, ou selon le cadrage de infos.json).
  * Si l'image a un lien ("link" dans infos.json), toute l'image est cliquable.
  */
-export default function FullscreenProjects({ artworks }: Props) {
+export default async function FullscreenProjects({ artworks }: Props) {
+  // Les liens des images ("link" dans infos.json) mènent à la page dans la langue en cours.
+  const locale = await getLocale();
   return (
     <ul className="flex flex-col gap-2">
       {artworks.map((artwork) => {
@@ -71,7 +75,7 @@ export default function FullscreenProjects({ artworks }: Props) {
         return (
           <li key={artwork.id} className="relative">
             {artwork.link ? (
-              <Link href={artwork.link} className={boxClass}>
+              <Link href={localizeHref(artwork.link, locale)} className={boxClass}>
                 {content}
               </Link>
             ) : (

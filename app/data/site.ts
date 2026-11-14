@@ -19,8 +19,9 @@ export const site = {
     "Portfolio of Rayan Houstti (Pericless), concept artist, illustrator and graphic designer specializing in video games and animation.",
   vision:
     "[À REMPLACER] A short paragraph about your vision: what you love to draw, the worlds and characters you want to bring to life, and how you work with art directors and studios.",
-  // Ton adresse email (valeur par défaut ; modifiable avec "Edit texts" en local).
-  email: "houstti.rayan@laposte.net",
+  // Ton adresse email : elle n'est plus ici (ce fichier est aussi envoyé au navigateur,
+  // où des robots pourraient la lire). Elle est dans content/texts.json ("common.email"),
+  // modifiable avec "Edit texts" en local, et s'affiche codée contre le spam (EmailLink).
   // Adresses complètes de tes profils (les noms affichés se modifient en mode édition local).
   socials: [
     { label: "ArtStation", href: "https://www.artstation.com/elgrande6" },

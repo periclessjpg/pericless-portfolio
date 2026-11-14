@@ -2,18 +2,18 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import BackButton from "../../components/BackButton";
-import BlurText from "../../components/BlurText";
-import Reveal from "../../components/motion/Reveal";
-import { container, eyebrow, focusRing, titleLarge, titleMedium } from "../../components/styles";
+import BackButton from "../../../components/BackButton";
+import BlurText from "../../../components/BlurText";
+import Reveal from "../../../components/motion/Reveal";
+import { container, eyebrow, focusRing, titleLarge, titleMedium } from "../../../components/styles";
 import {
   getAdjacentProjects,
   getProject,
   isSvg,
   publishedProjects,
   type ProjectImage,
-} from "../../data/projects";
-import { pageMetadata } from "../../lib/metadata";
+} from "../../../data/projects";
+import { pageMetadata } from "../../../lib/metadata";
 
 // Génère à l'avance une page par projet terminé (les projets "wip" n'ont pas de page).
 export function generateStaticParams() {
@@ -22,7 +22,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({
   params,
-}: PageProps<"/projects/[slug]">): Promise<Metadata> {
+}: PageProps<"/[lang]/projects/[slug]">): Promise<Metadata> {
   const { slug } = await params;
   const project = getProject(slug);
   if (!project) return { title: "Project not found" };
@@ -36,7 +36,7 @@ export async function generateMetadata({
   });
 }
 
-export default async function ProjectPage({ params }: PageProps<"/projects/[slug]">) {
+export default async function ProjectPage({ params }: PageProps<"/[lang]/projects/[slug]">) {
   const { slug } = await params;
   const project = getProject(slug);
   if (!project) notFound();

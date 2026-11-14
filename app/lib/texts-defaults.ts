@@ -4,9 +4,12 @@
 // clique sur un texte du site pour le changer. Tes modifications sont enregistrées
 // dans content/texts.json (que tu peux aussi modifier à la main) et remplacent ces
 // valeurs. Un texte vide ("") n'est pas affiché sur le site publié.
+// Textes français : content/texts.fr.json, modifié de la même façon quand le site
+// est affiché en français (adresses /fr/…). Voir DEFAULT_TEXTS_FR plus bas.
 // (Aucun accès aux fichiers ici : ce module sert aussi dans le navigateur.)
 
 import { site } from "../data/site";
+import type { Locale } from "./i18n";
 
 export const DEFAULT_TEXTS = {
   // ───────────── Haut de page et menu ─────────────
@@ -18,14 +21,24 @@ export const DEFAULT_TEXTS = {
   "nav.link.illustration": "Illustration",
   "nav.link.about": "About",
   "nav.link.contact": "Contact",
+  "nav.language": "Language",
 
   // ───────────── Commun ─────────────
-  "common.email": site.email,
+  // Adresse email : dans content/texts.json seulement (jamais dans le code envoyé au navigateur).
+  "common.email": "",
   "common.back": "Back",
   "common.comingSoon": "Coming soon",
   "common.scroll": "Scroll to explore",
   "common.letsTalk": "Let's talk !",
   "common.all": "All",
+  "common.skip": "Skip to content",
+  "common.newTab": "(opens in a new tab)",
+  // Libellés invisibles, lus par les lecteurs d'écran
+  "a11y.mainMenu": "Main",
+  "a11y.previousImage": "Previous image",
+  "a11y.nextImage": "Next image",
+  "a11y.filter": "Filter artworks by category",
+  "a11y.artworksShown": "artworks shown",
   "social.0": site.socials[0]?.label ?? "",
   "social.1": site.socials[1]?.label ?? "",
   "social.2": site.socials[2]?.label ?? "",
@@ -34,6 +47,12 @@ export const DEFAULT_TEXTS = {
   "footer.getInTouch": "Get in touch",
   "footer.name": site.name,
   "footer.rights": ". All rights reserved.",
+  "footer.legal": "Legal notice",
+
+  // ───────────── Mentions légales (contenu dans app/data/legal.ts) ─────────────
+  "legal.eyebrow": "Legal",
+  "legal.title": "Legal notice",
+  "legal.updated": "Last updated:",
 
   // ───────────── Accueil ─────────────
   "home.tagline": site.tagline,
@@ -113,6 +132,9 @@ export const DEFAULT_TEXTS = {
   "notFound.title": "Project not found",
   "notFound.text": "This project does not exist or has been moved.",
   "notFound.link": "Back to all projects",
+  "notFound.page.title": "Page not found",
+  "notFound.page.text": "This page does not exist or has been moved.",
+  "notFound.page.link": "Back to home",
 } satisfies Record<string, string>;
 
 export type TextKey = keyof typeof DEFAULT_TEXTS;
@@ -135,9 +157,9 @@ export function cleanText(value: unknown): string | null {
     .slice(0, 5000);
 }
 
-/** Fusionne les textes enregistrés (content/texts.json) avec les valeurs par défaut. */
-export function mergeTexts(saved: unknown): Texts {
-  const texts: Texts = { ...DEFAULT_TEXTS };
+/** Textes enregistrés valides (clés connues, texte brut nettoyé). */
+function cleanSaved(saved: unknown): Partial<Texts> {
+  const texts: Partial<Texts> = {};
   if (!saved || typeof saved !== "object") return texts;
   for (const [key, value] of Object.entries(saved as Record<string, unknown>)) {
     const clean = cleanText(value);
@@ -145,6 +167,116 @@ export function mergeTexts(saved: unknown): Texts {
   }
   return texts;
 }
+
+/** Fusionne les textes enregistrés (content/texts.json) avec les valeurs par défaut. */
+export function mergeTexts(saved: unknown): Texts {
+  return { ...DEFAULT_TEXTS, ...cleanSaved(saved) };
+}
+
+/**
+ * Textes identiques dans toutes les langues (email, nom, réseaux, logiciels, studios) :
+ * toujours lus et enregistrés dans content/texts.json, même depuis la version française.
+ */
+export function isSharedTextKey(key: TextKey): boolean {
+  return (
+    key === "common.email" ||
+    key === "nav.name" ||
+    key === "footer.name" ||
+    key.startsWith("social.") ||
+    (key.startsWith("about.software.") && key !== "about.software.title") ||
+    /^about\.experience\.\d+\.studio$/.test(key)
+  );
+}
+
+/**
+ * Textes d'une langue.
+ * - anglais : valeurs par défaut, remplacées par content/texts.json ;
+ * - français : pour chaque texte, content/texts.fr.json, sinon la traduction par défaut
+ *   (DEFAULT_TEXTS_FR), sinon le texte anglais (un texte pas encore traduit reste en anglais).
+ */
+export function buildTexts(locale: Locale, savedEn: unknown, savedLocale: unknown): Texts {
+  const en = mergeTexts(savedEn);
+  if (locale === "en") return en;
+
+  const own = cleanSaved(savedLocale);
+  const defaults = LOCALE_DEFAULTS[locale];
+  const texts: Texts = { ...en };
+  for (const key of Object.keys(texts) as TextKey[]) {
+    if (isSharedTextKey(key)) continue;
+    texts[key] = own[key] ?? defaults[key] ?? en[key];
+  }
+  return texts;
+}
+
+// ───────────── Traductions françaises par défaut ─────────────
+// Seulement les mots de l'interface (menu, boutons, titres de rubriques).
+// Tes textes à toi (bio, accroches…) se traduisent dans content/texts.fr.json,
+// ou en cliquant dessus en mode édition local, sur la version française du site.
+export const DEFAULT_TEXTS_FR: Partial<Texts> = {
+  "nav.title": "Concept Artist & Illustrateur",
+  "nav.menu": "Menu",
+  "nav.close": "Fermer",
+  "nav.link.concept-art": "Concept Art",
+  "nav.link.illustration": "Illustration",
+  "nav.link.about": "À propos",
+  "nav.link.contact": "Contact",
+  "nav.language": "Langue",
+
+  "common.back": "Retour",
+  "common.comingSoon": "Bientôt",
+  "common.scroll": "Faites défiler",
+  "common.letsTalk": "Parlons-en !",
+  "common.all": "Tout",
+  "common.skip": "Aller au contenu",
+  "common.newTab": "(s’ouvre dans un nouvel onglet)",
+  "a11y.mainMenu": "Principal",
+  "a11y.previousImage": "Image précédente",
+  "a11y.nextImage": "Image suivante",
+  "a11y.filter": "Filtrer les œuvres par catégorie",
+  "a11y.artworksShown": "œuvres affichées",
+
+  "footer.getInTouch": "Me contacter",
+  "footer.rights": ". Tous droits réservés.",
+  "footer.legal": "Mentions légales",
+
+  "legal.eyebrow": "Informations",
+  "legal.title": "Mentions légales",
+  "legal.updated": "Dernière mise à jour :",
+
+  "home.selectedWorks.eyebrow": "Portfolio",
+  "home.selectedWorks.title": "Travaux choisis",
+  "home.selectedWorks.viewAll": "Voir tous les projets",
+  "home.vision.title": "Vision",
+  "home.vision.link": "En savoir plus sur moi",
+
+  "projects.eyebrow": "Portfolio",
+  "projects.title": "Projets",
+  "conceptArt.eyebrow": "Portfolio",
+  "conceptArt.title": "Concept Art",
+  "illustration.eyebrow": "Portfolio",
+  "illustration.title": "Illustration",
+
+  "about.eyebrow": "À propos",
+  "about.title": "Bonjour, je suis Rayan Houstti.",
+  "about.cv": "Télécharger mon CV",
+  "about.skills.title": "Compétences",
+  "about.software.title": "Logiciels",
+  "about.experience.title": "Expériences",
+
+  "contact.eyebrow": "Contact",
+  "contact.emailLabel": "Email",
+  "contact.elsewhere": "Ailleurs",
+
+  "notFound.eyebrow": "Erreur 404",
+  "notFound.title": "Projet introuvable",
+  "notFound.text": "Ce projet n’existe pas ou a été déplacé.",
+  "notFound.link": "Retour aux projets",
+  "notFound.page.title": "Page introuvable",
+  "notFound.page.text": "Cette page n’existe pas ou a été déplacée.",
+  "notFound.page.link": "Retour à l’accueil",
+};
+
+const LOCALE_DEFAULTS: Record<Exclude<Locale, "en">, Partial<Texts>> = { fr: DEFAULT_TEXTS_FR };
 
 /**
  * Texte à afficher : sa valeur ; s'il est vide, rien sur le site publié et

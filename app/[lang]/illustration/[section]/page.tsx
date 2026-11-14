@@ -4,10 +4,10 @@ import {
   GallerySection,
   gallerySectionSlugs,
   gallerySectionTitle,
-} from "../../components/GalleryViews";
-import LetsTalk from "../../components/LetsTalk";
-import { container } from "../../components/styles";
-import { pageMetadata } from "../../lib/metadata";
+} from "../../../components/GalleryViews";
+import LetsTalk from "../../../components/LetsTalk";
+import { container } from "../../../components/styles";
+import { pageMetadata } from "../../../lib/metadata";
 
 // Une sous-page par carte : /illustration/all + une par sous-dossier de public/artworks/illustration/.
 export function generateStaticParams() {
@@ -16,21 +16,21 @@ export function generateStaticParams() {
 
 export async function generateMetadata({
   params,
-}: PageProps<"/illustration/[section]">): Promise<Metadata> {
+}: PageProps<"/[lang]/illustration/[section]">): Promise<Metadata> {
   const { section } = await params;
-  const title = gallerySectionTitle("illustration", section);
-  if (!title) return { title: "Page not found" };
+  const title = await gallerySectionTitle("illustration", section);
+  if (!title) return { title: "404" };
 
   return pageMetadata({
     title: `${title} · Illustration`,
-    description: `Illustration by Rayan Houstti: ${title}.`,
+    description: { en: `Illustration by Rayan Houstti: ${title}.`, fr: `Illustration de Rayan Houstti : ${title}.` },
     path: `/illustration/${section}`,
   });
 }
 
-export default async function IllustrationSectionPage({ params }: PageProps<"/illustration/[section]">) {
+export default async function IllustrationSectionPage({ params }: PageProps<"/[lang]/illustration/[section]">) {
   const { section } = await params;
-  const content = GallerySection({ category: "illustration", slug: section });
+  const content = await GallerySection({ category: "illustration", slug: section });
   if (!content) notFound();
 
   return (

@@ -1,17 +1,19 @@
-import { GalleryOverview } from "../components/GalleryViews";
-import LetsTalk from "../components/LetsTalk";
-import { container } from "../components/styles";
-import { pageMetadata } from "../lib/metadata";
-import { getTexts } from "../lib/texts";
+import { GalleryOverview } from "../../components/GalleryViews";
+import LetsTalk from "../../components/LetsTalk";
+import { container } from "../../components/styles";
+import { pageMetadata } from "../../lib/metadata";
+import { getTexts } from "../../lib/texts";
 
-export const metadata = pageMetadata({
-  title: "Illustration",
-  description: "Illustrations by Rayan Houstti.",
-  path: "/illustration",
-});
+export async function generateMetadata() {
+  return pageMetadata({
+    title: "Illustration",
+    description: { en: "Illustrations by Rayan Houstti.", fr: "Illustrations de Rayan Houstti." },
+    path: "/illustration",
+  });
+}
 
-export default function IllustrationPage() {
-  const t = getTexts();
+export default async function IllustrationPage() {
+  const t = await getTexts();
   return (
     <div className={container}>
       {/* Titre invisible à l'écran, lu par Google et les lecteurs d'écran */}

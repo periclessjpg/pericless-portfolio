@@ -1,19 +1,24 @@
-import ArtworkFilter from "../components/ArtworkFilter";
-import ComingSoon from "../components/ComingSoon";
-import PageHeader from "../components/PageHeader";
-import { container } from "../components/styles";
-import { getGallery } from "../lib/artworks";
-import { pageMetadata } from "../lib/metadata";
-import { getTexts } from "../lib/texts";
+import ArtworkFilter from "../../components/ArtworkFilter";
+import ComingSoon from "../../components/ComingSoon";
+import PageHeader from "../../components/PageHeader";
+import { container } from "../../components/styles";
+import { getGallery } from "../../lib/artworks";
+import { pageMetadata } from "../../lib/metadata";
+import { getTexts } from "../../lib/texts";
 
-export const metadata = pageMetadata({
-  title: "Projects",
-  description: "All artworks by Rayan Houstti: concept art (characters and environments) and illustration.",
-  path: "/projects",
-});
+export async function generateMetadata() {
+  return pageMetadata({
+    title: { en: "Projects", fr: "Projets" },
+    description: {
+      en: "All artworks by Rayan Houstti: concept art (characters and environments) and illustration.",
+      fr: "Toutes les œuvres de Rayan Houstti : concept art (personnages et environnements) et illustration.",
+    },
+    path: "/projects",
+  });
+}
 
-export default function ProjectsPage() {
-  const t = getTexts();
+export default async function ProjectsPage() {
+  const t = await getTexts();
   // Vue d'ensemble : toutes les images de public/artworks/concept-art/ et illustration/.
   const galleries = [getGallery("concept-art"), getGallery("illustration")];
   const artworks = galleries.flatMap((gallery) => gallery.all);

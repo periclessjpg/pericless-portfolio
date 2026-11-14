@@ -6,18 +6,24 @@
 // Les textes modifiables portent un attribut data-text-key (ajouté seulement en
 // développement). Au clic, une zone de saisie apparaît exactement par-dessus le texte,
 // avec la même police, taille et couleur. "Save" (ou Ctrl + Entrée) enregistre dans
-// content/texts.json via /api/dev/texts ; Échap annule. La page n'est jamais modifiée
+// content/texts.json (ou content/texts.fr.json sur la version française) via
+// /api/dev/texts ; Échap annule. La page n'est jamais modifiée
 // directement : elle se met à jour après l'enregistrement.
 
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { DEFAULT_TEXTS, isTextKey, type TextKey, type Texts } from "../../lib/texts-defaults";
+import type { Locale } from "../../lib/i18n";
+import { isTextKey, type TextKey, type Texts } from "../../lib/texts-defaults";
 import { focusRing } from "../styles";
 import { useTextMode, useToolsVisible } from "./edit-mode-store";
 
 export type DevTextEditorProps = {
-  /** Textes actuels du site. */
+  /** Textes actuels du site (langue de la page). */
   texts: Texts;
+  /** Textes d'origine de cette langue (bouton "Original text"). */
+  defaults: Texts;
+  /** Langue de la page : le texte est enregistré pour cette langue. */
+  locale: Locale;
 };
 
 type Editing = {
@@ -30,7 +36,7 @@ type Editing = {
 
 const buttonClass = `rounded-full border border-neutral-700 bg-neutral-950 px-3 py-1.5 text-[0.65rem] uppercase tracking-[0.2em] text-neutral-200 hover:border-neutral-100 hover:text-neutral-100 disabled:opacity-40 ${focusRing}`;
 
-export default function DevTextEditor({ texts }: DevTextEditorProps) {
+export default function DevTextEditor({ texts, defaults, locale }: DevTextEditorProps) {
   const router = useRouter();
   const visible = useToolsVisible();
   const textMode = useTextMode();
@@ -109,7 +115,7 @@ export default function DevTextEditor({ texts }: DevTextEditorProps) {
       const response = await fetch("/api/dev/texts", {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-dev-upload": "1" },
-        body: JSON.stringify({ key: editing.key, value }),
+        body: JSON.stringify({ key: editing.key, value, locale }),
       });
       const data = await response.json();
       if (!response.ok) {
@@ -125,7 +131,7 @@ export default function DevTextEditor({ texts }: DevTextEditorProps) {
     }
   }
 
-  const isDefault = editing.value === DEFAULT_TEXTS[editing.key];
+  const isDefault = editing.value === defaults[editing.key];
 
   return (
     <div
@@ -156,7 +162,7 @@ export default function DevTextEditor({ texts }: DevTextEditorProps) {
         </button>
         <button
           type="button"
-          onClick={() => setEditing({ ...editing, value: DEFAULT_TEXTS[editing.key] })}
+          onClick={() => setEditing({ ...editing, value: defaults[editing.key] })}
           disabled={saving || isDefault}
           className={buttonClass}
         >

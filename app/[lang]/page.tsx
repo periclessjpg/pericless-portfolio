@@ -1,20 +1,21 @@
 import Link from "next/link";
-import BlurText from "./components/BlurText";
-import Reveal from "./components/motion/Reveal";
-import ComingSoon from "./components/ComingSoon";
-import { DevDropZoneSlot, DevFramingSlot, DevHeroPanelSlot, DevReorderSlot } from "./components/dev/DevSlots";
-import FullscreenProjects from "./components/FullscreenProjects";
-import HeroView from "./components/HeroView";
-import { container, eyebrow, focusRing, titleMedium } from "./components/styles";
-import { folders, getHero, getHomeArtworks } from "./lib/artworks";
-import { getTexts } from "./lib/texts";
-import { editable, shown } from "./lib/texts-defaults";
+import BlurText from "../components/BlurText";
+import Reveal from "../components/motion/Reveal";
+import ComingSoon from "../components/ComingSoon";
+import { DevDropZoneSlot, DevFramingSlot, DevHeroPanelSlot, DevReorderSlot } from "../components/dev/DevSlots";
+import FullscreenProjects from "../components/FullscreenProjects";
+import HeroView from "../components/HeroView";
+import { container, eyebrow, focusRing, titleMedium } from "../components/styles";
+import { folders, getHero, getHomeArtworks } from "../lib/artworks";
+import { localHref } from "../lib/locale";
+import { getTexts } from "../lib/texts";
+import { editable, shown } from "../lib/texts-defaults";
 
-export default function Home() {
+export default async function Home() {
   // Images du dossier public/artworks/home/
   const featured = getHomeArtworks();
   // Textes : modifiables en mode édition local (content/texts.json).
-  const t = getTexts();
+  const t = await getTexts();
   // Hero : réglages, image de fond choisie et images du dossier public/artworks/hero/
   const hero = getHero();
 
@@ -70,7 +71,7 @@ export default function Home() {
           </div>
           <Reveal delay={0.2}>
             <Link
-              href="/projects"
+              href={await localHref("/projects")}
               className={`text-sm text-neutral-400 underline decoration-neutral-700 underline-offset-8 transition-colors duration-300 hover:text-neutral-100 hover:decoration-neutral-100 ${focusRing}`}
               {...editable("home.selectedWorks.viewAll")}
             >
@@ -121,7 +122,7 @@ export default function Home() {
               {shown(t["home.vision.text"])}
             </p>
             <Link
-              href="/about"
+              href={await localHref("/about")}
               className={`mt-10 inline-block text-sm text-neutral-400 underline decoration-neutral-700 underline-offset-8 transition-colors duration-300 hover:text-neutral-100 hover:decoration-neutral-100 ${focusRing}`}
               {...editable("home.vision.link")}
             >

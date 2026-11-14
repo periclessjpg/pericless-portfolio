@@ -4,10 +4,12 @@ import { AnimatePresence, motion, type Variants } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, useSyncExternalStore, type KeyboardEvent } from "react";
+import { localizeHref, stripLocale } from "../lib/i18n";
 import { editable, shown, type TextKey } from "../lib/texts-defaults";
 import BlurText from "./BlurText";
+import LanguageSwitcher from "./LanguageSwitcher";
 import Reveal from "./motion/Reveal";
-import { useTexts } from "./TextsProvider";
+import { useLocale, useTexts } from "./TextsProvider";
 import { easeOut } from "./motion/easing";
 import { container, focusRing, label } from "./styles";
 
@@ -51,8 +53,27 @@ function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
+/**
+ * Texte en haut à gauche (« Concept Artist & Illustrator ») : le métier qui ne
+ * correspond pas à la page est grisé, en fondu.
+ * - pages Concept Art : « & Illustrator » grisé ;
+ * - pages Illustration : « Concept Artist & » grisé.
+ * Le texte est coupé au signe « & » (s'il n'y en a pas, rien n'est grisé).
+ */
+function titleWordClass(title: string, index: number, path: string) {
+  const fade = "transition-colors duration-700 ease-out";
+  const amp = title.split(/\s+/).filter(Boolean).indexOf("&");
+  if (amp === -1) return fade;
+  const dimmed =
+    (isActive(path, "/concept-art") && index >= amp) || (isActive(path, "/illustration") && index <= amp);
+  return dimmed ? `${fade} text-neutral-500` : fade;
+}
+
 export default function Navbar() {
   const pathname = usePathname();
+  const locale = useLocale();
+  // Adresse sans la langue ("/fr/about" -> "/about"), pour savoir quel lien est actif.
+  const path = stripLocale(pathname).path;
   const t = useTexts();
   // On retient la page sur laquelle le menu a été ouvert :
   // si on change de page, le menu se ferme tout seul.
@@ -132,12 +153,20 @@ export default function Navbar() {
       >
         <div className={`${container} flex items-start justify-between gap-6 py-5 md:py-6`}>
           {/* En haut à gauche : métier puis nom, sur deux lignes (ramène à l'accueil) */}
-          <Link href="/" className={`${labelStyle} flex flex-col gap-1 text-neutral-100 ${focusRing}`}>
+          <Link href={localizeHref("/", locale)} className={`${labelStyle} flex flex-col gap-1 text-neutral-100 ${focusRing}`}>
             {/* À l'arrivée sur le site : métier puis nom apparaissent l'un après l'autre
                 (fondu mot par mot avec léger grain, petit glissement vers le haut). Une seule fois :
                 la barre du haut n'est pas rechargée quand on change de page. */}
             <Reveal delay={0.8} distance={10} duration={1.8}>
-              <BlurText as="span" delay={0.8} duration={1.8} stagger={0.25} textKey="nav.title" className="block">
+              <BlurText
+                as="span"
+                delay={0.8}
+                duration={1.8}
+                stagger={0.25}
+                textKey="nav.title"
+                className="block"
+                wordClassName={(index) => titleWordClass(t["nav.title"], index, path)}
+              >
                 {t["nav.title"]}
               </BlurText>
             </Reveal>
@@ -150,13 +179,17 @@ export default function Navbar() {
                 stagger={0.25}
                 textKey="nav.name"
                 className={`block leading-tight ${
-                  pathname === "/" ? "text-xl sm:text-3xl md:text-4xl" : "text-lg sm:text-2xl md:text-3xl"
+                  path === "/" ? "text-xl sm:text-3xl md:text-4xl" : "text-lg sm:text-2xl md:text-3xl"
                 }`}
               >
                 {t["nav.name"]}
               </BlurText>
             </Reveal>
           </Link>
+
+          <div className="flex items-baseline gap-5 md:gap-8">
+          {/* Choix de la langue : EN / FR, à gauche du bouton Menu */}
+          <LanguageSwitcher />
 
           <div className="relative">
             {/* Bouton Menu : même style que le texte de gauche */}
@@ -184,7 +217,7 @@ export default function Navbar() {
             </button>
 
             {/* Liens du menu : sortent du mot "Menu" en fondu */}
-            <nav id="site-menu" aria-label="Main" className="absolute right-0 top-full pt-8">
+            <nav id="site-menu" aria-label={t["a11y.mainMenu"]} className="absolute right-0 top-full pt-8">
               <AnimatePresence>
                 {open && (
                   <motion.ul
@@ -196,12 +229,12 @@ export default function Navbar() {
                     exit="closed"
                   >
                     {links.map((link, index) => {
-                      const active = isActive(pathname, link.href);
+                      const active = isActive(path, link.href);
                       return (
                         <motion.li key={link.href} variants={item}>
                           <Link
                             ref={index === 0 ? firstLinkRef : undefined}
-                            href={link.href}
+                            href={localizeHref(link.href, locale)}
                             onClick={() => setOpenOn(null)}
                             aria-current={active ? "page" : undefined}
                             className={`${labelStyle} whitespace-nowrap transition-colors duration-300 ${focusRing} ${
@@ -217,6 +250,7 @@ export default function Navbar() {
                 )}
               </AnimatePresence>
             </nav>
+          </div>
           </div>
         </div>
       </div>

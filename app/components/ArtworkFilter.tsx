@@ -23,7 +23,7 @@ export default function ArtworkFilter({ artworks, categories }: Props) {
     <div>
       <div
         role="group"
-        aria-label="Filter artworks by category"
+        aria-label={t["a11y.filter"]}
         className="mb-12 flex flex-wrap gap-x-8 gap-y-3 md:mb-16"
       >
         {filters.map((filter) => {
@@ -48,7 +48,7 @@ export default function ArtworkFilter({ artworks, categories }: Props) {
 
       {/* Annonce le résultat aux lecteurs d'écran */}
       <p aria-live="polite" className="sr-only">
-        {visible.length} {visible.length === 1 ? "artwork" : "artworks"} shown
+        {visible.length} {t["a11y.artworksShown"]}
       </p>
 
       {/* key={active} : la cascade d'apparition se rejoue à chaque changement de filtre */}

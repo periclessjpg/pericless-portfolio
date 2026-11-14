@@ -36,8 +36,8 @@ type Props = {
  * format 4:5, coins arrondis, fine bordure, ombre ; elles arrivent comme des cartes
  * distribuées et se soulèvent au survol. Chaque carte mène à sa sous-page.
  */
-export default function SectionCards({ cards, fitScreen = false }: Props) {
-  const t = getTexts();
+export default async function SectionCards({ cards, fitScreen = false }: Props) {
+  const t = await getTexts();
   return (
     <DealtList
       className={

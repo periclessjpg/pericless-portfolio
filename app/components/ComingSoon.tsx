@@ -12,8 +12,8 @@ type Props = {
  * Message sobre affiché quand un dossier d'images est vide ou absent.
  * En développement uniquement, indique où déposer les images.
  */
-export default function ComingSoon({ folder, className = "" }: Props) {
-  const t = getTexts();
+export default async function ComingSoon({ folder, className = "" }: Props) {
+  const t = await getTexts();
 
   return (
     <div className={`border-y border-neutral-900 py-16 md:py-24 ${className}`}>
