@@ -35,6 +35,22 @@ export default async function Home() {
             positionMobile: hero.image.positionMobile,
           }
         }
+        // Diaporama (2 images ou plus cochées dans "Customize hero"), chaque image avec ses outils locaux
+        slides={hero.slides.map((slide) => ({
+          key: slide.id,
+          src: slide.src,
+          alt: slide.alt,
+          position: slide.position,
+          positionMobile: slide.positionMobile,
+          tools: (
+            <DevFramingSlot
+              id={slide.id}
+              src={slide.src}
+              position={slide.position}
+              positionMobile={slide.positionMobile}
+            />
+          ),
+        }))}
         title={`${t["nav.name"]}, ${t["nav.title"]}`}
         tagline={t["home.tagline"]}
         scrollLabel={t["common.scroll"]}

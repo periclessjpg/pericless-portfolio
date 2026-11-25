@@ -89,7 +89,8 @@ export default function BlurText({
             <feTurbulence
               type="fractalNoise"
               baseFrequency={titleReveal.grain}
-              numOctaves={2}
+              // Une seule couche de détail : grain quasi identique, deux fois moins de calcul.
+              numOctaves={1}
               result="noise"
             />
             <motion.feDisplacementMap

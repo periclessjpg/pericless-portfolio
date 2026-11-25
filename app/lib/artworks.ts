@@ -254,7 +254,13 @@ export function getGallery(category: GalleryCategory): Gallery {
  * (valeurs invalides remplacées par les valeurs par défaut), image choisie
  * (sinon la première du dossier) et liste de toutes les images du dossier.
  */
-export function getHero(): { settings: HeroSettings; image: Artwork | null; images: Artwork[] } {
+export function getHero(): {
+  settings: HeroSettings;
+  image: Artwork | null;
+  images: Artwork[];
+  /** Diaporama : images choisies (settings.slides), dans l'ordre du dossier ; moins de 2 = pas de diaporama. */
+  slides: Artwork[];
+} {
   const images = readImages(["hero"], "Header", "Header");
   const fileName = (artwork: Artwork) => artwork.id.split("/").pop() ?? "";
 
@@ -268,7 +274,10 @@ export function getHero(): { settings: HeroSettings; image: Artwork | null; imag
   }
   const settings = sanitizeHeroSettings(raw, images.map(fileName));
   const image = images.find((artwork) => fileName(artwork) === settings.image) ?? images[0] ?? null;
-  return { settings, image, images };
+  const slides = settings.slides
+    .map((name) => images.find((artwork) => fileName(artwork) === name))
+    .filter((artwork): artwork is Artwork => !!artwork);
+  return { settings, image, images, slides };
 }
 
 export function getHomeArtworks(): Artwork[] {

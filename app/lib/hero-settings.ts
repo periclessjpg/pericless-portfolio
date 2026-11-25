@@ -48,13 +48,28 @@ export type HeroSettings = {
   /** Effet de parallaxe au défilement, en % (0 = aucun). */
   parallax: number;
   /**
+   * Travelling automatique lent sur l'image, comme les écrans de chargement de GTA V :
+   * l'image glisse et zoome très lentement, puis repart dans l'autre sens. Force en % (0 = aucun).
+   */
+  travel: number;
+  /** Durée d'un aller du travelling, en secondes. */
+  travelDuration: number;
+  /**
+   * Diaporama (comme le menu de GTA V) : images du dossier hero/ qui défilent l'une après
+   * l'autre en fondu enchaîné, chacune avec un travelling lent. Moins de 2 images = pas de
+   * diaporama (l'image "image" est affichée seule).
+   */
+  slides: string[];
+  /** Diaporama : durée d'affichage de chaque image, en secondes. */
+  slideDuration: number;
+  /**
    * Réglages propres aux téléphones (écrans de moins de 768 px) : seulement ceux qui
    * diffèrent de l'ordinateur. Panneau "Customize hero" ouvert dans l'aperçu "Phone".
    */
   mobile: HeroMobileSettings;
 };
 
-/** Réglages qui peuvent être différents sur téléphone (pas l'image, l'animation ni la parallaxe). */
+/** Réglages qui peuvent être différents sur téléphone (pas l'image, l'animation, la parallaxe ni le travelling). */
 export const HERO_MOBILE_KEYS = [
   "height",
   "imageOpacity",
@@ -100,6 +115,10 @@ export const HERO_DEFAULTS: HeroSettings = {
   animation: "fade",
   animationDuration: 0.8,
   parallax: 0,
+  travel: 80,
+  travelDuration: 30,
+  slides: [],
+  slideDuration: 8,
   mobile: {},
 };
 
@@ -124,6 +143,9 @@ export const HERO_RANGES: Record<NumberKey, { min: number; max: number; step: nu
   textSize: { min: 12, max: 64, step: 1, label: "Text size", unit: "px" },
   animationDuration: { min: 0.2, max: 4, step: 0.1, label: "Animation duration", unit: "s" },
   parallax: { min: 0, max: 100, step: 1, label: "Parallax", unit: "%" },
+  travel: { min: 0, max: 100, step: 1, label: "Slow camera move (GTA style)", unit: "%" },
+  travelDuration: { min: 10, max: 90, step: 1, label: "Camera move duration", unit: "s" },
+  slideDuration: { min: 3, max: 30, step: 1, label: "Time per image", unit: "s" },
 };
 
 export const HERO_CHOICES = {
@@ -154,6 +176,12 @@ function cleanValue(key: ValueKey, value: unknown, images: string[]): unknown {
   }
   if (key === "showScroll") return typeof value === "boolean" ? value : undefined;
   if (key === "image") return typeof value === "string" && images.includes(value) ? value : undefined;
+  if (key === "slides") {
+    // Images existantes seulement, sans doublon, dans l'ordre du dossier, 20 au maximum.
+    if (!Array.isArray(value)) return undefined;
+    const chosen = new Set(value.filter((v): v is string => typeof v === "string"));
+    return images.filter((name) => chosen.has(name)).slice(0, 20);
+  }
   return undefined;
 }
 
@@ -220,7 +248,11 @@ function heroVars(s: HeroSettings): Record<string, string> {
     "--hero-height": `${s.height}svh`,
     "--hero-img-opacity": String(s.imageOpacity / 100),
     "--hero-zoom": String(s.zoom / 100),
-    "--hero-filter": `blur(${s.blur}px) grayscale(${s.grayscale}%) saturate(${s.saturation}%) brightness(${s.brightness}%) contrast(${s.contrast}%)`,
+    // Filtres neutres (aucun flou, couleurs normales) : "none", plus léger à afficher qu'un filtre "vide".
+    "--hero-filter":
+      s.blur === 0 && s.grayscale === 0 && s.saturation === 100 && s.brightness === 100 && s.contrast === 100
+        ? "none"
+        : `blur(${s.blur}px) grayscale(${s.grayscale}%) saturate(${s.saturation}%) brightness(${s.brightness}%) contrast(${s.contrast}%)`,
     "--hero-overlay": rgba(color, s.overlayOpacity / 100),
     "--hero-gradient": gradients[s.gradient],
     "--hero-justify": justify,
@@ -229,5 +261,10 @@ function heroVars(s: HeroSettings): Record<string, string> {
     "--hero-text-size": `${s.textSize}px`,
     "--hero-text-color": s.textColor,
     "--hero-scroll-display": s.showScroll ? "block" : "none",
+    // Travelling lent : à 100 %, zoom de 12 % et glissement de 3 % (horizontal) et 2 % (vertical).
+    "--hero-travel-scale": String(Math.round((1 + 0.12 * (s.travel / 100)) * 1000) / 1000),
+    "--hero-travel-x": `${Math.round(-3 * s.travel) / 100}%`,
+    "--hero-travel-y": `${Math.round(-2 * s.travel) / 100}%`,
+    "--hero-travel-duration": `${s.travelDuration}s`,
   };
 }

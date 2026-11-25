@@ -253,6 +253,46 @@ export default function DevHeroPanel({ settings, images }: DevHeroPanelProps) {
             ? "No image yet: drop one on the hero first."
             : "Applied after Save. Framing: use “Adjust framing” on the image.",
         )}
+        {!phone &&
+          images.length >= 2 &&
+          group(
+            "Slideshow (GTA style)",
+            <>
+              <fieldset>
+                <legend className="text-xs text-neutral-400">Images that switch, in folder order</legend>
+                <div className="mt-2 flex flex-col gap-1.5">
+                  {images.map((image) => {
+                    const checked = draft.slides.includes(image.file);
+                    return (
+                      <label key={image.file} className="flex items-center gap-2 text-xs text-neutral-300">
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() =>
+                            set(
+                              "slides",
+                              // Toujours dans l'ordre du dossier.
+                              images
+                                .map((i) => i.file)
+                                .filter((file) => (file === image.file ? !checked : draft.slides.includes(file))),
+                            )
+                          }
+                          className="size-4 accent-amber-300"
+                        />
+                        <span className="truncate">
+                          {image.title} <span className="text-neutral-500">({image.file})</span>
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </fieldset>
+              {slider("slideDuration")}
+            </>,
+            draft.slides.length >= 2
+              ? `${draft.slides.length} images will switch. Applied after Save. Each image moves with the “Slow camera move” strength.`
+              : "Tick 2 images or more to turn the slideshow on (otherwise the background image above is shown alone). Applied after Save.",
+          )}
         {group("Size", slider("height"))}
         {group(
           "Image look",
@@ -300,8 +340,10 @@ export default function DevHeroPanel({ settings, images }: DevHeroPanelProps) {
             {choice("animation", "Image entrance")}
             {slider("animationDuration")}
             {slider("parallax")}
+            {slider("travel")}
+            {slider("travelDuration")}
           </>,
-          "Applied after Save (reload the page to replay the entrance).",
+          "Entrance: applied after Save (reload the page to replay it). Slow camera move: 0 % = off.",
         )}
       </div>
 
@@ -311,7 +353,7 @@ export default function DevHeroPanel({ settings, images }: DevHeroPanelProps) {
         </button>
         <button type="button" onClick={() =>
             // Téléphone : retour aux réglages de l'ordinateur ; ordinateur : valeurs d'origine.
-            setDraft(phone ? { ...settings, mobile: {} } : { ...HERO_DEFAULTS, image: draft.image, mobile: settings.mobile })
+            setDraft(phone ? { ...settings, mobile: {} } : { ...HERO_DEFAULTS, image: draft.image, slides: draft.slides, mobile: settings.mobile })
           } className={buttonClass}>
           Reset
         </button>

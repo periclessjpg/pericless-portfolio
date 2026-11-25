@@ -151,6 +151,10 @@ body {
   --hero-text-size: var(--hero-d-text-size);
   --hero-text-color: var(--hero-d-text-color);
   --hero-scroll-display: var(--hero-d-scroll-display);
+  --hero-travel-duration: var(--hero-d-travel-duration);
+  --hero-travel-y: var(--hero-d-travel-y);
+  --hero-travel-x: var(--hero-d-travel-x);
+  --hero-travel-scale: var(--hero-d-travel-scale);
 }
 @media (max-width: 767px) {
   #hero {
@@ -166,6 +170,10 @@ body {
     --hero-text-size: var(--hero-m-text-size);
     --hero-text-color: var(--hero-m-text-color);
     --hero-scroll-display: var(--hero-m-scroll-display);
+    --hero-travel-duration: var(--hero-m-travel-duration);
+    --hero-travel-y: var(--hero-m-travel-y);
+    --hero-travel-x: var(--hero-m-travel-x);
+    --hero-travel-scale: var(--hero-m-travel-scale);
   }
 }
 
@@ -190,5 +198,29 @@ picture,
   }
   100% {
     transform: scale(1.08) translate3d(1.5%, -1%, 0);
+  }
+}
+
+/* Travelling lent du hero de l'accueil (style écran de chargement GTA V) :
+   l'image glisse et zoome très lentement, puis repart (animation alternée).
+   Force et durée : réglages "Slow camera move" du panneau Customize hero. */
+@keyframes hero-travel {
+  from {
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(var(--hero-travel-scale)) translate3d(var(--hero-travel-x), var(--hero-travel-y), 0);
+  }
+}
+
+/* Diaporama du hero (style menu GTA V) : chaque image glisse et zoome lentement pendant
+   qu'elle est affichée ; le sens horizontal alterne d'une image à l'autre (--slide-dir). */
+@keyframes hero-slide-travel {
+  from {
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(var(--hero-travel-scale))
+      translate3d(calc(var(--hero-travel-x) * var(--slide-dir, 1)), var(--hero-travel-y), 0);
   }
 }
